@@ -63,23 +63,23 @@ Update the file after completing each sub-task, not just after completing an ent
   - [x] 0.1 Create and checkout a new branch: `git checkout -b feature/parissa-pos-mvp`
   - [x] 0.2 Create `CHANGELOG.md` and `VERSION` file (initial version v0.1.0)
 
-- [ ] 1.0 Setup project: Next.js + Supabase + Vercel
-  - [ ] 1.1 Initialize Next.js project with TypeScript, Tailwind CSS, App Router
-  - [ ] 1.2 Install dependencies: `@supabase/supabase-js`, `@supabase/ssr`, `shadcn/ui`, `@tanstack/react-query`, `next-intl`, `next-pwa`, `recharts`, `xlsx`
-  - [ ] 1.3 Configure Supabase client (`src/lib/supabase/client.ts` dan `server.ts`)
-  - [ ] 1.4 Setup shadcn/ui with monochrome Notion-style theme — define all colors as CSS variables/design tokens in one file (globals.css), base palette black-white-gray, accent colors only for function (status, alerts, primary actions)
+- [x] 1.0 Setup project: Next.js + Supabase + Vercel
+  - [x] 1.1 Initialize Next.js project with TypeScript, Tailwind CSS, App Router
+  - [x] 1.2 Install dependencies: `@supabase/supabase-js`, `@supabase/ssr`, `shadcn/ui`, `@tanstack/react-query`, `next-intl`, `next-pwa`, `recharts`, `xlsx`
+  - [x] 1.3 Configure Supabase client (`src/lib/supabase/client.ts` dan `server.ts`)
+  - [x] 1.4 Setup shadcn/ui with monochrome Notion-style theme — define all colors as CSS variables/design tokens in one file (globals.css), base palette black-white-gray, accent colors only for function (status, alerts, primary actions)
   - [ ] 1.5 Configure Vercel deployment (connect GitHub repo)
-  - [ ] 1.6 Create `public/manifest.json` for PWA
-  - [ ] 1.7 Configure `next.config.js` for PWA and i18n
-  - [ ] 1.8 Update CHANGELOG.md
+  - [x] 1.6 Create `public/manifest.json` for PWA
+  - [x] 1.7 Configure `next.config.js` for PWA and i18n
+  - [x] 1.8 Update CHANGELOG.md
 
-- [ ] 2.0 Database schema & migrations
-  - [ ] 2.1 Create `supabase/migrations/001_initial_schema.sql` with all tables from PRD Section 8.2 (roles, users, products, ingredients, recipes, sales, profit_calculations, batches, purchases, customers, waste_logs, audit_logs, stock_notifications)
-  - [ ] 2.2 Create database triggers: auto-calculate profit on sale insert, auto-deduct stock on sale, auto-upsert customer on sale, auto-update stock on purchase
-  - [ ] 2.3 Setup Row Level Security (RLS) policies per role
-  - [ ] 2.4 Create database views for dashboard KPIs (total revenue, cost, profit, unpaid)
+- [x] 2.0 Database schema & migrations
+  - [x] 2.1 Create `supabase/migrations/001_initial_schema.sql` with all tables from PRD Section 8.2 (roles, users, products, ingredients, recipes, sales, profit_calculations, batches, purchases, customers, waste_logs, audit_logs, stock_notifications)
+  - [x] 2.2 Create database triggers: auto-calculate profit on sale insert, auto-deduct stock on sale, auto-upsert customer on sale, auto-update stock on purchase
+  - [x] 2.3 Setup Row Level Security (RLS) policies per role
+  - [x] 2.4 Create database views for dashboard KPIs (total revenue, cost, profit, unpaid)
   - [ ] 2.5 Run migration and verify schema in Supabase dashboard
-  - [ ] 2.6 Update CHANGELOG.md
+  - [x] 2.6 Update CHANGELOG.md
 
 - [ ] 3.0 Auth + flexible role management
   - [ ] 3.1 Setup Supabase Auth (email + password)
