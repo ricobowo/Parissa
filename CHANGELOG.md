@@ -4,6 +4,23 @@ Semua perubahan penting pada proyek ini didokumentasikan di file ini.
 
 ---
 
+## [v0.4.0] — 2026-04-11
+
+### Ditambahkan
+- Halaman login (`/[locale]/login`) — tampilan minimalis Notion-style
+- Komponen `LoginForm` — autentikasi via Supabase Auth (email + password)
+- Helper `src/lib/auth.ts` — getCurrentUser, hasPermission, getAllRoles, getAllUsers
+- Middleware update — Supabase session refresh + redirect ke login jika belum terautentikasi
+- Route groups: `(auth)` untuk login, `(app)` untuk halaman authenticated dengan AppShell
+- `AppShell` layout — Sidebar (desktop 240px, collapsible) + BottomTabs (mobile, max 5 tab)
+- Navigasi role-based — menu ditampilkan/disembunyikan berdasarkan permissions user
+- Settings > Role Management — tabel permission matrix, CRUD role, toggle permission per modul
+- Settings > User Management — assign role, toggle aktif/nonaktif user
+- `LanguageToggle` komponen — toggle bahasa ID/EN di header, simpan preferensi ke profil user
+- i18n bilingual setup lengkap: next-intl config, locale routing, file terjemahan id.json & en.json
+
+---
+
 ## [v0.3.0] — 2026-04-11
 
 ### Diubah

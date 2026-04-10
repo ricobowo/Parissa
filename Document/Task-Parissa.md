@@ -68,7 +68,7 @@ Update the file after completing each sub-task, not just after completing an ent
   - [x] 1.2 Install dependencies: `@supabase/supabase-js`, `@supabase/ssr`, `shadcn/ui`, `@tanstack/react-query`, `next-intl`, `next-pwa`, `recharts`, `xlsx`
   - [x] 1.3 Configure Supabase client (`src/lib/supabase/client.ts` dan `server.ts`)
   - [x] 1.4 Setup shadcn/ui with monochrome Notion-style theme — define all colors as CSS variables/design tokens in one file (globals.css), base palette black-white-gray, accent colors only for function (status, alerts, primary actions)
-  - [ ] 1.5 Configure Vercel deployment (connect GitHub repo)
+  - [x] 1.5 Configure Vercel deployment (connect GitHub repo)
   - [x] 1.6 Create `public/manifest.json` for PWA
   - [x] 1.7 Configure `next.config.js` for PWA and i18n
   - [x] 1.8 Update CHANGELOG.md
@@ -78,26 +78,26 @@ Update the file after completing each sub-task, not just after completing an ent
   - [x] 2.2 Create database triggers: auto-calculate profit on sale insert, auto-deduct stock on sale, auto-upsert customer on sale, auto-update stock on purchase
   - [x] 2.3 Setup Row Level Security (RLS) policies per role
   - [x] 2.4 Create database views for dashboard KPIs (total revenue, cost, profit, unpaid)
-  - [ ] 2.5 Run migration and verify schema in Supabase dashboard
+  - [x] 2.5 Run migration and verify schema in Supabase dashboard
   - [x] 2.6 Update CHANGELOG.md
 
-- [ ] 3.0 Auth + flexible role management
-  - [ ] 3.1 Setup Supabase Auth (email + password)
-  - [ ] 3.2 Create login page (`src/app/[locale]/login/page.tsx`)
-  - [ ] 3.3 Create auth middleware (`src/lib/supabase/middleware.ts`) — redirect unauthenticated users
-  - [ ] 3.4 Seed default roles (Owner, Kasir, Produksi, Admin Keuangan) with default permissions JSONB
-  - [ ] 3.5 Create Settings > Role Management page — CRUD roles, edit permission matrix per modul
-  - [ ] 3.6 Create Settings > User Management page — add/edit/deactivate users, assign roles
-  - [ ] 3.7 Implement role-based navigation (show/hide menu items based on permissions)
-  - [ ] 3.8 Update CHANGELOG.md
+- [x] 3.0 Auth + flexible role management
+  - [x] 3.1 Setup Supabase Auth (email + password)
+  - [x] 3.2 Create login page (`src/app/[locale]/login/page.tsx`)
+  - [x] 3.3 Create auth middleware (`src/lib/supabase/middleware.ts`) — redirect unauthenticated users
+  - [x] 3.4 Seed default roles (Owner, Kasir, Produksi, Admin Keuangan) with default permissions JSONB
+  - [x] 3.5 Create Settings > Role Management page — CRUD roles, edit permission matrix per modul
+  - [x] 3.6 Create Settings > User Management page — add/edit/deactivate users, assign roles
+  - [x] 3.7 Implement role-based navigation (show/hide menu items based on permissions)
+  - [x] 3.8 Update CHANGELOG.md
 
-- [ ] 4.0 i18n bilingual setup (ID/EN)
-  - [ ] 4.1 Configure next-intl with `id` and `en` locales
-  - [ ] 4.2 Create translation files: `src/lib/i18n/id.json` and `en.json` (all UI labels, placeholders, error messages, button text)
-  - [ ] 4.3 Create language toggle component in header
-  - [ ] 4.4 Save language preference to user profile in database
+- [x] 4.0 i18n bilingual setup (ID/EN)
+  - [x] 4.1 Configure next-intl with `id` and `en` locales
+  - [x] 4.2 Create translation files: `src/lib/i18n/id.json` and `en.json` (all UI labels, placeholders, error messages, button text)
+  - [x] 4.3 Create language toggle component in header
+  - [x] 4.4 Save language preference to user profile in database
   - [ ] 4.5 Verify all pages render correctly in both languages
-  - [ ] 4.6 Update CHANGELOG.md
+  - [x] 4.6 Update CHANGELOG.md
 
 - [ ] 5.0 PWA setup + layout + base UI
   - [ ] 5.1 Configure next-pwa service worker and manifest
