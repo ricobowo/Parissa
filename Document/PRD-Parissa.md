@@ -6,7 +6,7 @@
 | **Last Updated** | 10 April 2026 |
 | **Author** | Rico (Owner) + Claude (AI Assistant) |
 | **Status** | Draft — Awaiting Final Review |
-| **Repository** | https://github.com/ricobowo/ai-dev-tasks.git |
+| **Repository** | https://github.com/ricobowo/Parissa.git |
 | **Data Source** | Airtable Base "Parissa" (app8ia1T8kY7PqeHR) |
 
 ---

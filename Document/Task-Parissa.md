@@ -59,9 +59,9 @@ Update the file after completing each sub-task, not just after completing an ent
 
 ### Phase 1A — Foundation (Minggu 1-2)
 
-- [ ] 0.0 Create feature branch
-  - [ ] 0.1 Create and checkout a new branch: `git checkout -b feature/parissa-pos-mvp`
-  - [ ] 0.2 Create `CHANGELOG.md` and `VERSION` file (initial version v0.1.0)
+- [x] 0.0 Create feature branch
+  - [x] 0.1 Create and checkout a new branch: `git checkout -b feature/parissa-pos-mvp`
+  - [x] 0.2 Create `CHANGELOG.md` and `VERSION` file (initial version v0.1.0)
 
 - [ ] 1.0 Setup project: Next.js + Supabase + Vercel
   - [ ] 1.1 Initialize Next.js project with TypeScript, Tailwind CSS, App Router
