@@ -23,6 +23,18 @@
 # misc
 .DS_Store
 *.pem
+*.p12
+*.pfx
+*.key
+*.cert
+
+# IDE / editor
+.idea/
+.vscode/
+.vs/
+*.swp
+*.swo
+*~
 
 # debug
 npm-debug.log*
