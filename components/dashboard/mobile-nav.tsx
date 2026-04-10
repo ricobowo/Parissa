@@ -15,8 +15,7 @@ const navigation = [
   { name: "Dashboard", icon: LayoutDashboard, href: "/" },
   { name: "POS", icon: ShoppingCart, href: "/pos" },
   { name: "Stok", icon: Boxes, href: "/stock" },
-  { name: "Produk", icon: Package, href: "#" },
-  { name: "Laporan", icon: BarChart3, href: "#" },
+  { name: "Laporan", icon: BarChart3, href: "/report" },
 ];
 
 export function MobileNav() {
