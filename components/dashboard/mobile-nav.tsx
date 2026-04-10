@@ -6,15 +6,16 @@ import { cn } from "@/lib/utils";
 import {
   LayoutDashboard,
   ShoppingCart,
-  Package,
   BarChart3,
   Boxes,
+  Users,
 } from "lucide-react";
 
 const navigation = [
   { name: "Dashboard", icon: LayoutDashboard, href: "/" },
   { name: "POS", icon: ShoppingCart, href: "/pos" },
   { name: "Stok", icon: Boxes, href: "/stock" },
+  { name: "Pelanggan", icon: Users, href: "/customers" },
   { name: "Laporan", icon: BarChart3, href: "/report" },
 ];
 

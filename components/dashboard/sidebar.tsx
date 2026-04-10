@@ -9,6 +9,7 @@ import {
   Package,
   BarChart3,
   Boxes,
+  Users,
   Settings,
   ChevronLeft,
   ChevronRight,
@@ -19,8 +20,8 @@ const navigation = [
   { name: "Dashboard", icon: LayoutDashboard, href: "/" },
   { name: "POS", icon: ShoppingCart, href: "/pos" },
   { name: "Stok Bahan", icon: Boxes, href: "/stock" },
+  { name: "Pelanggan", icon: Users, href: "/customers" },
   { name: "Laporan", icon: BarChart3, href: "/report" },
-  { name: "Produk", icon: Package, href: "#" },
   { name: "Pengaturan", icon: Settings, href: "#" },
 ];
 
