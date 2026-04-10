@@ -8,15 +8,15 @@ import {
   ShoppingCart,
   Package,
   BarChart3,
-  Menu,
+  Boxes,
 } from "lucide-react";
 
 const navigation = [
   { name: "Dashboard", icon: LayoutDashboard, href: "/" },
   { name: "POS", icon: ShoppingCart, href: "/pos" },
+  { name: "Stok", icon: Boxes, href: "/stock" },
   { name: "Produk", icon: Package, href: "#" },
   { name: "Laporan", icon: BarChart3, href: "#" },
-  { name: "Menu", icon: Menu, href: "#" },
 ];
 
 export function MobileNav() {

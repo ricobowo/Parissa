@@ -8,7 +8,7 @@ import {
   ShoppingCart,
   Package,
   BarChart3,
-  Users,
+  Boxes,
   Settings,
   ChevronLeft,
   ChevronRight,
@@ -18,9 +18,9 @@ import { useState } from "react";
 const navigation = [
   { name: "Dashboard", icon: LayoutDashboard, href: "/" },
   { name: "POS", icon: ShoppingCart, href: "/pos" },
+  { name: "Stok Bahan", icon: Boxes, href: "/stock" },
   { name: "Produk", icon: Package, href: "#" },
   { name: "Laporan", icon: BarChart3, href: "#" },
-  { name: "Pelanggan", icon: Users, href: "#" },
   { name: "Pengaturan", icon: Settings, href: "#" },
 ];
 
