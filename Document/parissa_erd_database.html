@@ -1,0 +1,161 @@
+<style>
+#erd svg.erDiagram .divider path { stroke-opacity: 0.5; }
+#erd svg.erDiagram .row-rect-odd path,
+#erd svg.erDiagram .row-rect-odd rect,
+#erd svg.erDiagram .row-rect-even path,
+#erd svg.erDiagram .row-rect-even rect { stroke: none !important; }
+</style>
+<h2 class="sr-only">Entity Relationship Diagram untuk database Parissa POS — 12 tabel dengan relasi foreign key</h2>
+<div id="erd"></div>
+<script type="module">
+import mermaid from 'https://esm.sh/mermaid@11/dist/mermaid.esm.min.mjs';
+const dark = matchMedia('(prefers-color-scheme: dark)').matches;
+await document.fonts.ready;
+mermaid.initialize({
+  startOnLoad: false,
+  theme: 'base',
+  fontFamily: '"Anthropic Sans", sans-serif',
+  themeVariables: {
+    darkMode: dark,
+    fontSize: '13px',
+    fontFamily: '"Anthropic Sans", sans-serif',
+    lineColor: dark ? '#9c9a92' : '#73726c',
+    textColor: dark ? '#c2c0b6' : '#3d3d3a',
+  },
+});
+const { svg } = await mermaid.render('erd-svg', `erDiagram
+    ROLES ||--o{ USERS : "has many"
+    USERS ||--o{ SALES : "creates"
+    USERS ||--o{ BATCHES : "creates"
+    USERS ||--o{ PURCHASES : "creates"
+    USERS ||--o{ WASTE_LOGS : "creates"
+    USERS ||--o{ AUDIT_LOGS : "changes"
+    PRODUCTS ||--o{ SALES : "sold in"
+    PRODUCTS ||--o{ BATCHES : "produced as"
+    PRODUCTS ||--o{ WASTE_LOGS : "wasted"
+    PRODUCTS ||--o{ RECIPES : "has recipe"
+    INGREDIENTS ||--o{ RECIPES : "used in"
+    INGREDIENTS ||--o{ PURCHASES : "restocked"
+    INGREDIENTS ||--o{ STOCK_NOTIFICATIONS : "alerts"
+    SALES ||--|| PROFIT_CALCULATIONS : "has profit"
+
+    ROLES {
+        uuid id PK
+        varchar name
+        varchar name_en
+        jsonb permissions
+        boolean is_system
+    }
+    USERS {
+        uuid id PK
+        varchar email
+        varchar name
+        uuid role_id FK
+        varchar language
+        boolean is_active
+    }
+    PRODUCTS {
+        uuid id PK
+        varchar name
+        decimal selling_price
+        decimal bundling_price
+        boolean is_bundling
+        boolean is_active
+    }
+    INGREDIENTS {
+        uuid id PK
+        varchar name
+        varchar purchase_unit
+        decimal purchase_price
+        decimal packaging_size
+        decimal minimum_stock_level
+        decimal quantity_available
+    }
+    RECIPES {
+        uuid id PK
+        uuid product_id FK
+        uuid ingredient_id FK
+        decimal quantity_per_batch
+        int pcs_per_batch
+    }
+    SALES {
+        uuid id PK
+        date date
+        varchar customer_name
+        uuid product_id FK
+        int amount
+        boolean is_bundling
+        decimal sale_price
+        varchar payment_status
+        varchar sale_type
+        uuid created_by FK
+    }
+    PROFIT_CALCULATIONS {
+        uuid id PK
+        uuid sale_id FK
+        decimal total_revenue
+        decimal total_cost
+        decimal total_profit
+    }
+    BATCHES {
+        uuid id PK
+        uuid product_id FK
+        varchar batch_number
+        date batch_date
+        int batch_quantity
+        date expiration_date
+        varchar status
+    }
+    PURCHASES {
+        uuid id PK
+        uuid ingredient_id FK
+        decimal qty_purchased
+        decimal price_paid
+        varchar supplier
+        date date
+    }
+    CUSTOMERS {
+        uuid id PK
+        varchar name
+        varchar label
+        int total_transactions
+        decimal total_spending
+    }
+    WASTE_LOGS {
+        uuid id PK
+        uuid product_id FK
+        int quantity
+        varchar reason
+        decimal waste_cost
+    }
+    STOCK_NOTIFICATIONS {
+        uuid id PK
+        uuid ingredient_id FK
+        date notification_date
+        varchar status
+    }
+`);
+document.getElementById('erd').innerHTML = svg;
+document.querySelectorAll('#erd svg.erDiagram .node').forEach(node => {
+  const firstPath = node.querySelector('path[d]');
+  if (!firstPath) return;
+  const d = firstPath.getAttribute('d');
+  const nums = d.match(/-?[\d.]+/g)?.map(Number);
+  if (!nums || nums.length < 8) return;
+  const xs = [nums[0], nums[2], nums[4], nums[6]];
+  const ys = [nums[1], nums[3], nums[5], nums[7]];
+  const x = Math.min(...xs), y = Math.min(...ys);
+  const w = Math.max(...xs) - x, h = Math.max(...ys) - y;
+  const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+  rect.setAttribute('x', x); rect.setAttribute('y', y);
+  rect.setAttribute('width', w); rect.setAttribute('height', h);
+  rect.setAttribute('rx', '8');
+  for (const a of ['fill', 'stroke', 'stroke-width', 'class', 'style']) {
+    if (firstPath.hasAttribute(a)) rect.setAttribute(a, firstPath.getAttribute(a));
+  }
+  firstPath.replaceWith(rect);
+});
+document.querySelectorAll('#erd svg.erDiagram .row-rect-odd path, #erd svg.erDiagram .row-rect-even path').forEach(p => {
+  p.setAttribute('stroke', 'none');
+});
+</script>

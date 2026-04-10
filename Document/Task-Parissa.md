@@ -67,7 +67,7 @@ Update the file after completing each sub-task, not just after completing an ent
   - [ ] 1.1 Initialize Next.js project with TypeScript, Tailwind CSS, App Router
   - [ ] 1.2 Install dependencies: `@supabase/supabase-js`, `@supabase/ssr`, `shadcn/ui`, `@tanstack/react-query`, `next-intl`, `next-pwa`, `recharts`, `xlsx`
   - [ ] 1.3 Configure Supabase client (`src/lib/supabase/client.ts` dan `server.ts`)
-  - [ ] 1.4 Setup shadcn/ui with Parissa theme colors (green revenue, red cost, etc.)
+  - [ ] 1.4 Setup shadcn/ui with monochrome Notion-style theme — define all colors as CSS variables/design tokens in one file (globals.css), base palette black-white-gray, accent colors only for function (status, alerts, primary actions)
   - [ ] 1.5 Configure Vercel deployment (connect GitHub repo)
   - [ ] 1.6 Create `public/manifest.json` for PWA
   - [ ] 1.7 Configure `next.config.js` for PWA and i18n
@@ -103,8 +103,8 @@ Update the file after completing each sub-task, not just after completing an ent
   - [ ] 5.1 Configure next-pwa service worker and manifest
   - [ ] 5.2 Create responsive layout: Sidebar for desktop (`src/components/layout/Sidebar.tsx`), BottomTabs for mobile (`src/components/layout/BottomTabs.tsx`)
   - [ ] 5.3 Implement role-based navigation — different menu items per role
-  - [ ] 5.4 Setup dark mode toggle (Tailwind dark mode)
-  - [ ] 5.5 Create shared components: page header, loading skeleton, empty state, toast notifications
+  - [ ] 5.4 Ensure all colors use CSS variables (dark mode ready) — dark mode toggle NOT implemented in Phase 1, only the code structure is prepared
+  - [ ] 5.5 Create shared components (minimalist, monochrome): page header, loading skeleton, empty state, toast notifications — no shadows, no decorative colors, generous whitespace
   - [ ] 5.6 Test PWA installability on Android/iOS
   - [ ] 5.7 Update CHANGELOG.md
 
@@ -151,12 +151,12 @@ Update the file after completing each sub-task, not just after completing an ent
 ### Phase 1C — Dashboard & Reports (Minggu 5-6)
 
 - [ ] 11.0 Dashboard
-  - [ ] 11.1 Create 6 KPI cards component (Revenue, Cost, Profit, Unpaid, Total Units, Total Txns) with color coding matching Airtable reference
+  - [ ] 11.1 Create 6 KPI cards component (Revenue, Cost, Profit, Unpaid, Total Units, Total Txns) — monochrome style (gray border, no colored background), color only on numbers/status badges via CSS variables
   - [ ] 11.2 Create filter dropdowns (payment status, product)
-  - [ ] 11.3 Create bar chart: Sales Distribution By Product (Recharts)
-  - [ ] 11.4 Create donut chart: Bundling vs Non-Bundling distribution
-  - [ ] 11.5 Create stacked bar chart: Sales Revenue Over Time (daily, per product color)
-  - [ ] 11.6 Create Paid/Unpaid transaction detail tables with badge styling
+  - [ ] 11.3 Create bar chart: Sales Distribution By Product — default grayscale palette, product colors muted/pastel
+  - [ ] 11.4 Create donut chart: Bundling vs Non-Bundling — 2 shades of gray (dark/light), no vivid colors
+  - [ ] 11.5 Create stacked bar chart: Sales Revenue Over Time — grayscale default, product colors as minimal differentiators only
+  - [ ] 11.6 Create Paid/Unpaid transaction detail tables — no zebra striping, gray border-bottom row separator, minimal status badges (small colored dot + text, not full colored pill)
   - [ ] 11.7 Make dashboard fully responsive (scroll cards mobile, grid desktop)
   - [ ] 11.8 Update CHANGELOG.md
 

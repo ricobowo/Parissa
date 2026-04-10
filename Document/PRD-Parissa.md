@@ -2,8 +2,8 @@
 
 | Field | Value |
 |-------|-------|
-| **PRD Version** | v2.0 |
-| **Last Updated** | 9 April 2026 |
+| **PRD Version** | v2.1 |
+| **Last Updated** | 10 April 2026 |
 | **Author** | Rico (Owner) + Claude (AI Assistant) |
 | **Status** | Draft — Awaiting Final Review |
 | **Repository** | https://github.com/ricobowo/ai-dev-tasks.git |
@@ -17,6 +17,7 @@
 |---------|------|---------|
 | v1.0 | 9 Apr 2026 | Initial PRD — 10 sections, 53 functional requirements |
 | v2.0 | 9 Apr 2026 | Major update: flexible roles, verified formulas, diagrams (User Flow, C4, Sequence, ERD), bilingual support, working rules, timeline per phase, semua fitur tambahan masuk Phase 1, WhatsApp notification deprioritized, design reference dari Airtable screenshots |
+| v2.1 | 10 Apr 2026 | Minor update: Design Considerations disesuaikan mengikuti Notion |
 
 ---
 
@@ -308,32 +309,98 @@ min_selling_price = cost_per_unit / (1 - target_margin/100)
 
 ---
 
-## 7. Design Considerations
+#7. Design Considerations
+7.1 Filosofi Desain
+Minimalis seperti Notion — tampilan bersih, hitam putih, tipografi sebagai elemen utama. Tidak ada warna berlebihan, tidak ada dekorasi yang tidak perlu. Warna hanya digunakan untuk fungsi (status, alert, aksi), bukan untuk estetika.
+Prinsip utama:
 
-### 7.1 Referensi Visual dari Airtable Screenshots
+Content-first — konten adalah raja, UI hanya wadah. Tidak ada elemen visual yang bersaing dengan data.
+Monokrom sebagai default — seluruh UI menggunakan skala hitam-putih-abu. Warna hanya muncul di tempat yang memiliki makna fungsional (badge status, alert stok, tombol aksi utama).
+Whitespace yang cukup — biarkan elemen bernapas. Padding dan margin yang generous.
+Tipografi hierarkis — ukuran dan ketebalan font yang jelas membedakan heading, body, dan caption tanpa perlu warna.
+Kode fleksibel — semua warna didefinisikan sebagai CSS variables / design tokens di satu file. Mengubah seluruh tampilan cukup edit satu file konfigurasi, tanpa menyentuh komponen.
 
-**Screenshot 1 — Form "Pembelian":** Form vertikal, label di atas field, placeholder contoh. Perbaikan: tidak semua required, tambah quick-sale grid mobile.
+7.2 Sistem Warna (Design Tokens)
+Semua warna didefinisikan sebagai CSS variables di satu file (globals.css atau theme.ts). Komponen tidak boleh hardcode warna — hanya referensi ke token.
+css:root {
+  /* --- Base (monokrom) --- */
+  --color-bg:          #FFFFFF;
+  --color-bg-secondary:#F7F7F5;    /* abu sangat muda, untuk card/surface */
+  --color-bg-hover:    #F0F0EE;
+  --color-border:      #E5E5E3;
+  --color-text:        #1A1A1A;
+  --color-text-secondary: #6B6B6B;
+  --color-text-tertiary:  #9B9B9B;
 
-**Screenshot 2 — Dashboard:** 6 kartu metrik warna berbeda, filter dropdown, bar chart per produk, donut chart bundling. Perbaikan: angka tidak terpotong, responsif mobile.
+  /* --- Aksen fungsional (hanya untuk status/aksi) --- */
+  --color-accent:      #2383E2;    /* tombol utama, link */
+  --color-success:     #0F7B0F;    /* status "Sudah", stok "Aman" */
+  --color-warning:     #D9730D;    /* stok "Menipis", overdue */
+  --color-danger:      #E03E3E;    /* stok "Habis", error */
 
-**Screenshot 3 — Sales Revenue Over Time:** Stacked bar chart per hari, 2 tabel detail Paid/Unpaid dengan badge warna. Perbaikan: periode bisa dipilih, masuk halaman Laporan.
+  /* --- Dark mode (opsional, nanti) --- */
+  /* Cukup override variabel di atas dalam media query */
+}
+Aturan penggunaan warna:
 
-### 7.2 Prinsip UI/UX
-- Mobile-first, responsive (HP/tablet/desktop)
-- Quick-sale grid 2x3 di mobile
-- Bilingual toggle ID/EN di header
-- Warna: Revenue hijau, Cost merah, Profit hijau tua, Unpaid kuning-oranye
-- Dark mode opsional
+Latar belakang halaman: --color-bg
+Latar belakang card/panel: --color-bg-secondary
+Teks utama: --color-text
+Teks pendukung: --color-text-secondary
+Border dan garis pemisah: --color-border
+Warna aksen hanya untuk: tombol utama, badge status bayar, indikator stok, link
+Tidak ada warna untuk header, sidebar, atau navigasi — semua hitam/putih/abu
 
-### 7.3 Navigation
-- Desktop: sidebar kiri (collapsible)
-- Mobile: bottom tab bar (4-5 tab sesuai role)
+7.3 Tipografi
+Satu font family saja. Hierarki dibuat dari ukuran dan ketebalan, bukan warna.
+Font family : Inter (atau system font stack)
+Heading 1   : 24px, semibold (600)    → judul halaman
+Heading 2   : 18px, semibold (600)    → judul section
+Heading 3   : 14px, medium (500)      → label grup
+Body         : 14px, regular (400)     → teks umum, tabel
+Caption      : 12px, regular (400)     → keterangan, timestamp
+Monospace    : 13px, JetBrains Mono    → angka Rupiah, kode
+7.4 Komponen UI
+Semua komponen menggunakan shadcn/ui (sudah minimalis by default) dengan kustomisasi minimal:
 
-### 7.4 Komponen UI
-- shadcn/ui + Tailwind CSS
-- Recharts atau Chart.js untuk grafik
-- TanStack Table untuk data tables
-- next-intl untuk i18n
+Card — border 1px --color-border, radius 8px, tanpa shadow. Latar --color-bg atau --color-bg-secondary.
+Button primary — background --color-accent, teks putih, radius 6px. Hanya 1 tombol aksen per halaman.
+Button secondary — border 1px --color-border, background transparan, teks --color-text.
+Input/Select — border 1px --color-border, radius 6px, tanpa shadow. Focus: border --color-accent.
+Badge status — hanya 3 varian fungsional: hijau (sukses), oranye (warning), merah (danger). Bentuk: teks kecil + dot warna, bukan pill berwarna penuh.
+Tabel — tanpa zebra stripe. Pemisah baris: border-bottom 1px --color-border. Header: teks --color-text-secondary, uppercase 11px.
+Toast/notification — minimalis, pojok kanan bawah, hitam putih + ikon status.
+Chart — skala abu-abu sebagai default. Warna produk hanya digunakan di chart distribusi (dan tetap muted/pastel, bukan vivid).
+
+7.5 Layout & Navigasi
+
+Desktop — sidebar kiri, lebar 240px, collapsible ke icon-only (60px). Warna sidebar: --color-bg-secondary dengan border kanan. Teks menu: --color-text-secondary, aktif: --color-text + font-weight medium + subtle bg highlight.
+Mobile — bottom tab bar, 4-5 tab sesuai role. Warna: putih dengan border atas, icon abu, aktif: hitam.
+Konten — max-width 960px di desktop, centered. Padding horizontal 24px desktop, 16px mobile.
+
+7.6 Referensi dari Airtable (untuk konten, bukan gaya)
+Screenshot Airtable sebelumnya digunakan sebagai referensi konten dan data layout, bukan referensi gaya visual:
+
+Form "Pembelian" → menjadi referensi field apa saja yang perlu ada di POS form, tapi tampilan di-redesign minimalis.
+Dashboard "Sales Performance" → menjadi referensi metrik apa saja yang ditampilkan (6 kartu, bar chart, donut chart), tapi gaya visual diganti monokrom.
+"Sales Revenue Over Time" → menjadi referensi tipe chart dan data breakdown, tapi warna chart di-mute.
+
+7.7 Prinsip Mobile-First
+
+Desain dimulai dari layar 360px, lalu diperluas ke tablet (768px) dan desktop (1024px+).
+Quick-sale grid di POS: 2 kolom di mobile, 3 kolom di tablet, form samping di desktop.
+Semua interaksi harus bisa dilakukan dengan satu tangan (thumb-friendly).
+
+7.8 Bilingual (ID/EN)
+
+Toggle bahasa di sidebar/header, simpan ke profil user.
+Default: Bahasa Indonesia.
+Implementasi via next-intl dengan file JSON terpisah per bahasa.
+
+7.9 Dark Mode (Opsional — Nanti)
+
+Karena semua warna sudah menggunakan CSS variables, dark mode cukup override variabel di @media (prefers-color-scheme: dark).
+Tidak perlu diimplementasikan di Phase 1 — struktur kodenya sudah siap.
 
 ---
 
@@ -545,13 +612,20 @@ Relasi utama:
 
 ### 9.2 User Flow — Input Penjualan
 
+![Gambar 2](parissa_user_flow_pos.svg)
+
 Login → Dashboard → Tap "POS" → Quick-Sale Grid / Form → Pilih Produk → Isi required fields → Harga auto-calculated → Submit → [Auto: save sale, calculate profit, deduct stock, upsert customer, check stock alert] → Konfirmasi sukses
 
 ### 9.3 C4 Context: Users (Owner, Kasir, Produksi, Admin) → Parissa POS → Fonnte API (WhatsApp)
 
 ### 9.4 C4 Container: Frontend (Next.js/Vercel) → Supabase (PostgreSQL + Auth + Edge Functions) → Fonnte API
 
+![Gambar 3](parissa_c4_context_container.svg)
+
 ### 9.5 Sequence — Input Penjualan:
+
+![Gambar 4](parissa_sequence_input_penjualan.svg)
+
 Kasir → Frontend (calculate price) → Supabase POST /sales → DB triggers (profit, stock deduct, customer upsert, stock alert check) → IF low stock → Edge Function → Fonnte WA → Response 200 → Toast sukses
 
 ---
