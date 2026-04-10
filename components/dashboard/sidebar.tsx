@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import {
   LayoutDashboard,
@@ -14,16 +16,17 @@ import {
 import { useState } from "react";
 
 const navigation = [
-  { name: "Dashboard", icon: LayoutDashboard, current: true },
-  { name: "POS", icon: ShoppingCart, current: false },
-  { name: "Produk", icon: Package, current: false },
-  { name: "Laporan", icon: BarChart3, current: false },
-  { name: "Pelanggan", icon: Users, current: false },
-  { name: "Pengaturan", icon: Settings, current: false },
+  { name: "Dashboard", icon: LayoutDashboard, href: "/" },
+  { name: "POS", icon: ShoppingCart, href: "/pos" },
+  { name: "Produk", icon: Package, href: "#" },
+  { name: "Laporan", icon: BarChart3, href: "#" },
+  { name: "Pelanggan", icon: Users, href: "#" },
+  { name: "Pengaturan", icon: Settings, href: "#" },
 ];
 
 export function Sidebar() {
   const [collapsed, setCollapsed] = useState(false);
+  const pathname = usePathname();
 
   return (
     <aside
@@ -64,21 +67,24 @@ export function Sidebar() {
 
       {/* Navigation */}
       <nav className="flex-1 p-3 space-y-1">
-        {navigation.map((item) => (
-          <a
-            key={item.name}
-            href="#"
-            className={cn(
-              "flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium transition-colors",
-              item.current
-                ? "bg-secondary text-foreground"
-                : "text-muted-foreground hover:text-foreground hover:bg-secondary/50"
-            )}
-          >
-            <item.icon className="h-5 w-5 flex-shrink-0" />
-            {!collapsed && <span>{item.name}</span>}
-          </a>
-        ))}
+        {navigation.map((item) => {
+          const isActive = pathname === item.href;
+          return (
+            <Link
+              key={item.name}
+              href={item.href}
+              className={cn(
+                "flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium transition-colors",
+                isActive
+                  ? "bg-secondary text-foreground"
+                  : "text-muted-foreground hover:text-foreground hover:bg-secondary/50"
+              )}
+            >
+              <item.icon className="h-5 w-5 flex-shrink-0" />
+              {!collapsed && <span>{item.name}</span>}
+            </Link>
+          );
+        })}
       </nav>
 
       {/* User */}
