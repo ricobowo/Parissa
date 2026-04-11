@@ -86,7 +86,7 @@ export default function ProductsPage({ params }: { params: Promise<{ locale: str
 
         // Bangun daftar RecipeItem untuk kalkulasi
         const recipeItems = recipes.map((r) => {
-          const ing = r.ingredients as { purchase_price: number; packaging_size: number } | null
+          const ing = r.ingredients as unknown as { purchase_price: number; packaging_size: number } | null
           const costPerUnitIng = ing
             ? calcIngredientCostPerUnit({
                 purchasePrice: ing.purchase_price,
