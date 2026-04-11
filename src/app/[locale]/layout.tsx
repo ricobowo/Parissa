@@ -1,7 +1,7 @@
 // ============================================================
 // File: src/app/[locale]/layout.tsx
-// Versi: v0.4.0
-// Deskripsi: Layout per locale — provider i18n + query client
+// Versi: v0.5.0
+// Deskripsi: Layout per locale — provider i18n + query client + toaster
 //            AppShell diatur di masing-masing route group
 // ============================================================
 
@@ -10,6 +10,7 @@ import { notFound } from 'next/navigation'
 import { routing } from '@/i18n/routing'
 import { Inter } from 'next/font/google'
 import { QueryProvider } from '@/components/providers/QueryProvider'
+import { Toaster } from '@/components/ui/toaster'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -39,6 +40,7 @@ export default async function LocaleLayout({
         <NextIntlClientProvider locale={locale} messages={messages}>
           <QueryProvider>
             {children}
+            <Toaster />
           </QueryProvider>
         </NextIntlClientProvider>
       </body>

@@ -99,21 +99,21 @@ Update the file after completing each sub-task, not just after completing an ent
   - [ ] 4.5 Verify all pages render correctly in both languages
   - [x] 4.6 Update CHANGELOG.md
 
-- [ ] 5.0 PWA setup + layout + base UI
-  - [ ] 5.1 Configure next-pwa service worker and manifest
-  - [ ] 5.2 Create responsive layout: Sidebar for desktop (`src/components/layout/Sidebar.tsx`), BottomTabs for mobile (`src/components/layout/BottomTabs.tsx`)
-  - [ ] 5.3 Implement role-based navigation — different menu items per role
-  - [ ] 5.4 Ensure all colors use CSS variables (dark mode ready) — dark mode toggle NOT implemented in Phase 1, only the code structure is prepared
-  - [ ] 5.5 Create shared components (minimalist, monochrome): page header, loading skeleton, empty state, toast notifications — no shadows, no decorative colors, generous whitespace
+- [x] 5.0 PWA setup + layout + base UI
+  - [x] 5.1 Configure next-pwa service worker and manifest
+  - [x] 5.2 Create responsive layout: Sidebar for desktop (`src/components/layout/Sidebar.tsx`), BottomTabs for mobile (`src/components/layout/BottomTabs.tsx`)
+  - [x] 5.3 Implement role-based navigation — different menu items per role
+  - [x] 5.4 Ensure all colors use CSS variables (dark mode ready) — dark mode toggle NOT implemented in Phase 1, only the code structure is prepared
+  - [x] 5.5 Create shared components (minimalist, monochrome): page header, loading skeleton, empty state, toast notifications — no shadows, no decorative colors, generous whitespace
   - [ ] 5.6 Test PWA installability on Android/iOS
-  - [ ] 5.7 Update CHANGELOG.md
+  - [x] 5.7 Update CHANGELOG.md
 
-- [ ] 6.0 Migrasi data dari Airtable
-  - [ ] 6.1 Export semua 9 tabel Airtable ke CSV
-  - [ ] 6.2 Create migration script (`supabase/migrations/002_seed_data.sql`) — transform Airtable data ke schema baru
-  - [ ] 6.3 Map Airtable Linked Records ke Foreign Keys
-  - [ ] 6.4 Verify migrated data: 6 produk, 18 bahan baku, 54 transaksi, 9 batch
-  - [ ] 6.5 Update CHANGELOG.md
+- [x] 6.0 Migrasi data dari Airtable
+  - [x] 6.1 Export semua 9 tabel Airtable ke CSV
+  - [x] 6.2 Create migration script (`supabase/migrations/002_seed_data.sql`) — transform Airtable data ke schema baru
+  - [x] 6.3 Map Airtable Linked Records ke Foreign Keys
+  - [x] 6.4 Verify migrated data: 6 produk, 18 bahan baku, 54 transaksi, 9 batch
+  - [x] 6.5 Update CHANGELOG.md
 
 ### Phase 1B — Core POS & Products (Minggu 3-4)
 

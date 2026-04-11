@@ -4,6 +4,25 @@ Semua perubahan penting pada proyek ini didokumentasikan di file ini.
 
 ---
 
+## [v0.5.0] — 2026-04-11
+
+### Ditambahkan
+- Shared UI components minimalis Notion-style:
+  - `PageHeader` — judul halaman + deskripsi + area aksi reusable
+  - `Skeleton`, `CardSkeleton`, `TableRowSkeleton`, `PageSkeleton` — loading state animasi pulse
+  - `EmptyState` — tampilan data kosong (ikon + pesan + aksi)
+  - Toast notification system: `ToastItem`, `Toaster`, `useToast` hook — pojok kanan bawah, auto-hilang 4 detik
+- Toaster dipasang di locale layout agar bisa dipanggil dari semua halaman
+- Seed data migrasi Airtable (`002_seed_data.sql`):
+  - 6 produk (Vanilla Pannacotta, Earl Grey Pannacotta, Bundling 3pcs, FC Earl Grey, FC Matcha, FC Lotus)
+  - 18 bahan baku dengan harga, packaging, stok awal, dan minimum level
+  - 36 resep/BOM (6 produk × 6 bahan) dengan quantity_per_batch dan pcs_per_batch
+  - 54 transaksi penjualan (sample Maret 2026, termasuk Sudah/Belum, Direct/Pre-order)
+  - 9 batch produksi (4 Vanilla, 2 Earl Grey, 1 FC EG, 1 FC Matcha, 1 FC Lotus)
+  - 7 pembelian/restock bahan baku
+
+---
+
 ## [v0.4.0] — 2026-04-11
 
 ### Ditambahkan
