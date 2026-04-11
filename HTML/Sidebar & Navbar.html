@@ -1,0 +1,523 @@
+<!-- Master App Shell (Mobile) -->
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Parissa POS - Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                "on-secondary-fixed": "#403f3f",
+                "on-primary": "#f8f7ff",
+                "inverse-on-surface": "#9c9d9d",
+                "surface-variant": "#dde4e5",
+                "on-surface-variant": "#5a6061",
+                "inverse-primary": "#618bff",
+                "primary-container": "#dbe1ff",
+                "on-secondary-fixed-variant": "#5c5b5b",
+                "on-tertiary-fixed-variant": "#59526e",
+                "surface-dim": "#d4dbdd",
+                "outline-variant": "#adb3b4",
+                "error": "#9f403d",
+                "on-primary-fixed-variant": "#0050d4",
+                "primary-fixed": "#dbe1ff",
+                "surface-container": "#ebeeef",
+                "background": "#f9f9f9",
+                "tertiary-container": "#dfd5f7",
+                "primary": "#0053db",
+                "tertiary-dim": "#564f6b",
+                "surface-container-high": "#e4e9ea",
+                "on-primary-container": "#0048bf",
+                "on-error": "#fff7f6",
+                "inverse-surface": "#0c0f0f",
+                "secondary-dim": "#545353",
+                "on-tertiary-fixed": "#3c3650",
+                "secondary": "#605f5e",
+                "surface-container-low": "#f2f4f4",
+                "primary-fixed-dim": "#c7d3ff",
+                "tertiary-fixed-dim": "#d0c7e8",
+                "surface-bright": "#f9f9f9",
+                "outline": "#757c7d",
+                "on-tertiary-container": "#4f4964",
+                "surface": "#f9f9f9",
+                "secondary-fixed-dim": "#d7d4d3",
+                "tertiary-fixed": "#dfd5f7",
+                "tertiary": "#625b77",
+                "on-primary-fixed": "#003798",
+                "error-dim": "#4e0309",
+                "surface-tint": "#0053db",
+                "secondary-fixed": "#e5e2e1",
+                "on-surface": "#2d3435",
+                "on-tertiary": "#fdf7ff",
+                "error-container": "#fe8983",
+                "on-background": "#2d3435",
+                "primary-dim": "#0048c1",
+                "on-secondary": "#fcf8f7",
+                "on-secondary-container": "#525151",
+                "on-error-container": "#752121",
+                "surface-container-lowest": "#ffffff",
+                "surface-container-highest": "#dde4e5",
+                "secondary-container": "#e5e2e1"
+            },
+            "borderRadius": {
+                "DEFAULT": "0.125rem",
+                "lg": "0.25rem",
+                "xl": "0.5rem",
+                "full": "0.75rem"
+            },
+            "fontFamily": {
+                "headline": ["Inter"],
+                "body": ["Inter"],
+                "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface antialiased">
+<header class="h-[56px] w-full bg-white dark:bg-zinc-950 flex justify-between items-center px-4 md:px-6 sticky top-0 z-30 tonal background shift flat no shadows font-sans Inter text-sm font-medium">
+<button class="p-2 -ml-2 text-zinc-500 hover:bg-zinc-50 dark:hover:bg-zinc-900 transition-opacity opacity-80 hover:opacity-100">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<div class="text-xl font-black text-zinc-900 dark:text-zinc-50 tracking-tighter">Parissa POS</div>
+<div class="flex items-center gap-2">
+<button class="p-2 text-zinc-500 hover:bg-zinc-50 dark:hover:bg-zinc-900 transition-opacity opacity-80 hover:opacity-100">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<div class="w-8 h-8 rounded-full overflow-hidden border border-outline-variant/20">
+<img class="w-full h-full object-cover" data-alt="minimalist portrait of a professional chef in a clean white uniform against a neutral gray background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDgFd-Q-Xz4cq7y-OaBje9Ehz5Mp6p7BfjKGuJY4Sh-sAvXZ81kM21AS5nr6F2sD6AbdV9xakj3YyRClKa2hMGwMIkOeNUjbRqN-30MebTyYeXgWHBm_s3HdunUMgnQEljnU1Bo8SOeUB5WWBBCv5BoT9CdIYcUY_-gItZX2UtsKACGqERtzNKC9_oRNK3JWEaLX2LhsJrSZ6SmqDaEjs-NzH6ux42UaV8X9Ct0IvhZb2botQ_OAtwi3FgDaF-ZHBwvoRZctFVLiS0"/>
+</div>
+</div>
+</header>
+<main class="min-h-[calc(100vh-120px)] bg-surface-container-low p-4 pb-24 md:ml-0 overflow-x-hidden">
+<div class="max-w-md mx-auto space-y-6">
+<div class="flex flex-col gap-1">
+<p class="text-[10px] uppercase tracking-widest font-bold text-primary">Overview</p>
+<h1 class="text-2xl font-extrabold tracking-tight text-on-surface">Daily Summary</h1>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="bg-surface-container-lowest p-5 rounded-lg flex flex-col gap-4 shadow-[0_2px_8px_rgba(0,0,0,0.02)] border border-outline-variant/10">
+<div class="bg-primary/10 w-10 h-10 flex items-center justify-center rounded-md">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">payments</span>
+</div>
+<div>
+<p class="text-xs text-on-surface-variant font-medium">Total Sales</p>
+<p class="text-lg font-bold text-on-surface">Rp 4.250k</p>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-5 rounded-lg flex flex-col gap-4 shadow-[0_2px_8px_rgba(0,0,0,0.02)] border border-outline-variant/10">
+<div class="bg-tertiary/10 w-10 h-10 flex items-center justify-center rounded-md">
+<span class="material-symbols-outlined text-tertiary" style="font-variation-settings: 'FILL' 1;">receipt_long</span>
+</div>
+<div>
+<p class="text-xs text-on-surface-variant font-medium">Transactions</p>
+<p class="text-lg font-bold text-on-surface">128</p>
+</div>
+</div>
+</div>
+<section class="bg-surface-container-lowest rounded-xl overflow-hidden shadow-[0_4px_20px_rgba(0,0,0,0.04)] border border-outline-variant/10">
+<div class="p-5 border-b border-outline-variant/10 flex justify-between items-center">
+<h2 class="font-bold text-on-surface">Best Sellers</h2>
+<span class="material-symbols-outlined text-on-surface-variant text-sm">more_horiz</span>
+</div>
+<div class="p-2 space-y-1">
+<div class="flex items-center gap-4 p-3 hover:bg-surface-container-low transition-colors rounded-lg group">
+<div class="w-12 h-12 rounded-lg overflow-hidden bg-surface-container flex-shrink-0">
+<img class="w-full h-full object-cover" data-alt="close-up of a gourmet chocolate glazed donut with delicate gold leaf flakes on a minimalist white plate" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBG1eM1SYVgOp0qy4qAR7cRGALKh50JA9QFAYwUHjfBh7EKR5yt6dJhy3l5h4Ax88L1zS1KuoQ_peTW6LQyCx33VWdIU6bFwcWJilg-iVLVTUbDxT2Ws5sOH0LfQ0wHh9l9b9_qIx9TFIatbdmU1GrKwY0_G1EGL3qmbMbbL0jGrdXP5X4bcsn2WoXs45ovSbCnF3CqV1xOj4XcVsgAi8ZsApo262yCrY7tdPHl6FLMzW-AHbfDnZ9zuEj4FPdv8aTElO4jbPQb3fw"/>
+</div>
+<div class="flex-1 min-w-0">
+<p class="text-sm font-semibold text-on-surface truncate">Dark Cocoa Glaze</p>
+<p class="text-[10px] text-on-surface-variant uppercase tracking-wide">Signature Pastry</p>
+</div>
+<div class="text-right">
+<p class="text-sm font-bold text-on-surface">42</p>
+<p class="text-[10px] text-primary font-bold">Sold</p>
+</div>
+</div>
+<div class="flex items-center gap-4 p-3 hover:bg-surface-container-low transition-colors rounded-lg group">
+<div class="w-12 h-12 rounded-lg overflow-hidden bg-surface-container flex-shrink-0">
+<img class="w-full h-full object-cover" data-alt="aesthetic overhead shot of colorful french macarons arranged in a geometric pattern on a stone surface" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDv_OMceO_zuOTe3ZD6lfXDDJLEzlm9OZQybznfMcdYlEeIEiQ2RiWIgZ8OOo_Rukpvo0bCo-ekDlhjorFBY7QJlE3XYN-lAynw9A9ugyvg-bi5HyrrnS96s6vaKFvTUDNCqHSmCJZsj5FTZN5niRKGNXI7WuTgGExnKUG7HBW3z5hW5a0UVNm1oCCg6meN9EfiHMEL6uzub-SeKFpFiRAI03maN_7M_pgQmUzncdJWgSAm8ZXkt0UsyfNEHqoKnuNQX-PlOy-2fCk"/>
+</div>
+<div class="flex-1 min-w-0">
+<p class="text-sm font-semibold text-on-surface truncate">Vanilla Bean Macaron</p>
+<p class="text-[10px] text-on-surface-variant uppercase tracking-wide">Daily Batch</p>
+</div>
+<div class="text-right">
+<p class="text-sm font-bold text-on-surface">38</p>
+<p class="text-[10px] text-primary font-bold">Sold</p>
+</div>
+</div>
+</div>
+<div class="p-4 bg-surface-container-low/30 text-center">
+<button class="text-primary text-[10px] font-bold uppercase tracking-widest hover:underline">View All Inventory</button>
+</div>
+</section>
+<div class="bg-primary p-6 rounded-xl relative overflow-hidden text-on-primary">
+<div class="relative z-10 flex flex-col gap-4">
+<div class="flex flex-col gap-1">
+<p class="text-[10px] font-bold uppercase tracking-widest opacity-80">Quick Action</p>
+<h3 class="text-xl font-extrabold tracking-tight">Ready to Serve?</h3>
+</div>
+<button class="bg-white text-primary px-6 py-3 rounded-md font-bold text-sm inline-flex items-center justify-center gap-2 w-fit transition-transform active:scale-95">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">add_circle</span>
+                        NEW TRANSACTION
+                    </button>
+</div>
+<div class="absolute -right-10 -bottom-10 w-40 h-40 bg-white/10 rounded-full blur-3xl"></div>
+<div class="absolute -left-10 -top-10 w-32 h-32 bg-primary-dim rounded-full blur-2xl opacity-50"></div>
+</div>
+</div>
+</main>
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center h-16 pb-safe bg-white/90 dark:bg-zinc-950/90 backdrop-blur-md border-t border-zinc-200 dark:border-zinc-800 md:hidden shadow-[0_-2px_10px_rgba(0,0,0,0.02)] tonal layering">
+<a class="flex flex-col items-center justify-center text-blue-600 dark:text-blue-400 tap-highlight-none transition-transform active:scale-95" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard" style="font-variation-settings: 'FILL' 1;">dashboard</span>
+<span class="text-[10px] uppercase tracking-widest font-bold mt-1">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-zinc-400 dark:text-zinc-600 tap-highlight-none transition-transform active:scale-95 active:bg-zinc-100 dark:active:bg-zinc-800" href="#">
+<span class="material-symbols-outlined" data-icon="point_of_sale">point_of_sale</span>
+<span class="text-[10px] uppercase tracking-widest font-bold mt-1">POS</span>
+</a>
+<a class="flex flex-col items-center justify-center text-zinc-400 dark:text-zinc-600 tap-highlight-none transition-transform active:scale-95 active:bg-zinc-100 dark:active:bg-zinc-800" href="#">
+<span class="material-symbols-outlined" data-icon="inventory_2">inventory_2</span>
+<span class="text-[10px] uppercase tracking-widest font-bold mt-1">Stock</span>
+</a>
+<a class="flex flex-col items-center justify-center text-zinc-400 dark:text-zinc-600 tap-highlight-none transition-transform active:scale-95 active:bg-zinc-100 dark:active:bg-zinc-800" href="#">
+<span class="material-symbols-outlined" data-icon="bar_chart">bar_chart</span>
+<span class="text-[10px] uppercase tracking-widest font-bold mt-1">Reports</span>
+</a>
+<button class="flex flex-col items-center justify-center text-zinc-400 dark:text-zinc-600 tap-highlight-none transition-transform active:scale-95 active:bg-zinc-100 dark:active:bg-zinc-800">
+<span class="material-symbols-outlined" data-icon="menu">menu</span>
+<span class="text-[10px] uppercase tracking-widest font-bold mt-1">More</span>
+</button>
+</nav>
+<aside class="fixed left-0 top-0 z-40 w-[240px] h-screen border-r border-zinc-200 dark:border-zinc-800 hidden md:flex flex-col bg-white/80 dark:bg-zinc-950/80 backdrop-blur-lg flat no shadows bg-zinc-50 dark:bg-zinc-900/50 font-sans Inter tracking-tight text-sm">
+<div class="p-6 flex flex-col gap-1">
+<div class="text-lg font-bold tracking-tighter text-zinc-900 dark:text-zinc-50">Parissa POS</div>
+<div class="text-xs text-on-surface-variant/70">Culinary Curator</div>
+</div>
+<nav class="flex-1 px-4 py-4 space-y-1">
+<div class="text-blue-600 dark:text-blue-400 font-semibold bg-zinc-100 dark:bg-zinc-800/50 rounded-lg p-3 flex items-center gap-3 scale-95 transition-transform cursor-pointer">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">dashboard</span>
+<span>Dashboard</span>
+</div>
+<div class="text-zinc-500 dark:text-zinc-400 p-3 flex items-center gap-3 hover:bg-zinc-100 dark:hover:bg-zinc-800/50 transition-colors rounded-lg cursor-pointer">
+<span class="material-symbols-outlined">point_of_sale</span>
+<span>POS</span>
+</div>
+<div class="text-zinc-500 dark:text-zinc-400 p-3 flex items-center gap-3 hover:bg-zinc-100 dark:hover:bg-zinc-800/50 transition-colors rounded-lg cursor-pointer">
+<span class="material-symbols-outlined">inventory_2</span>
+<span>Inventori</span>
+</div>
+<div class="text-zinc-500 dark:text-zinc-400 p-3 flex items-center gap-3 hover:bg-zinc-100 dark:hover:bg-zinc-800/50 transition-colors rounded-lg cursor-pointer">
+<span class="material-symbols-outlined">shopping_cart</span>
+<span>Pembelian</span>
+</div>
+<div class="text-zinc-500 dark:text-zinc-400 p-3 flex items-center gap-3 hover:bg-zinc-100 dark:hover:bg-zinc-800/50 transition-colors rounded-lg cursor-pointer">
+<span class="material-symbols-outlined">inventory</span>
+<span>Produk</span>
+</div>
+<div class="text-zinc-500 dark:text-zinc-400 p-3 flex items-center gap-3 hover:bg-zinc-100 dark:hover:bg-zinc-800/50 transition-colors rounded-lg cursor-pointer">
+<span class="material-symbols-outlined">assessment</span>
+<span>Laporan</span>
+</div>
+<div class="text-zinc-500 dark:text-zinc-400 p-3 flex items-center gap-3 hover:bg-zinc-100 dark:hover:bg-zinc-800/50 transition-colors rounded-lg cursor-pointer">
+<span class="material-symbols-outlined">group</span>
+<span>Pelanggan</span>
+</div>
+<div class="text-zinc-500 dark:text-zinc-400 p-3 flex items-center gap-3 hover:bg-zinc-100 dark:hover:bg-zinc-800/50 transition-colors rounded-lg cursor-pointer">
+<span class="material-symbols-outlined">settings</span>
+<span>Sistem</span>
+</div>
+</nav>
+<div class="p-4 border-t border-zinc-200 dark:border-zinc-800">
+<div class="flex items-center gap-3 p-2">
+<div class="w-8 h-8 rounded-full bg-zinc-200 overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="minimalist portrait of a professional chef in a clean white uniform against a neutral gray background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAjKVQaeXmb5MGQIJgALiTpcZl8o2V2S9RC-Qrdal04SNEBNEQLguvqIQ8SKYWbLKvZw7cGtgJuycWbDrDK3-BXJ8Vw0A9eP-fg_oc6gid7Ep8dtR5BKXqVFO-yuVGgnNIHC8ZTcGnzqIoQ229jgNy-b5HJE9s42dvUFHfe7q913tFpPEFYIhX_AG2v1JSRuewvSeK8eQEo8Z1dz7REv8l2pv8KuOXPLwaD1z05GVvc3IfQl0ZJTxi_zp_hw_OLXGHdFixGrh_vztM"/>
+</div>
+<div class="flex-1 min-w-0">
+<p class="text-xs font-bold text-on-surface truncate">Admin Parissa</p>
+<p class="text-[10px] text-on-surface-variant truncate">Master Account</p>
+</div>
+<span class="material-symbols-outlined text-zinc-400 text-sm">logout</span>
+</div>
+</div>
+</aside>
+</body></html>
+
+<!-- Master App Shell (Desktop) -->
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Parissa POS - Master Shell</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-secondary-fixed": "#403f3f",
+                    "on-primary": "#f8f7ff",
+                    "inverse-on-surface": "#9c9d9d",
+                    "surface-variant": "#dde4e5",
+                    "on-surface-variant": "#5a6061",
+                    "inverse-primary": "#618bff",
+                    "primary-container": "#dbe1ff",
+                    "on-secondary-fixed-variant": "#5c5b5b",
+                    "on-tertiary-fixed-variant": "#59526e",
+                    "surface-dim": "#d4dbdd",
+                    "outline-variant": "#adb3b4",
+                    "error": "#9f403d",
+                    "on-primary-fixed-variant": "#0050d4",
+                    "primary-fixed": "#dbe1ff",
+                    "surface-container": "#ebeeef",
+                    "background": "#f9f9f9",
+                    "tertiary-container": "#dfd5f7",
+                    "primary": "#0053db",
+                    "tertiary-dim": "#564f6b",
+                    "surface-container-high": "#e4e9ea",
+                    "on-primary-container": "#0048bf",
+                    "on-error": "#fff7f6",
+                    "inverse-surface": "#0c0f0f",
+                    "secondary-dim": "#545353",
+                    "on-tertiary-fixed": "#3c3650",
+                    "secondary": "#605f5e",
+                    "surface-container-low": "#f2f4f4",
+                    "primary-fixed-dim": "#c7d3ff",
+                    "tertiary-fixed-dim": "#d0c7e8",
+                    "surface-bright": "#f9f9f9",
+                    "outline": "#757c7d",
+                    "on-tertiary-container": "#4f4964",
+                    "surface": "#f9f9f9",
+                    "secondary-fixed-dim": "#d7d4d3",
+                    "tertiary-fixed": "#dfd5f7",
+                    "tertiary": "#625b77",
+                    "on-primary-fixed": "#003798",
+                    "error-dim": "#4e0309",
+                    "surface-tint": "#0053db",
+                    "secondary-fixed": "#e5e2e1",
+                    "on-surface": "#2d3435",
+                    "on-tertiary": "#fdf7ff",
+                    "error-container": "#fe8983",
+                    "on-background": "#2d3435",
+                    "primary-dim": "#0048c1",
+                    "on-secondary": "#fcf8f7",
+                    "on-secondary-container": "#525151",
+                    "on-error-container": "#752121",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-container-highest": "#dde4e5",
+                    "secondary-container": "#e5e2e1"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "fontFamily": {
+                    "headline": ["Inter"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+            font-size: 20px;
+        }
+        body { font-family: 'Inter', sans-serif; }
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #e5e7eb; border-radius: 10px; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface antialiased overflow-hidden">
+<!-- Sidebar Wrapper (Fixed Left) -->
+<aside class="fixed left-0 top-0 z-40 w-[240px] h-screen border-r border-zinc-200 dark:border-zinc-800 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-lg hidden md:flex flex-col font-sans Inter tracking-tight text-sm">
+<!-- Brand Section -->
+<div class="px-6 h-[56px] flex flex-col justify-center border-b border-zinc-100 dark:border-zinc-900">
+<h2 class="text-lg font-bold tracking-tighter text-zinc-900 dark:text-zinc-50 leading-tight">Parissa POS</h2>
+<span class="text-[10px] uppercase tracking-widest font-bold text-zinc-400">Culinary Curator</span>
+</div>
+<!-- Navigation Scroll Area -->
+<nav class="flex-1 overflow-y-auto py-4 px-3 space-y-6">
+<!-- Dashboard Group -->
+<div>
+<a class="flex items-center gap-3 px-3 py-2 text-blue-600 dark:text-blue-400 font-semibold bg-zinc-100 dark:bg-zinc-800/50 rounded transition-colors group" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span>Dashboard</span>
+</a>
+</div>
+<!-- Main Group -->
+<div class="space-y-1">
+<p class="px-3 mb-2 text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Main Operations</p>
+<a class="flex items-center gap-3 px-3 py-2 text-zinc-500 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800/50 transition-colors rounded" href="#">
+<span class="material-symbols-outlined" data-icon="point_of_sale">point_of_sale</span>
+<span>POS</span>
+</a>
+</div>
+<!-- Inventori Group -->
+<div class="space-y-1">
+<p class="px-3 mb-2 text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Inventori</p>
+<div class="space-y-1">
+<a class="flex items-center gap-3 px-3 py-2 text-zinc-500 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800/50 transition-colors rounded" href="#">
+<span class="material-symbols-outlined" data-icon="inventory_2">inventory_2</span>
+<span>Stok</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-zinc-500 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800/50 transition-colors rounded" href="#">
+<span class="material-symbols-outlined" data-icon="package_2">package_2</span>
+<span>Batching</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-zinc-500 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800/50 transition-colors rounded" href="#">
+<span class="material-symbols-outlined" data-icon="calendar_today">calendar_today</span>
+<span>Daily Planner</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-zinc-500 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800/50 transition-colors rounded" href="#">
+<span class="material-symbols-outlined" data-icon="delete">delete</span>
+<span>Waste</span>
+</a>
+</div>
+</div>
+<!-- Pembelian & Produk -->
+<div class="space-y-1">
+<p class="px-3 mb-2 text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Catalog &amp; Procurement</p>
+<a class="flex items-center gap-3 px-3 py-2 text-zinc-500 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800/50 transition-colors rounded" href="#">
+<span class="material-symbols-outlined" data-icon="shopping_cart">shopping_cart</span>
+<span>Pembelian</span>
+</a>
+<div class="mt-2 pl-3 border-l border-zinc-100 ml-5 space-y-1">
+<a class="block px-3 py-1.5 text-zinc-500 hover:text-zinc-900 text-[13px] transition-colors" href="#">Daftar Produk</a>
+<a class="block px-3 py-1.5 text-zinc-500 hover:text-zinc-900 text-[13px] transition-colors" href="#">Resep</a>
+<a class="block px-3 py-1.5 text-zinc-500 hover:text-zinc-900 text-[13px] transition-colors" href="#">Pricing</a>
+</div>
+</div>
+<!-- Reports & CRM -->
+<div class="space-y-1">
+<p class="px-3 mb-2 text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Analisis &amp; Pelanggan</p>
+<a class="flex items-center gap-3 px-3 py-2 text-zinc-500 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800/50 transition-colors rounded" href="#">
+<span class="material-symbols-outlined" data-icon="assessment">assessment</span>
+<span>Laporan</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-zinc-500 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800/50 transition-colors rounded" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span>Pelanggan</span>
+</a>
+</div>
+<!-- Settings -->
+<div class="space-y-1 pt-4 border-t border-zinc-100 dark:border-zinc-900">
+<a class="flex items-center gap-3 px-3 py-2 text-zinc-500 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800/50 transition-colors rounded" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span>Sistem</span>
+</a>
+</div>
+</nav>
+<!-- Sidebar Footer (User Info) -->
+<div class="p-4 border-t border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/50">
+<div class="flex items-center gap-3 mb-4">
+<div class="w-8 h-8 rounded-full overflow-hidden bg-zinc-200">
+<img alt="User Avatar" class="w-full h-full object-cover" data-alt="professional headshot of a boutique patisserie owner in a clean chef uniform with a warm approachable smile" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCSrDVsTV4U_UQvN74Tq3xfcLP7vCw9kGfql-Ho3h-5J_G6phyHoe4pr6WotSZKEkqv-uk7yVINmVxe9FpCNdEZj35lcYghOQ8RuMna5NQYTTb83XAcFcU2qbWuRT2M4wCnViX2BPQF-mBzavngtFxEonrdL3b9MI9OFrMN9sAQy_LhdlWrtkJOukV7nARK6Gjn0-FYZOLj9ZzneNKMblchp2ouuTZNEjpbbvku-6kqraGA1x3xaNHDClPMU84bEGiQzcqDYnb7SqY"/>
+</div>
+<div class="flex-1 overflow-hidden">
+<p class="font-semibold text-zinc-900 dark:text-zinc-100 truncate">Julian Parissa</p>
+<p class="text-[11px] text-zinc-500 truncate">Admin Principal</p>
+</div>
+</div>
+<button class="w-full flex items-center justify-center gap-2 px-3 py-2 text-zinc-500 hover:text-error hover:bg-error/5 transition-all rounded text-xs font-medium">
+<span class="material-symbols-outlined !text-[16px]" data-icon="logout">logout</span>
+                Logout
+            </button>
+</div>
+</aside>
+<!-- Top Navigation Bar -->
+<header class="fixed top-0 right-0 left-0 md:left-[240px] z-30 h-[56px] bg-white dark:bg-zinc-950 flex items-center justify-between px-4 md:px-8 border-b border-zinc-200 dark:border-zinc-800">
+<div class="flex items-center gap-4">
+<button class="md:hidden p-2 -ml-2 text-zinc-500">
+<span class="material-symbols-outlined" data-icon="menu">menu</span>
+</button>
+<h1 class="text-sm font-bold text-zinc-900 dark:text-zinc-50 tracking-tight">Dashboard Overview</h1>
+</div>
+<div class="flex items-center gap-4 md:gap-6">
+<!-- ID/EN Toggle -->
+<div class="hidden sm:flex bg-zinc-100 dark:bg-zinc-900 p-0.5 rounded-full">
+<button class="px-3 py-1 text-[11px] font-bold rounded-full bg-white dark:bg-zinc-800 shadow-sm text-blue-600">ID</button>
+<button class="px-3 py-1 text-[11px] font-bold rounded-full text-zinc-400 hover:text-zinc-600 transition-colors">EN</button>
+</div>
+<!-- Actions -->
+<div class="flex items-center gap-2">
+<button class="w-9 h-9 flex items-center justify-center text-zinc-500 hover:bg-zinc-50 dark:hover:bg-zinc-900 rounded-full transition-colors relative">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="absolute top-2.5 right-2.5 w-1.5 h-1.5 bg-blue-600 rounded-full"></span>
+</button>
+<div class="h-6 w-[1px] bg-zinc-200 dark:bg-zinc-800 mx-2"></div>
+<button class="flex items-center gap-2 pl-1 pr-2 py-1 hover:bg-zinc-50 dark:hover:bg-zinc-900 rounded-full transition-all">
+<span class="text-xs font-medium text-zinc-600 hidden lg:block">Profile</span>
+<div class="w-8 h-8 rounded-full overflow-hidden border border-zinc-100 shadow-sm">
+<img alt="Profile" class="w-full h-full object-cover" data-alt="modern minimalist headshot of a woman with clean professional styling against a neutral studio background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCt9_hJ3e6kFcHH7pv8_Pq_rZJjnipeQJVBLBxF9r-oazmNscdMEhi8Zh1k7pAW5LojF5eqUFHgEsBper-0-0SII8K4FfLYcKLtOqqpIe6KIbdFcVUfLJ5MH8wu9ic7JV8ZVDSI4INFvwOxjKRUZbrKiFlrH40r9PG6FPEHiwOvSv4fdm4cwxpoA_0ev8M1h-8oCgU9lCaDGGiY8Z4rtGNm0ISuou3RJbP-TnD_ewDgCiHKcM_wIggRMpKl-nr0fcEcJ5ftPY3DDIU"/>
+</div>
+</button>
+</div>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="pt-[56px] md:ml-[240px] h-screen bg-[#F7F7F7] dark:bg-zinc-900 overflow-y-auto">
+<!-- Canvas for content will render here -->
+<div class="p-6 md:p-10 max-w-7xl mx-auto">
+<!-- Placeholder for high-end Bento Grid layout or specific page content -->
+<div class="flex flex-col items-center justify-center min-h-[614px] text-zinc-300 dark:text-zinc-800">
+<span class="material-symbols-outlined !text-6xl mb-4" data-icon="blur_on">blur_on</span>
+<p class="font-label text-[10px] uppercase tracking-[0.2em] font-bold">Workspace Ready</p>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation (Mobile Only) -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center h-16 pb-safe bg-white/90 dark:bg-zinc-950/90 backdrop-blur-md border-t border-zinc-200 dark:border-zinc-800 md:hidden shadow-[0_-2px_10px_rgba(0,0,0,0.02)]">
+<a class="flex flex-col items-center justify-center text-blue-600 dark:text-blue-400" href="#">
+<span class="material-symbols-outlined" data-icon="home" style="font-variation-settings: 'FILL' 1;">home</span>
+<span class="text-[10px] uppercase tracking-widest font-bold mt-1">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-zinc-400 dark:text-zinc-600" href="#">
+<span class="material-symbols-outlined" data-icon="point_of_sale">point_of_sale</span>
+<span class="text-[10px] uppercase tracking-widest font-bold mt-1">POS</span>
+</a>
+<a class="flex flex-col items-center justify-center text-zinc-400 dark:text-zinc-600" href="#">
+<span class="material-symbols-outlined" data-icon="inventory_2">inventory_2</span>
+<span class="text-[10px] uppercase tracking-widest font-bold mt-1">Stock</span>
+</a>
+<a class="flex flex-col items-center justify-center text-zinc-400 dark:text-zinc-600" href="#">
+<span class="material-symbols-outlined" data-icon="bar_chart">bar_chart</span>
+<span class="text-[10px] uppercase tracking-widest font-bold mt-1">Reports</span>
+</a>
+<a class="flex flex-col items-center justify-center text-zinc-400 dark:text-zinc-600" href="#">
+<span class="material-symbols-outlined" data-icon="menu">menu</span>
+<span class="text-[10px] uppercase tracking-widest font-bold mt-1">More</span>
+</a>
+</nav>
+</body></html>

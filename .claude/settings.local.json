@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx create-next-app@latest . --typescript --tailwind --eslint --app --src-dir --import-alias \"@/*\" --use-npm --no-turbopack)",
+      "Bash(cd /tmp)",
+      "Bash(npx create-next-app@latest parissa-pos --typescript --tailwind --eslint --app --src-dir --import-alias \"@/*\" --use-npm --no-turbopack)",
+      "Bash(cp -r /tmp/parissa-pos/src .)",
+      "Bash(cp -r /tmp/parissa-pos/public/* public/)",
+      "Bash(cp /tmp/parissa-pos/package.json .)",
+      "Bash(cp /tmp/parissa-pos/tsconfig.json .)",
+      "Bash(cp /tmp/parissa-pos/next.config.ts .)",
+      "Bash(rm .gitignore_next)",
+      "Bash(npm install:*)",
+      "Bash(npx shadcn@latest init -d --base-color zinc --css-variables)",
+      "Bash(npx shadcn@latest init -d)"
+    ]
+  }
+}
