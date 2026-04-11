@@ -4,6 +4,22 @@ Semua perubahan penting pada proyek ini didokumentasikan di file ini.
 
 ---
 
+## [v0.5.1] — 2026-04-11
+
+### Diubah
+- Regenerasi `002_seed_data.sql` menggunakan data asli dari Airtable CSV export (bukan data sample)
+  - 6 produk dengan harga jual asli (Pannacotta Rp20.000, Fresh Creamy Rp28.000)
+  - 18 bahan baku dengan harga, supplier, dan kemasan persis dari Airtable
+  - 51 resep/BOM lengkap dengan quantity_per_batch dan pcs_per_batch sesuai CSV
+  - 53 transaksi penjualan asli (30 Jan – 2 Mar 2026) termasuk nama pelanggan, topping, status bayar
+  - 18 data pembelian baseline bahan baku
+- Trigger management pada seed: disable stock triggers saat insert, re-enable setelah selesai
+
+### Diperbaiki
+- Tambahkan `/data/` ke `.gitignore` — folder CSV Airtable berisi data pelanggan asli (privasi)
+
+---
+
 ## [v0.5.0] — 2026-04-11
 
 ### Ditambahkan

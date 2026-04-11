@@ -1,6 +1,6 @@
 // ============================================================
 // File: src/app/[locale]/layout.tsx
-// Versi: v0.5.0
+// Versi: v0.5.1
 // Deskripsi: Layout per locale — provider i18n + query client + toaster
 //            AppShell diatur di masing-masing route group
 // ============================================================

@@ -1,224 +1,256 @@
 -- ============================================================
 -- File: supabase/migrations/002_seed_data.sql
--- Versi: v0.5.0
--- Deskripsi: Seed data migrasi dari Airtable Parissa
---            6 produk, 18 bahan baku, resep/BOM, contoh transaksi, batch
---            Data berdasarkan PRD Appendix — data aktual bisnis Parissa
+-- Versi: v0.5.1
+-- Deskripsi: Seed data ASLI dari Airtable Parissa
+--            Sumber: CSV export 9 April 2026
+--            53 transaksi, 6 produk, 18 bahan, 6 resep, 18 pembelian
 -- ============================================================
 
 -- ======================
+-- NONAKTIFKAN TRIGGER stok sementara
+-- (Stok diatur manual, tidak perlu auto-deduct/add saat seed)
+-- ======================
+ALTER TABLE sales DISABLE TRIGGER trg_deduct_stock_on_sale;
+ALTER TABLE purchases DISABLE TRIGGER trg_update_stock_on_purchase;
+
+-- ======================
 -- PRODUK (6 produk aktif)
--- Harga dan cost sesuai data Airtable
+-- Data dari: Finished Products-Grid view.csv
 -- ======================
 INSERT INTO products (id, name, selling_price, bundling_price, is_bundling, is_active) VALUES
-  ('a1000000-0000-0000-0000-000000000001', 'Vanilla Pannacotta',       20000.00, NULL,     false, true),
-  ('a1000000-0000-0000-0000-000000000002', 'Earl Grey Pannacotta',     20000.00, NULL,     false, true),
-  ('a1000000-0000-0000-0000-000000000003', 'Bundling Pannacotta 3pcs', 50000.00, 50000.00, true,  true),
-  ('a1000000-0000-0000-0000-000000000004', 'Fresh Creamy Earl Grey',   28000.00, NULL,     false, true),
-  ('a1000000-0000-0000-0000-000000000005', 'Fresh Creamy Matcha',      28000.00, NULL,     false, true),
-  ('a1000000-0000-0000-0000-000000000006', 'Fresh Creamy Lotus',       28000.00, NULL,     false, true);
+  ('a1000000-0000-0000-0000-000000000001', 'Vanilla Pannacotta',       20000.00,   NULL,     false, true),
+  ('a1000000-0000-0000-0000-000000000002', 'Earl Grey Pannacotta',     20000.00,   NULL,     false, true),
+  ('a1000000-0000-0000-0000-000000000003', 'Bundling Pannacotta',      16666.67,   16666.67, true,  true),
+  ('a1000000-0000-0000-0000-000000000004', 'Fresh Creamy Lotus',       28000.00,   NULL,     false, true),
+  ('a1000000-0000-0000-0000-000000000005', 'Fresh Creamy Earl Grey',   28000.00,   NULL,     false, true),
+  ('a1000000-0000-0000-0000-000000000006', 'Fresh Creamy Matcha',      28000.00,   NULL,     false, true);
 
 -- ======================
 -- BAHAN BAKU (18 ingredients)
--- Data umum bahan dessert dan minuman premium
--- quantity_available = stok awal, minimum_stock_level = batas minimum
+-- Data dari: Ingredients-Grid view.csv
+-- Semua harga, supplier, packaging size ASLI dari Airtable
 -- ======================
 INSERT INTO ingredients (id, name, purchase_unit, supplier, purchase_price, packaging_size, minimum_stock_level, quantity_available) VALUES
-  -- Bahan dasar Pannacotta
-  ('b1000000-0000-0000-0000-000000000001', 'Susu Full Cream',     'liter',  'Supplier A', 28000.00,  1.0000, 5.0000, 15.0000),
-  ('b1000000-0000-0000-0000-000000000002', 'Whipping Cream',      'liter',  'Supplier A', 65000.00,  1.0000, 3.0000, 8.0000),
-  ('b1000000-0000-0000-0000-000000000003', 'Gula Pasir',          'kg',     'Supplier B', 18000.00,  1.0000, 5.0000, 20.0000),
-  ('b1000000-0000-0000-0000-000000000004', 'Gelatin Bubuk',       'pack',   'Supplier C', 35000.00,  0.1000, 2.0000, 10.0000),
-  ('b1000000-0000-0000-0000-000000000005', 'Vanilla Extract',     'botol',  'Supplier C', 45000.00,  0.1000, 1.0000, 5.0000),
-  ('b1000000-0000-0000-0000-000000000006', 'Earl Grey Tea',       'pack',   'Supplier D', 55000.00,  0.1000, 2.0000, 8.0000),
-
-  -- Bahan topping/sauce
-  ('b1000000-0000-0000-0000-000000000007', 'Caramel Sauce',       'botol',  'Supplier C', 42000.00,  0.5000, 2.0000, 6.0000),
-  ('b1000000-0000-0000-0000-000000000008', 'Chocolate Sauce',     'botol',  'Supplier C', 38000.00,  0.5000, 2.0000, 6.0000),
-  ('b1000000-0000-0000-0000-000000000009', 'Fresh Strawberry',    'kg',     'Supplier E', 45000.00,  1.0000, 1.0000, 3.0000),
+  -- Bahan Pannacotta
+  ('b1000000-0000-0000-0000-000000000001', 'Milk (Pannacotta)',            'ml',  'Ultramilk UHT Full Cream', 40000.00, 2000.0000, 2000.0000, 10000.0000),
+  ('b1000000-0000-0000-0000-000000000002', 'Whipping Cream (Pannacotta)',  'ml',  'Anchor',                   78000.00, 1100.0000, 1100.0000,  5500.0000),
+  ('b1000000-0000-0000-0000-000000000003', 'Cream (Pannacotta)',           'ml',  'Vivo',                    130000.00, 1000.0000, 1000.0000,  5000.0000),
+  ('b1000000-0000-0000-0000-000000000004', 'Vanila',                      'g',   NULL,                       10400.00,  100.0000,   40.0000,   200.0000),
+  ('b1000000-0000-0000-0000-000000000005', 'Gelatine',                    'g',   NULL,                       28000.00,  100.0000,   60.0000,   300.0000),
+  ('b1000000-0000-0000-0000-000000000006', 'Gula',                        'g',   NULL,                       16000.00,  500.0000,   40.0000,   500.0000),
+  ('b1000000-0000-0000-0000-000000000007', 'Earl Grey (Pannacotta)',       'g',   'Twinning',                100000.00,  100.0000,   30.0000,   200.0000),
+  ('b1000000-0000-0000-0000-000000000008', 'Toping',                      'pcs', 'Lotus Biscoff, Strawberry, Oreo', 72160.00, 44.0000, 44.0000, 176.0000),
+  ('b1000000-0000-0000-0000-000000000009', 'Stiker (Pannacotta)',          'pcs', NULL,                       44000.00,  44.0000,   44.0000,   176.0000),
+  ('b1000000-0000-0000-0000-000000000010', 'Packing',                     'pcs', 'Cup + Spoon',              66000.00,  44.0000,   44.0000,   176.0000),
 
   -- Bahan Fresh Creamy
-  ('b1000000-0000-0000-0000-000000000010', 'Susu UHT',            'liter',  'Supplier A', 18000.00,  1.0000, 10.0000, 25.0000),
-  ('b1000000-0000-0000-0000-000000000011', 'Matcha Powder',       'pack',   'Supplier D', 85000.00,  0.1000, 1.0000, 4.0000),
-  ('b1000000-0000-0000-0000-000000000012', 'Lotus Biscoff Spread','jar',    'Supplier D', 95000.00,  0.4000, 1.0000, 3.0000),
-  ('b1000000-0000-0000-0000-000000000013', 'Es Batu',             'pack',   'Supplier F', 10000.00,  5.0000, 5.0000, 20.0000),
-  ('b1000000-0000-0000-0000-000000000014', 'Gula Cair',           'botol',  'Supplier B', 25000.00,  0.5000, 3.0000, 10.0000),
-
-  -- Packaging
-  ('b1000000-0000-0000-0000-000000000015', 'Cup Pannacotta 150ml','pack',   'Supplier G', 35000.00, 50.0000, 50.0000, 200.0000),
-  ('b1000000-0000-0000-0000-000000000016', 'Cup Minuman 500ml',   'pack',   'Supplier G', 45000.00, 50.0000, 50.0000, 150.0000),
-  ('b1000000-0000-0000-0000-000000000017', 'Tutup Cup',           'pack',   'Supplier G', 20000.00, 50.0000, 50.0000, 200.0000),
-  ('b1000000-0000-0000-0000-000000000018', 'Sedotan',             'pack',   'Supplier G', 15000.00, 50.0000, 50.0000, 200.0000);
+  ('b1000000-0000-0000-0000-000000000011', 'Milk (Fresh Creamy)',          'ml',  'Green Field UHT',          24800.00,  950.0000,  160.0000,  1900.0000),
+  ('b1000000-0000-0000-0000-000000000012', 'Cream (Fresh Creamy) Vivo',    'ml',  'Vivo',                     70473.00, 1100.0000,   30.0000,   550.0000),
+  ('b1000000-0000-0000-0000-000000000013', 'Cream (Fresh Creamy) Rich Gold','ml', 'Rich Gold',                67497.00,  907.0000,   30.0000,   454.0000),
+  ('b1000000-0000-0000-0000-000000000014', 'Earl Grey (Fresh Creamy)',      'g',  'Twinning',                100000.00,  100.0000,    4.0000,   100.0000),
+  ('b1000000-0000-0000-0000-000000000015', 'Lotus Crumbs',                 'g',  'Lotus',                    54150.00,  250.0000,   30.0000,   250.0000),
+  ('b1000000-0000-0000-0000-000000000016', 'Matcha',                       'g',  NULL,                      250000.00,  250.0000,    5.0000,   125.0000),
+  ('b1000000-0000-0000-0000-000000000017', 'Bottle',                       'pcs', NULL,                      21450.00,   20.0000,   10.0000,    60.0000),
+  ('b1000000-0000-0000-0000-000000000018', 'Sticker (Fresh Creamy)',        'pcs', NULL,                      44000.00,   44.0000,   10.0000,    88.0000);
 
 -- ======================
 -- RESEP / BOM (Recipe per produk)
--- quantity_per_batch = jumlah bahan per batch
--- pcs_per_batch = jumlah porsi dari 1 batch
--- Cost per unit dihitung oleh fungsi calculate_product_cost()
+-- Data dari: Recipe_BOM-Grid view.csv + Ingredients-Grid view.csv
+-- quantity_per_batch = jumlah bahan per 1 batch produksi
+-- pcs_per_batch = jumlah porsi yang dihasilkan per batch
 -- ======================
 
--- Vanilla Pannacotta — 1 batch = 10 pcs
+-- Recipe 1: Vanilla Pannacotta — 44 pcs per batch
+-- Total batch cost = Rp 452.400, cost per unit = Rp 10.281,82
 INSERT INTO recipes (product_id, ingredient_id, quantity_per_batch, pcs_per_batch) VALUES
-  ('a1000000-0000-0000-0000-000000000001', 'b1000000-0000-0000-0000-000000000001', 1.0000, 10),  -- Susu 1 liter
-  ('a1000000-0000-0000-0000-000000000001', 'b1000000-0000-0000-0000-000000000002', 0.5000, 10),  -- Cream 0.5 liter
-  ('a1000000-0000-0000-0000-000000000001', 'b1000000-0000-0000-0000-000000000003', 0.2000, 10),  -- Gula 200g
-  ('a1000000-0000-0000-0000-000000000001', 'b1000000-0000-0000-0000-000000000004', 0.0200, 10),  -- Gelatin 20g
-  ('a1000000-0000-0000-0000-000000000001', 'b1000000-0000-0000-0000-000000000005', 0.0100, 10),  -- Vanilla 10ml
-  ('a1000000-0000-0000-0000-000000000001', 'b1000000-0000-0000-0000-000000000015', 10.0000, 10); -- Cup 10 pcs
+  ('a1000000-0000-0000-0000-000000000001', 'b1000000-0000-0000-0000-000000000001', 2000.0000, 44),  -- Milk 2000ml
+  ('a1000000-0000-0000-0000-000000000001', 'b1000000-0000-0000-0000-000000000002', 1100.0000, 44),  -- Whipping Cream 1100ml
+  ('a1000000-0000-0000-0000-000000000001', 'b1000000-0000-0000-0000-000000000003', 1000.0000, 44),  -- Cream Vivo 1000ml
+  ('a1000000-0000-0000-0000-000000000001', 'b1000000-0000-0000-0000-000000000004',   40.0000, 44),  -- Vanila 40g
+  ('a1000000-0000-0000-0000-000000000001', 'b1000000-0000-0000-0000-000000000005',   60.0000, 44),  -- Gelatine 60g
+  ('a1000000-0000-0000-0000-000000000001', 'b1000000-0000-0000-0000-000000000006',   40.0000, 44),  -- Gula 40g
+  ('a1000000-0000-0000-0000-000000000001', 'b1000000-0000-0000-0000-000000000008',   44.0000, 44),  -- Toping 44 pcs
+  ('a1000000-0000-0000-0000-000000000001', 'b1000000-0000-0000-0000-000000000009',   44.0000, 44),  -- Stiker 44 pcs
+  ('a1000000-0000-0000-0000-000000000001', 'b1000000-0000-0000-0000-000000000010',   44.0000, 44);  -- Packing 44 pcs
 
--- Earl Grey Pannacotta — 1 batch = 10 pcs
+-- Recipe 2: Earl Grey Pannacotta — 39 pcs per batch
+-- Total batch cost = Rp 478.240, cost per unit = Rp 12.262,56
 INSERT INTO recipes (product_id, ingredient_id, quantity_per_batch, pcs_per_batch) VALUES
-  ('a1000000-0000-0000-0000-000000000002', 'b1000000-0000-0000-0000-000000000001', 1.0000, 10),
-  ('a1000000-0000-0000-0000-000000000002', 'b1000000-0000-0000-0000-000000000002', 0.5000, 10),
-  ('a1000000-0000-0000-0000-000000000002', 'b1000000-0000-0000-0000-000000000003', 0.2000, 10),
-  ('a1000000-0000-0000-0000-000000000002', 'b1000000-0000-0000-0000-000000000004', 0.0200, 10),
-  ('a1000000-0000-0000-0000-000000000002', 'b1000000-0000-0000-0000-000000000006', 0.0300, 10),  -- Earl Grey Tea 30g
-  ('a1000000-0000-0000-0000-000000000002', 'b1000000-0000-0000-0000-000000000015', 10.0000, 10);
+  ('a1000000-0000-0000-0000-000000000002', 'b1000000-0000-0000-0000-000000000001', 2000.0000, 39),  -- Milk 2000ml
+  ('a1000000-0000-0000-0000-000000000002', 'b1000000-0000-0000-0000-000000000002', 1100.0000, 39),  -- Whipping Cream 1100ml
+  ('a1000000-0000-0000-0000-000000000002', 'b1000000-0000-0000-0000-000000000003', 1000.0000, 39),  -- Cream Vivo 1000ml
+  ('a1000000-0000-0000-0000-000000000002', 'b1000000-0000-0000-0000-000000000005',   60.0000, 39),  -- Gelatine 60g
+  ('a1000000-0000-0000-0000-000000000002', 'b1000000-0000-0000-0000-000000000006',   40.0000, 39),  -- Gula 40g
+  ('a1000000-0000-0000-0000-000000000002', 'b1000000-0000-0000-0000-000000000007',   30.0000, 39),  -- Earl Grey 30g
+  ('a1000000-0000-0000-0000-000000000002', 'b1000000-0000-0000-0000-000000000008',   44.0000, 39),  -- Toping 44 pcs
+  ('a1000000-0000-0000-0000-000000000002', 'b1000000-0000-0000-0000-000000000009',   44.0000, 39),  -- Stiker 44 pcs
+  ('a1000000-0000-0000-0000-000000000002', 'b1000000-0000-0000-0000-000000000010',   44.0000, 39);  -- Packing 44 pcs
 
--- Bundling 3pcs — menggunakan resep Vanilla Pannacotta (alias, cost = 3x per-pcs)
+-- Recipe 3: Bundling Pannacotta — 39 pcs per batch (same BOM as Earl Grey)
+-- Cost per unit = Rp 12.262,56 (sama dengan Earl Grey)
 INSERT INTO recipes (product_id, ingredient_id, quantity_per_batch, pcs_per_batch) VALUES
-  ('a1000000-0000-0000-0000-000000000003', 'b1000000-0000-0000-0000-000000000001', 1.0000, 10),
-  ('a1000000-0000-0000-0000-000000000003', 'b1000000-0000-0000-0000-000000000002', 0.5000, 10),
-  ('a1000000-0000-0000-0000-000000000003', 'b1000000-0000-0000-0000-000000000003', 0.2000, 10),
-  ('a1000000-0000-0000-0000-000000000003', 'b1000000-0000-0000-0000-000000000004', 0.0200, 10),
-  ('a1000000-0000-0000-0000-000000000003', 'b1000000-0000-0000-0000-000000000006', 0.0300, 10),
-  ('a1000000-0000-0000-0000-000000000003', 'b1000000-0000-0000-0000-000000000015', 10.0000, 10);
+  ('a1000000-0000-0000-0000-000000000003', 'b1000000-0000-0000-0000-000000000001', 2000.0000, 39),
+  ('a1000000-0000-0000-0000-000000000003', 'b1000000-0000-0000-0000-000000000002', 1100.0000, 39),
+  ('a1000000-0000-0000-0000-000000000003', 'b1000000-0000-0000-0000-000000000003', 1000.0000, 39),
+  ('a1000000-0000-0000-0000-000000000003', 'b1000000-0000-0000-0000-000000000005',   60.0000, 39),
+  ('a1000000-0000-0000-0000-000000000003', 'b1000000-0000-0000-0000-000000000006',   40.0000, 39),
+  ('a1000000-0000-0000-0000-000000000003', 'b1000000-0000-0000-0000-000000000007',   30.0000, 39),
+  ('a1000000-0000-0000-0000-000000000003', 'b1000000-0000-0000-0000-000000000008',   44.0000, 39),
+  ('a1000000-0000-0000-0000-000000000003', 'b1000000-0000-0000-0000-000000000009',   44.0000, 39),
+  ('a1000000-0000-0000-0000-000000000003', 'b1000000-0000-0000-0000-000000000010',   44.0000, 39);
 
--- Fresh Creamy Earl Grey — 1 batch = 8 pcs
+-- Recipe 4: Fresh Creamy Lotus — 1 pcs per batch
+-- Cost per unit = Rp 16.901,87
 INSERT INTO recipes (product_id, ingredient_id, quantity_per_batch, pcs_per_batch) VALUES
-  ('a1000000-0000-0000-0000-000000000004', 'b1000000-0000-0000-0000-000000000010', 2.0000, 8),  -- Susu UHT 2 liter
-  ('a1000000-0000-0000-0000-000000000004', 'b1000000-0000-0000-0000-000000000002', 0.5000, 8),  -- Cream 0.5 liter
-  ('a1000000-0000-0000-0000-000000000004', 'b1000000-0000-0000-0000-000000000006', 0.0400, 8),  -- Earl Grey 40g
-  ('a1000000-0000-0000-0000-000000000004', 'b1000000-0000-0000-0000-000000000014', 0.2000, 8),  -- Gula Cair 200ml
-  ('a1000000-0000-0000-0000-000000000004', 'b1000000-0000-0000-0000-000000000013', 8.0000, 8),  -- Es Batu 8 pack
-  ('a1000000-0000-0000-0000-000000000004', 'b1000000-0000-0000-0000-000000000016', 8.0000, 8);  -- Cup Minuman 8 pcs
+  ('a1000000-0000-0000-0000-000000000004', 'b1000000-0000-0000-0000-000000000011', 160.0000, 1),  -- Milk FC 160ml
+  ('a1000000-0000-0000-0000-000000000004', 'b1000000-0000-0000-0000-000000000012',  30.0000, 1),  -- Cream Vivo 30ml
+  ('a1000000-0000-0000-0000-000000000004', 'b1000000-0000-0000-0000-000000000013',  30.0000, 1),  -- Cream Rich Gold 30ml
+  ('a1000000-0000-0000-0000-000000000004', 'b1000000-0000-0000-0000-000000000015',  30.0000, 1),  -- Lotus Crumbs 30g
+  ('a1000000-0000-0000-0000-000000000004', 'b1000000-0000-0000-0000-000000000017',   1.0000, 1),  -- Bottle 1 pcs
+  ('a1000000-0000-0000-0000-000000000004', 'b1000000-0000-0000-0000-000000000018',   1.0000, 1);  -- Sticker 1 pcs
 
--- Fresh Creamy Matcha — 1 batch = 8 pcs
+-- Recipe 5: Fresh Creamy Earl Grey — 1 pcs per batch
+-- Cost per unit = Rp 14.403,87
 INSERT INTO recipes (product_id, ingredient_id, quantity_per_batch, pcs_per_batch) VALUES
-  ('a1000000-0000-0000-0000-000000000005', 'b1000000-0000-0000-0000-000000000010', 2.0000, 8),
-  ('a1000000-0000-0000-0000-000000000005', 'b1000000-0000-0000-0000-000000000002', 0.5000, 8),
-  ('a1000000-0000-0000-0000-000000000005', 'b1000000-0000-0000-0000-000000000011', 0.0400, 8),  -- Matcha 40g
-  ('a1000000-0000-0000-0000-000000000005', 'b1000000-0000-0000-0000-000000000014', 0.2000, 8),
-  ('a1000000-0000-0000-0000-000000000005', 'b1000000-0000-0000-0000-000000000013', 8.0000, 8),
-  ('a1000000-0000-0000-0000-000000000005', 'b1000000-0000-0000-0000-000000000016', 8.0000, 8);
+  ('a1000000-0000-0000-0000-000000000005', 'b1000000-0000-0000-0000-000000000011', 160.0000, 1),  -- Milk FC 160ml
+  ('a1000000-0000-0000-0000-000000000005', 'b1000000-0000-0000-0000-000000000012',  30.0000, 1),  -- Cream Vivo 30ml
+  ('a1000000-0000-0000-0000-000000000005', 'b1000000-0000-0000-0000-000000000013',  30.0000, 1),  -- Cream Rich Gold 30ml
+  ('a1000000-0000-0000-0000-000000000005', 'b1000000-0000-0000-0000-000000000014',   4.0000, 1),  -- Earl Grey FC 4g
+  ('a1000000-0000-0000-0000-000000000005', 'b1000000-0000-0000-0000-000000000017',   1.0000, 1),  -- Bottle 1 pcs
+  ('a1000000-0000-0000-0000-000000000005', 'b1000000-0000-0000-0000-000000000018',   1.0000, 1);  -- Sticker 1 pcs
 
--- Fresh Creamy Lotus — 1 batch = 8 pcs
+-- Recipe 6: Fresh Creamy Matcha — 1 pcs per batch
+-- Cost per unit = Rp 15.403,87
 INSERT INTO recipes (product_id, ingredient_id, quantity_per_batch, pcs_per_batch) VALUES
-  ('a1000000-0000-0000-0000-000000000006', 'b1000000-0000-0000-0000-000000000010', 2.0000, 8),
-  ('a1000000-0000-0000-0000-000000000006', 'b1000000-0000-0000-0000-000000000002', 0.5000, 8),
-  ('a1000000-0000-0000-0000-000000000006', 'b1000000-0000-0000-0000-000000000012', 0.2000, 8),  -- Lotus Spread 200g
-  ('a1000000-0000-0000-0000-000000000006', 'b1000000-0000-0000-0000-000000000014', 0.2000, 8),
-  ('a1000000-0000-0000-0000-000000000006', 'b1000000-0000-0000-0000-000000000013', 8.0000, 8),
-  ('a1000000-0000-0000-0000-000000000006', 'b1000000-0000-0000-0000-000000000016', 8.0000, 8);
+  ('a1000000-0000-0000-0000-000000000006', 'b1000000-0000-0000-0000-000000000011', 160.0000, 1),  -- Milk FC 160ml
+  ('a1000000-0000-0000-0000-000000000006', 'b1000000-0000-0000-0000-000000000012',  30.0000, 1),  -- Cream Vivo 30ml
+  ('a1000000-0000-0000-0000-000000000006', 'b1000000-0000-0000-0000-000000000013',  30.0000, 1),  -- Cream Rich Gold 30ml
+  ('a1000000-0000-0000-0000-000000000006', 'b1000000-0000-0000-0000-000000000016',   5.0000, 1),  -- Matcha 5g
+  ('a1000000-0000-0000-0000-000000000006', 'b1000000-0000-0000-0000-000000000017',   1.0000, 1),  -- Bottle 1 pcs
+  ('a1000000-0000-0000-0000-000000000006', 'b1000000-0000-0000-0000-000000000018',   1.0000, 1);  -- Sticker 1 pcs
 
 -- ======================
--- CONTOH TRANSAKSI PENJUALAN (sample dari 54 transaksi)
--- Catatan: trigger auto-hitung profit, auto-kurangi stok, auto-upsert customer
--- Data representatif untuk testing dashboard dan laporan
+-- TRANSAKSI PENJUALAN (53 transaksi asli)
+-- Data dari: Log-Sales-Grid view.csv
+-- Trigger trg_calculate_profit AKTIF — auto-generate profit_calculations
+-- Trigger trg_upsert_customer AKTIF — auto-generate customers
+-- Trigger trg_deduct_stock_on_sale NONAKTIF — stok diatur manual
 -- ======================
-INSERT INTO sales (date, customer_name, product_id, amount, is_bundling, sale_price, payment_status, sale_type) VALUES
-  -- Minggu 1 — Maret 2026
-  ('2026-03-01', 'Rina',     'a1000000-0000-0000-0000-000000000001', 2, false, 40000.00,  'Sudah',  'Direct'),
-  ('2026-03-01', 'Budi',     'a1000000-0000-0000-0000-000000000004', 1, false, 28000.00,  'Sudah',  'Direct'),
-  ('2026-03-02', 'Sari',     'a1000000-0000-0000-0000-000000000003', 1, true,  50000.00,  'Sudah',  'Direct'),
-  ('2026-03-02', 'Andi',     'a1000000-0000-0000-0000-000000000002', 3, false, 60000.00,  'Sudah',  'Direct'),
-  ('2026-03-03', 'Maya',     'a1000000-0000-0000-0000-000000000005', 2, false, 56000.00,  'Sudah',  'Direct'),
-  ('2026-03-03', 'Rina',     'a1000000-0000-0000-0000-000000000001', 1, false, 20000.00,  'Belum',  'Direct'),
-  ('2026-03-04', 'Dedi',     'a1000000-0000-0000-0000-000000000006', 1, false, 28000.00,  'Sudah',  'Direct'),
-  ('2026-03-04', 'Lisa',     'a1000000-0000-0000-0000-000000000003', 2, true,  100000.00, 'Sudah',  'Direct'),
-  ('2026-03-05', 'Tono',     'a1000000-0000-0000-0000-000000000004', 2, false, 56000.00,  'Sudah',  'Direct'),
-  ('2026-03-05', 'Nina',     'a1000000-0000-0000-0000-000000000001', 3, false, 60000.00,  'Belum',  'Direct'),
 
-  -- Minggu 2
-  ('2026-03-06', 'Adi',      'a1000000-0000-0000-0000-000000000002', 1, false, 20000.00,  'Sudah',  'Direct'),
-  ('2026-03-07', 'Wati',     'a1000000-0000-0000-0000-000000000003', 1, true,  50000.00,  'Sudah',  'Direct'),
-  ('2026-03-07', 'Rizky',    'a1000000-0000-0000-0000-000000000005', 1, false, 28000.00,  'Sudah',  'Direct'),
-  ('2026-03-08', 'Fitri',    'a1000000-0000-0000-0000-000000000001', 2, false, 40000.00,  'Sudah',  'Direct'),
-  ('2026-03-08', 'Budi',     'a1000000-0000-0000-0000-000000000006', 2, false, 56000.00,  'Sudah',  'Direct'),
-  ('2026-03-09', 'Sari',     'a1000000-0000-0000-0000-000000000004', 1, false, 28000.00,  'Belum',  'Direct'),
-  ('2026-03-09', 'Dewi',     'a1000000-0000-0000-0000-000000000003', 1, true,  50000.00,  'Sudah',  'Direct'),
-  ('2026-03-10', 'Rina',     'a1000000-0000-0000-0000-000000000001', 1, false, 20000.00,  'Sudah',  'Direct'),
-  ('2026-03-10', 'Joko',     'a1000000-0000-0000-0000-000000000002', 2, false, 40000.00,  'Sudah',  'Direct'),
-  ('2026-03-11', 'Maya',     'a1000000-0000-0000-0000-000000000005', 1, false, 28000.00,  'Sudah',  'Direct'),
+-- 30 Januari 2026 (8 transaksi)
+INSERT INTO sales (date, customer_name, product_id, amount, is_bundling, menu_detail, topping, sale_price, payment_status, sale_type) VALUES
+  ('2026-01-30', 'Boromeus',      'a1000000-0000-0000-0000-000000000001', 2, false, '2 Vanilla',                '2 Lotus',                         40000.00,  'Sudah', 'Direct'),
+  ('2026-01-30', 'Boromeus',      'a1000000-0000-0000-0000-000000000002', 2, false, '2 Earl Grey',              '1 Oreo, 1 Strawberry',            40000.00,  'Sudah', 'Direct'),
+  ('2026-01-30', 'Bu Clau',       'a1000000-0000-0000-0000-000000000001', 1, false, '1 Vanilla',                '1 Strawberry',                    20000.00,  'Sudah', 'Direct'),
+  ('2026-01-30', 'Bu Sabrina',    'a1000000-0000-0000-0000-000000000001', 1, false, '1 Vanilla',                '1 Strawberry',                    20000.00,  'Sudah', 'Direct'),
+  ('2026-01-30', 'Bu Sabrina',    'a1000000-0000-0000-0000-000000000002', 1, false, '1 Earl Grey',              '1 Strawberry',                    20000.00,  'Sudah', 'Direct'),
+  ('2026-01-30', 'Pak Armien',    'a1000000-0000-0000-0000-000000000003', 6, true,  '4 Vanilla, 2 Earl Grey',   '2 Lotus, 2 Oreo, 2 Strawberry',  100000.02, 'Sudah', 'Direct'),
+  ('2026-01-30', 'Tepi BPK - 1', 'a1000000-0000-0000-0000-000000000003', 6, true,  '4 Vanilla, 2 Earl Grey',   '2 Lotus, 2 Oreo, 2 Strawberry',  100000.02, 'Sudah', 'Direct'),
+  ('2026-01-30', 'Tepi BPK - 2', 'a1000000-0000-0000-0000-000000000003', 6, true,  '4 Vanilla, 2 Earl Grey',   '2 Lotus, 2 Oreo, 2 Strawberry',  100000.02, 'Sudah', 'Direct');
 
-  -- Minggu 3
-  ('2026-03-12', 'Andi',     'a1000000-0000-0000-0000-000000000004', 3, false, 84000.00,  'Sudah',  'Direct'),
-  ('2026-03-12', 'Tono',     'a1000000-0000-0000-0000-000000000003', 2, true,  100000.00, 'Sudah',  'Direct'),
-  ('2026-03-13', 'Lisa',     'a1000000-0000-0000-0000-000000000001', 1, false, 20000.00,  'Sudah',  'Direct'),
-  ('2026-03-13', 'Wati',     'a1000000-0000-0000-0000-000000000006', 1, false, 28000.00,  'Belum',  'Direct'),
-  ('2026-03-14', 'Nina',     'a1000000-0000-0000-0000-000000000002', 1, false, 20000.00,  'Sudah',  'Direct'),
-  ('2026-03-14', 'Rizky',    'a1000000-0000-0000-0000-000000000001', 2, false, 40000.00,  'Sudah',  'Direct'),
-  ('2026-03-15', 'Dedi',     'a1000000-0000-0000-0000-000000000003', 1, true,  50000.00,  'Sudah',  'Direct'),
-  ('2026-03-15', 'Fitri',    'a1000000-0000-0000-0000-000000000005', 2, false, 56000.00,  'Sudah',  'Direct'),
-  ('2026-03-16', 'Adi',      'a1000000-0000-0000-0000-000000000004', 1, false, 28000.00,  'Sudah',  'Direct'),
-  ('2026-03-16', 'Sari',     'a1000000-0000-0000-0000-000000000001', 1, false, 20000.00,  'Sudah',  'Pre-order'),
+-- 31 Januari 2026 (1 transaksi)
+INSERT INTO sales (date, customer_name, product_id, amount, is_bundling, menu_detail, topping, sale_price, payment_status, sale_type) VALUES
+  ('2026-01-31', 'Damel',         'a1000000-0000-0000-0000-000000000003', 6, true,  '4 Vanilla, 2 Earl Grey',   '4 Lotus, 2 Butter Scotch',       100000.02, 'Sudah', 'Direct');
 
-  -- Minggu 4
-  ('2026-03-17', 'Dewi',     'a1000000-0000-0000-0000-000000000006', 1, false, 28000.00,  'Sudah',  'Direct'),
-  ('2026-03-17', 'Joko',     'a1000000-0000-0000-0000-000000000003', 1, true,  50000.00,  'Sudah',  'Direct'),
-  ('2026-03-18', 'Maya',     'a1000000-0000-0000-0000-000000000001', 1, false, 20000.00,  'Sudah',  'Direct'),
-  ('2026-03-18', 'Budi',     'a1000000-0000-0000-0000-000000000002', 1, false, 20000.00,  'Belum',  'Direct'),
-  ('2026-03-19', 'Rina',     'a1000000-0000-0000-0000-000000000004', 2, false, 56000.00,  'Sudah',  'Direct'),
-  ('2026-03-19', 'Andi',     'a1000000-0000-0000-0000-000000000005', 1, false, 28000.00,  'Sudah',  'Direct'),
-  ('2026-03-20', 'Lisa',     'a1000000-0000-0000-0000-000000000003', 1, true,  50000.00,  'Sudah',  'Direct'),
-  ('2026-03-20', 'Tono',     'a1000000-0000-0000-0000-000000000001', 2, false, 40000.00,  'Sudah',  'Direct'),
-  ('2026-03-21', 'Wati',     'a1000000-0000-0000-0000-000000000006', 2, false, 56000.00,  'Sudah',  'Direct'),
-  ('2026-03-21', 'Nina',     'a1000000-0000-0000-0000-000000000002', 1, false, 20000.00,  'Sudah',  'Direct'),
+-- 1 Februari 2026 (1 transaksi)
+INSERT INTO sales (date, customer_name, product_id, amount, is_bundling, menu_detail, topping, sale_price, payment_status, sale_type) VALUES
+  ('2026-02-01', 'Bu Iin',        'a1000000-0000-0000-0000-000000000003', 6, true,  '4 Vanilla, 2 Earl Grey',   '2 Lotus, 1 Oreo, 1 Strawberry, 2 Butter Scotch', 100000.02, 'Sudah', 'Direct');
 
-  -- Minggu 5 (akhir bulan)
-  ('2026-03-22', 'Rizky',    'a1000000-0000-0000-0000-000000000004', 1, false, 28000.00,  'Sudah',  'Direct'),
-  ('2026-03-22', 'Dedi',     'a1000000-0000-0000-0000-000000000001', 1, false, 20000.00,  'Belum',  'Direct'),
-  ('2026-03-23', 'Fitri',    'a1000000-0000-0000-0000-000000000003', 2, true,  100000.00, 'Sudah',  'Direct'),
-  ('2026-03-23', 'Adi',      'a1000000-0000-0000-0000-000000000005', 1, false, 28000.00,  'Sudah',  'Direct'),
-  ('2026-03-24', 'Sari',     'a1000000-0000-0000-0000-000000000002', 2, false, 40000.00,  'Sudah',  'Direct'),
-  ('2026-03-24', 'Dewi',     'a1000000-0000-0000-0000-000000000006', 1, false, 28000.00,  'Sudah',  'Direct'),
-  ('2026-03-25', 'Joko',     'a1000000-0000-0000-0000-000000000001', 3, false, 60000.00,  'Sudah',  'Direct'),
-  ('2026-03-25', 'Maya',     'a1000000-0000-0000-0000-000000000004', 1, false, 28000.00,  'Belum',  'Direct'),
-  ('2026-03-26', 'Budi',     'a1000000-0000-0000-0000-000000000003', 1, true,  50000.00,  'Sudah',  'Direct'),
-  ('2026-03-26', 'Rina',     'a1000000-0000-0000-0000-000000000005', 2, false, 56000.00,  'Sudah',  'Direct'),
-  ('2026-03-27', 'Andi',     'a1000000-0000-0000-0000-000000000001', 1, false, 20000.00,  'Sudah',  'Direct'),
-  ('2026-03-27', 'Tono',     'a1000000-0000-0000-0000-000000000006', 1, false, 28000.00,  'Sudah',  'Direct'),
-  ('2026-03-28', 'Lisa',     'a1000000-0000-0000-0000-000000000002', 1, false, 20000.00,  'Sudah',  'Direct'),
-  ('2026-03-28', 'Wati',     'a1000000-0000-0000-0000-000000000004', 2, false, 56000.00,  'Belum',  'Direct');
+-- 16 Februari 2026 (4 transaksi)
+INSERT INTO sales (date, customer_name, product_id, amount, is_bundling, menu_detail, topping, sale_price, payment_status, sale_type) VALUES
+  ('2026-02-16', 'Bu Aiza',       'a1000000-0000-0000-0000-000000000001', 2, false, '2 Vanilla',                '2 Lotus',                         40000.00,  'Sudah', 'Direct'),
+  ('2026-02-16', 'Bu Amanda',     'a1000000-0000-0000-0000-000000000003', 6, true,  '6 Vanilla',                '6 Lotus',                        100000.02, 'Sudah', 'Direct'),
+  ('2026-02-16', 'Bu Shabrina',   'a1000000-0000-0000-0000-000000000001', 2, false, '2 Vanilla',                '2 Lotus',                         40000.00,  'Sudah', 'Direct'),
+  ('2026-02-16', 'Bu Sri',        'a1000000-0000-0000-0000-000000000001', 2, false, '2 Vanilla',                '2 Lotus',                         40000.00,  'Sudah', 'Direct');
 
--- ======================
--- BATCH PRODUKSI (9 batch contoh)
--- Trigger auto-deduct stok bahan TIDAK aktif di seed ini
--- (stok sudah disesuaikan di tabel ingredients di atas)
--- ======================
-INSERT INTO batches (product_id, batch_number, batch_date, batch_quantity, expiration_date, status, notes) VALUES
-  ('a1000000-0000-0000-0000-000000000001', 'VP-2026-001', '2026-03-01', 10, '2026-03-04', 'Completed', 'Batch pertama Vanilla Pannacotta'),
-  ('a1000000-0000-0000-0000-000000000002', 'EP-2026-001', '2026-03-01', 10, '2026-03-04', 'Completed', 'Batch pertama Earl Grey Pannacotta'),
-  ('a1000000-0000-0000-0000-000000000001', 'VP-2026-002', '2026-03-05', 10, '2026-03-08', 'Completed', 'Batch kedua Vanilla'),
-  ('a1000000-0000-0000-0000-000000000004', 'FC-EG-001',   '2026-03-05',  8, '2026-03-07', 'Completed', 'Batch Fresh Creamy Earl Grey'),
-  ('a1000000-0000-0000-0000-000000000005', 'FC-MT-001',   '2026-03-08',  8, '2026-03-10', 'Completed', 'Batch Fresh Creamy Matcha'),
-  ('a1000000-0000-0000-0000-000000000001', 'VP-2026-003', '2026-03-12', 10, '2026-03-15', 'Completed', 'Batch ketiga Vanilla'),
-  ('a1000000-0000-0000-0000-000000000006', 'FC-LT-001',   '2026-03-12',  8, '2026-03-14', 'Completed', 'Batch Fresh Creamy Lotus'),
-  ('a1000000-0000-0000-0000-000000000002', 'EP-2026-002', '2026-03-18', 10, '2026-03-21', 'Completed', 'Batch kedua Earl Grey'),
-  ('a1000000-0000-0000-0000-000000000001', 'VP-2026-004', '2026-03-25', 10, '2026-03-28', 'Completed', 'Batch keempat Vanilla');
+-- 23 Februari 2026 (6 transaksi)
+INSERT INTO sales (date, customer_name, product_id, amount, is_bundling, menu_detail, topping, sale_price, payment_status, sale_type) VALUES
+  ('2026-02-23', 'Bu April',      'a1000000-0000-0000-0000-000000000003', 12, true, '6 Vanilla, 6 Earl Grey',   '4 Lotus, 4 Oreo, 4 Strawberry',  200000.04, 'Sudah', 'Direct'),
+  ('2026-02-23', 'Bu Nofha',      'a1000000-0000-0000-0000-000000000003', 6, true,  '6 Vanilla',                '3 Strawberry, 2 Oreo',            100000.02, 'Sudah', 'Direct'),
+  ('2026-02-23', 'Hanna',         'a1000000-0000-0000-0000-000000000001', 2, false, '2 Vanilla',                '1 Lotus, 1 Strawberry',           40000.00,  'Sudah', 'Direct'),
+  ('2026-02-23', 'Kayla',         'a1000000-0000-0000-0000-000000000001', 2, false, '2 Vanilla',                '1 Lotus, 1 Oreo',                 40000.00,  'Sudah', 'Direct'),
+  ('2026-02-23', 'Nisa',          'a1000000-0000-0000-0000-000000000001', 1, false, '1 Vanilla',                '1 Strawberry',                    20000.00,  'Sudah', 'Direct'),
+  ('2026-02-23', 'Zikha',         'a1000000-0000-0000-0000-000000000001', 2, false, '2 Vanilla',                '1 Lotus, 1 Oreo',                 40000.00,  'Sudah', 'Direct');
+
+-- 27 Februari 2026 (22 transaksi — termasuk 3 BELUM BAYAR dari Kacel)
+INSERT INTO sales (date, customer_name, product_id, amount, is_bundling, menu_detail, topping, sale_price, payment_status, sale_type) VALUES
+  ('2026-02-27', 'April',         'a1000000-0000-0000-0000-000000000004', 1, false, 'Fresh Creamy',             '1 Lotus',                         28000.00,  'Sudah', 'Direct'),
+  ('2026-02-27', 'Bu Iin',        'a1000000-0000-0000-0000-000000000003', 6, true,  '6 Vanilla',                '2 Lotus, 2 Oreo, 2 Strawberry',  100000.02, 'Sudah', 'Direct'),
+  ('2026-02-27', 'Bu Nofha',      'a1000000-0000-0000-0000-000000000003', 6, true,  '6 Vanilla',                '6 Oreo',                         100000.02, 'Sudah', 'Direct'),
+  ('2026-02-27', 'Dina',          'a1000000-0000-0000-0000-000000000003', 6, true,  '6 Vanilla',                '2 Lotus, 2 Oreo, 2 Strawberry',  100000.02, 'Sudah', 'Direct'),
+  ('2026-02-27', 'Elvi',          'a1000000-0000-0000-0000-000000000001', 1, false, '1 Vanilla',                '1 Oreo',                          20000.00,  'Sudah', 'Direct'),
+  ('2026-02-27', 'Gendra',        'a1000000-0000-0000-0000-000000000001', 1, false, '1 Vanilla',                '1 Oreo',                          20000.00,  'Sudah', 'Direct'),
+  ('2026-02-27', 'Iyus',          'a1000000-0000-0000-0000-000000000001', 2, false, '2 Vanilla',                '1 Lotus, 1 Strawberry',           40000.00,  'Sudah', 'Direct'),
+  ('2026-02-27', 'Iyus',          'a1000000-0000-0000-0000-000000000005', 1, false, 'Fresh Creamy',             '1 Earl Grey',                     28000.00,  'Sudah', 'Direct'),
+  ('2026-02-27', 'Kacel',         'a1000000-0000-0000-0000-000000000006', 3, false, 'Fresh Creamy',             '3 Matcha',                        84000.00,  'Belum', 'Direct'),
+  ('2026-02-27', 'Kacel',         'a1000000-0000-0000-0000-000000000005', 4, false, 'Fresh Creamy',             '4 Earl Grey',                    112000.00,  'Belum', 'Direct'),
+  ('2026-02-27', 'Kacel',         'a1000000-0000-0000-0000-000000000004', 3, false, 'Fresh Creamy',             '3 Lotus',                         84000.00,  'Belum', 'Direct'),
+  ('2026-02-27', 'Kitara',        'a1000000-0000-0000-0000-000000000003', 6, true,  '6 Vanilla',                '3 Lotus, 1 Oreo, 2 Strawberry',  100000.02, 'Sudah', 'Direct'),
+  ('2026-02-27', 'Kitara',        'a1000000-0000-0000-0000-000000000005', 1, false, 'Fresh Creamy',             '1 Earl Grey',                     28000.00,  'Sudah', 'Direct'),
+  ('2026-02-27', 'Nipa',          'a1000000-0000-0000-0000-000000000001', 3, false, '3 Vanilla',                '1 Lotus, 1 Oreo, 1 Strawberry',   60000.00,  'Sudah', 'Direct'),
+  ('2026-02-27', 'Nipa',          'a1000000-0000-0000-0000-000000000004', 1, false, 'Fresh Creamy',             '1 Lotus',                         28000.00,  'Sudah', 'Direct'),
+  ('2026-02-27', 'Nipa',          'a1000000-0000-0000-0000-000000000005', 1, false, 'Fresh Creamy',             '1 Earl Grey',                     28000.00,  'Sudah', 'Direct'),
+  ('2026-02-27', 'Nisa',          'a1000000-0000-0000-0000-000000000004', 1, false, 'Fresh Creamy',             '1 Lotus',                         28000.00,  'Sudah', 'Direct'),
+  ('2026-02-27', 'Nisa',          'a1000000-0000-0000-0000-000000000005', 1, false, 'Fresh Creamy',             '1 Earl Grey',                     28000.00,  'Sudah', 'Direct'),
+  ('2026-02-27', 'Peclaw',        'a1000000-0000-0000-0000-000000000001', 2, false, '2 Vanilla',                '1 Lotus, 1 Strawberry',           40000.00,  'Sudah', 'Direct'),
+  ('2026-02-27', 'Peclaw',        'a1000000-0000-0000-0000-000000000005', 1, false, 'Fresh Creamy',             '1 Earl Grey',                     28000.00,  'Sudah', 'Direct'),
+  ('2026-02-27', 'Sir Armien',    'a1000000-0000-0000-0000-000000000003', 6, true,  '6 Vanilla',                '2 Lotus, 2 Oreo, 2 Strawberry',  100000.02, 'Sudah', 'Direct'),
+  ('2026-02-27', 'Sir Armien',    'a1000000-0000-0000-0000-000000000005', 1, false, 'Fresh Creamy',             '1 Earl Grey',                     28000.00,  'Sudah', 'Direct');
+
+-- 2 Maret 2026 (11 transaksi)
+INSERT INTO sales (date, customer_name, product_id, amount, is_bundling, menu_detail, topping, sale_price, payment_status, sale_type) VALUES
+  ('2026-03-02', 'Aiza',          'a1000000-0000-0000-0000-000000000005', 1, false, 'Fresh Creamy',             '1 Earl Grey',                     28000.00,  'Sudah', 'Direct'),
+  ('2026-03-02', 'Alan',          'a1000000-0000-0000-0000-000000000004', 1, false, 'Fresh Creamy',             '1 Lotus',                         28000.00,  'Sudah', 'Direct'),
+  ('2026-03-02', 'Alea',          'a1000000-0000-0000-0000-000000000001', 2, false, '2 Vanilla',                '1 Lotus, 1 Strawberry',           40000.00,  'Sudah', 'Direct'),
+  ('2026-03-02', 'Bu Sari',       'a1000000-0000-0000-0000-000000000005', 1, false, 'Fresh Creamy',             '1 Earl Grey',                     28000.00,  'Sudah', 'Direct'),
+  ('2026-03-02', 'Bu Sari',       'a1000000-0000-0000-0000-000000000001', 1, false, '1 Vanilla',                '1 Lotus',                         20000.00,  'Sudah', 'Direct'),
+  ('2026-03-02', 'Choiria',       'a1000000-0000-0000-0000-000000000005', 1, false, 'Fresh Creamy',             '1 Earl Grey',                     28000.00,  'Sudah', 'Direct'),
+  ('2026-03-02', 'Dedew',         'a1000000-0000-0000-0000-000000000004', 1, false, 'Fresh Creamy',             '1 Lotus',                         28000.00,  'Sudah', 'Direct'),
+  ('2026-03-02', 'Dedew',         'a1000000-0000-0000-0000-000000000005', 1, false, 'Fresh Creamy',             '1 Earl Grey',                     28000.00,  'Sudah', 'Direct'),
+  ('2026-03-02', 'Rio',           'a1000000-0000-0000-0000-000000000005', 1, false, 'Fresh Creamy',             '1 Earl Grey',                     28000.00,  'Sudah', 'Direct'),
+  ('2026-03-02', 'Zikha',         'a1000000-0000-0000-0000-000000000005', 1, false, 'Fresh Creamy',             '1 Earl Grey',                     28000.00,  'Sudah', 'Direct'),
+  ('2026-03-02', 'Zikha',         'a1000000-0000-0000-0000-000000000003', 3, true,  '6 Vanilla',                '3 Lotus, 2 Oreo, 1 Strawberry',   50000.01,  'Sudah', 'Direct');
 
 -- ======================
--- CONTOH PEMBELIAN BAHAN BAKU (beberapa restock)
--- Trigger auto-update stok aktif saat insert
+-- PEMBELIAN / RESTOCK (18 baseline purchases)
+-- Data dari: Purchase_Restock-Grid view.csv
+-- Trigger trg_update_stock_on_purchase NONAKTIF — stok diatur manual
 -- ======================
 INSERT INTO purchases (ingredient_id, qty_purchased, price_paid, supplier, date, notes) VALUES
-  ('b1000000-0000-0000-0000-000000000001', 5.0000,  140000.00, 'Supplier A', '2026-03-01', 'Restock susu awal bulan'),
-  ('b1000000-0000-0000-0000-000000000002', 2.0000,  130000.00, 'Supplier A', '2026-03-01', 'Restock cream awal bulan'),
-  ('b1000000-0000-0000-0000-000000000010', 5.0000,   90000.00, 'Supplier A', '2026-03-05', 'Restock susu UHT'),
-  ('b1000000-0000-0000-0000-000000000015', 100.0000, 70000.00, 'Supplier G', '2026-03-10', 'Restock cup pannacotta'),
-  ('b1000000-0000-0000-0000-000000000016', 50.0000,  45000.00, 'Supplier G', '2026-03-10', 'Restock cup minuman'),
-  ('b1000000-0000-0000-0000-000000000003', 5.0000,   90000.00, 'Supplier B', '2026-03-15', 'Restock gula'),
-  ('b1000000-0000-0000-0000-000000000001', 5.0000,  140000.00, 'Supplier A', '2026-03-20', 'Restock susu kedua');
+  ('b1000000-0000-0000-0000-000000000011',  950.0000,  24800.00, 'Green Field UHT',          '2026-01-15', 'Fresh Creamy baseline'),
+  ('b1000000-0000-0000-0000-000000000012', 1100.0000,  70473.00, 'Vivo',                     '2026-01-15', 'Fresh Creamy baseline'),
+  ('b1000000-0000-0000-0000-000000000013',  907.0000,  67497.00, 'Rich Gold',                '2026-01-15', 'Fresh Creamy baseline'),
+  ('b1000000-0000-0000-0000-000000000014',  100.0000, 100000.00, 'Twinning',                 '2026-01-15', 'Fresh Creamy baseline'),
+  ('b1000000-0000-0000-0000-000000000015',  250.0000,  54150.00, 'Lotus',                    '2026-01-15', 'Fresh Creamy baseline'),
+  ('b1000000-0000-0000-0000-000000000016',  250.0000, 250000.00, NULL,                       '2026-01-15', 'Fresh Creamy baseline'),
+  ('b1000000-0000-0000-0000-000000000017',   20.0000,  21450.00, NULL,                       '2026-01-15', 'Fresh Creamy baseline'),
+  ('b1000000-0000-0000-0000-000000000018',   44.0000,  44000.00, NULL,                       '2026-01-15', 'Fresh Creamy baseline'),
+  ('b1000000-0000-0000-0000-000000000001', 2000.0000,  40000.00, 'Ultramilk UHT Full Cream', '2026-01-15', 'Pannacotta baseline'),
+  ('b1000000-0000-0000-0000-000000000002', 1100.0000,  78000.00, 'Anchor',                   '2026-01-15', 'Pannacotta baseline'),
+  ('b1000000-0000-0000-0000-000000000003', 1000.0000, 130000.00, 'Vivo',                     '2026-01-15', 'Pannacotta baseline'),
+  ('b1000000-0000-0000-0000-000000000007',  100.0000, 100000.00, 'Twinning',                 '2026-01-15', 'Pannacotta baseline'),
+  ('b1000000-0000-0000-0000-000000000005',  100.0000,  28000.00, NULL,                       '2026-01-15', 'Pannacotta baseline'),
+  ('b1000000-0000-0000-0000-000000000006',  500.0000,  16000.00, NULL,                       '2026-01-15', 'Pannacotta baseline'),
+  ('b1000000-0000-0000-0000-000000000004',  100.0000,  10400.00, NULL,                       '2026-01-15', 'Pannacotta baseline'),
+  ('b1000000-0000-0000-0000-000000000010',   44.0000,  66000.00, 'Cup + Spoon',              '2026-01-15', 'Pannacotta baseline'),
+  ('b1000000-0000-0000-0000-000000000009',   44.0000,  44000.00, NULL,                       '2026-01-15', 'Pannacotta baseline'),
+  ('b1000000-0000-0000-0000-000000000008',   44.0000,  72160.00, 'Lotus Biscoff, Strawberry, Oreo', '2026-01-15', 'Pannacotta baseline');
 
 -- ======================
--- VERIFIKASI DATA (query untuk cek jumlah)
--- Jalankan setelah seed untuk memastikan data benar
+-- AKTIFKAN KEMBALI TRIGGER stok
+-- ======================
+ALTER TABLE sales ENABLE TRIGGER trg_deduct_stock_on_sale;
+ALTER TABLE purchases ENABLE TRIGGER trg_update_stock_on_purchase;
+
+-- ======================
+-- VERIFIKASI DATA (uncomment untuk cek)
+-- Expected: 6 produk, 18 bahan, 51 resep, 53 sales, 18 purchases
+-- profit_calculations & customers auto-generated oleh trigger
 -- ======================
 -- SELECT 'products' AS tabel, COUNT(*) AS jumlah FROM products
 -- UNION ALL SELECT 'ingredients', COUNT(*) FROM ingredients
 -- UNION ALL SELECT 'recipes', COUNT(*) FROM recipes
 -- UNION ALL SELECT 'sales', COUNT(*) FROM sales
--- UNION ALL SELECT 'batches', COUNT(*) FROM batches
 -- UNION ALL SELECT 'purchases', COUNT(*) FROM purchases
--- UNION ALL SELECT 'customers', COUNT(*) FROM customers
--- UNION ALL SELECT 'profit_calculations', COUNT(*) FROM profit_calculations;
+-- UNION ALL SELECT 'profit_calculations', COUNT(*) FROM profit_calculations
+-- UNION ALL SELECT 'customers', COUNT(*) FROM customers;

@@ -56,6 +56,9 @@ public/workbox-*.js
 public/workbox-*.js.map
 public/swe-worker-*.js
 
+# data exports dari Airtable (berisi data pelanggan asli)
+/data/
+
 # supabase temp
 supabase/.temp/
 
