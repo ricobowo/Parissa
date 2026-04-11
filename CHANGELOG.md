@@ -4,6 +4,28 @@ Semua perubahan penting pada proyek ini didokumentasikan di file ini.
 
 ---
 
+## [v0.8.0] — 2026-04-11
+
+### Ditambahkan — Phase 1C: Dashboard (Task 11.0)
+- Halaman **Dashboard** (`/`) — Performance Hub dengan 6 KPI cards, 3 chart, tabel transaksi
+- Komponen `KpiCards` (FR-006) — 6 kartu metrik: Total Revenue, Total Cost, Total Profit, Unpaid, Total Units, Transactions
+  - Grid responsif: 2 kolom mobile, 3 tablet, 6 desktop
+  - Monochrome style: outline border, no shadow, warna hanya pada angka status
+- Komponen `SalesCharts` — 3 chart interaktif menggunakan Recharts:
+  - **Bar chart** (FR-007): Distribusi penjualan per produk — horizontal bar, blue-700/80
+  - **Donut chart** (FR-008): Bundling vs Non-Bundling — 2 warna (blue-700, slate-200), label persentase di tengah
+  - **Stacked bar chart** (FR-009): Revenue harian per produk — 14 hari terakhir, grayscale palette
+- Komponen `TransactionLists` (FR-011) — tabel Paid & Unpaid terpisah:
+  - No zebra striping, gray border-bottom separator
+  - Minimal status badges (dot + text), max 20 transaksi per tabel
+- **Filter dropdowns** (FR-010): Status bayar (Sudah/Belum/All) + Produk selector
+  - Filter mempengaruhi tabel transaksi
+  - Tombol reset filter muncul saat filter aktif
+- **Fully responsive** (FR-012): scroll vertikal mobile, grid layout desktop
+- Data dari Supabase views: `dashboard_kpi`, `sales_by_product`, `bundling_ratio`, `daily_sales`
+
+---
+
 ## [v0.7.0] — 2026-04-11
 
 ### Ditambahkan — Phase 1B: POS — Input Penjualan (Task 9.0)

@@ -150,15 +150,15 @@ Update the file after completing each sub-task, not just after completing an ent
 
 ### Phase 1C — Dashboard & Reports (Minggu 5-6)
 
-- [ ] 11.0 Dashboard
-  - [ ] 11.1 Create 6 KPI cards component (Revenue, Cost, Profit, Unpaid, Total Units, Total Txns) — monochrome style (gray border, no colored background), color only on numbers/status badges via CSS variables
-  - [ ] 11.2 Create filter dropdowns (payment status, product)
-  - [ ] 11.3 Create bar chart: Sales Distribution By Product — default grayscale palette, product colors muted/pastel
-  - [ ] 11.4 Create donut chart: Bundling vs Non-Bundling — 2 shades of gray (dark/light), no vivid colors
-  - [ ] 11.5 Create stacked bar chart: Sales Revenue Over Time — grayscale default, product colors as minimal differentiators only
-  - [ ] 11.6 Create Paid/Unpaid transaction detail tables — no zebra striping, gray border-bottom row separator, minimal status badges (small colored dot + text, not full colored pill)
-  - [ ] 11.7 Make dashboard fully responsive (scroll cards mobile, grid desktop)
-  - [ ] 11.8 Update CHANGELOG.md
+- [x] 11.0 Dashboard
+  - [x] 11.1 Create 6 KPI cards component (Revenue, Cost, Profit, Unpaid, Total Units, Total Txns) — monochrome style (gray border, no colored background), color only on numbers/status badges via CSS variables
+  - [x] 11.2 Create filter dropdowns (payment status, product)
+  - [x] 11.3 Create bar chart: Sales Distribution By Product — default grayscale palette, product colors muted/pastel
+  - [x] 11.4 Create donut chart: Bundling vs Non-Bundling — 2 shades of gray (dark/light), no vivid colors
+  - [x] 11.5 Create stacked bar chart: Sales Revenue Over Time — grayscale default, product colors as minimal differentiators only
+  - [x] 11.6 Create Paid/Unpaid transaction detail tables — no zebra striping, gray border-bottom row separator, minimal status badges (small colored dot + text, not full colored pill)
+  - [x] 11.7 Make dashboard fully responsive (scroll cards mobile, grid desktop)
+  - [x] 11.8 Update CHANGELOG.md
 
 - [ ] 12.0 Laporan Profit & Bulanan
   - [ ] 12.1 Create profit report page — Total Revenue, Cost, Profit with filters (period, product, payment status)
