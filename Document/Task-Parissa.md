@@ -117,20 +117,20 @@ Update the file after completing each sub-task, not just after completing an ent
 
 ### Phase 1B — Core POS & Products (Minggu 3-4)
 
-- [ ] 7.0 Manajemen Produk
-  - [ ] 7.1 Create products list page with table (nama, harga, cost, margin, status)
-  - [ ] 7.2 Create add/edit product form (modal or page)
-  - [ ] 7.3 Implement soft delete (is_active = false)
-  - [ ] 7.4 Connect product to Recipe/BOM display
-  - [ ] 7.5 Update CHANGELOG.md
+- [x] 7.0 Manajemen Produk
+  - [x] 7.1 Create products list page with table (nama, harga, cost, margin, status)
+  - [x] 7.2 Create add/edit product form (modal or page)
+  - [x] 7.3 Implement soft delete (is_active = false)
+  - [x] 7.4 Connect product to Recipe/BOM display
+  - [x] 7.5 Update CHANGELOG.md
 
-- [ ] 8.0 Resep/BOM & Pricing Calculator
-  - [ ] 8.1 Create recipe page per product — list ingredients, qty, cost per ingredient, total cost
-  - [ ] 8.2 Implement CRUD for recipe items (add/remove ingredient, change qty)
-  - [ ] 8.3 Auto-recalculate cost_per_unit and profit_margin when recipe changes
-  - [ ] 8.4 Create Pricing Calculator component — input target margin %, output min selling price (Formula 5.11)
-  - [ ] 8.5 Create and run unit tests for all BOM calculation formulas (`src/lib/formulas.test.ts`)
-  - [ ] 8.6 Update CHANGELOG.md
+- [x] 8.0 Resep/BOM & Pricing Calculator
+  - [x] 8.1 Create recipe page per product — list ingredients, qty, cost per ingredient, total cost
+  - [x] 8.2 Implement CRUD for recipe items (add/remove ingredient, change qty)
+  - [x] 8.3 Auto-recalculate cost_per_unit and profit_margin when recipe changes
+  - [x] 8.4 Create Pricing Calculator component — input target margin %, output min selling price (Formula 5.11)
+  - [x] 8.5 Create and run unit tests for all BOM calculation formulas (`src/lib/formulas.test.ts`)
+  - [x] 8.6 Update CHANGELOG.md
 
 - [ ] 9.0 POS — Input Penjualan
   - [ ] 9.1 Create sale form with required/optional fields as defined in FR-013
