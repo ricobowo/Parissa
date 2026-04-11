@@ -101,7 +101,7 @@ export function SalesDistributionChart({
               width={120}
             />
             <Tooltip
-              formatter={(value: number) => formatRupiah(value)}
+              formatter={(value) => formatRupiah(Number(value))}
               labelStyle={{ fontWeight: 700, color: '#1f2937' }}
               contentStyle={{
                 borderRadius: 8,
@@ -173,9 +173,9 @@ export function BundlingRatioChart({
               ))}
             </Pie>
             <Tooltip
-              formatter={(value: number, name: string) => [
-                `${value} transaksi`,
-                name,
+              formatter={(value, name) => [
+                `${Number(value)} transaksi`,
+                String(name),
               ]}
               contentStyle={{
                 borderRadius: 8,
@@ -284,9 +284,9 @@ export function DailyRevenueChart({
               tickLine={false}
             />
             <Tooltip
-              formatter={(value: number, name: string) => [
-                formatRupiah(value),
-                name,
+              formatter={(value, name) => [
+                formatRupiah(Number(value)),
+                String(name),
               ]}
               labelFormatter={(label) => {
                 const d = new Date(label)
