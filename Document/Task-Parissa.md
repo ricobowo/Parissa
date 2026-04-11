@@ -132,21 +132,21 @@ Update the file after completing each sub-task, not just after completing an ent
   - [x] 8.5 Create and run unit tests for all BOM calculation formulas (`src/lib/formulas.test.ts`)
   - [x] 8.6 Update CHANGELOG.md
 
-- [ ] 9.0 POS — Input Penjualan
-  - [ ] 9.1 Create sale form with required/optional fields as defined in FR-013
-  - [ ] 9.2 Create QuickSaleGrid component for mobile — 2x3 product grid, tap to add, +/- quantity
-  - [ ] 9.3 Implement auto price calculation (Formula 5.1) — client-side, real-time update
-  - [ ] 9.4 Implement dynamic bundling — allow any combination, not just Pannacotta 3-pack
-  - [ ] 9.5 On submit: save to sales table, trigger profit calculation (Formula 5.4), trigger stock deduction
-  - [ ] 9.6 Show success toast with summary (product, amount, price)
+- [x] 9.0 POS — Input Penjualan
+  - [x] 9.1 Create sale form with required/optional fields as defined in FR-013
+  - [x] 9.2 Create QuickSaleGrid component for mobile — 2x3 product grid, tap to add, +/- quantity
+  - [x] 9.3 Implement auto price calculation (Formula 5.1) — client-side, real-time update
+  - [x] 9.4 Implement dynamic bundling — allow any combination, not just Pannacotta 3-pack
+  - [x] 9.5 On submit: save to sales table, trigger profit calculation (Formula 5.4), trigger stock deduction
+  - [x] 9.6 Show success toast with summary (product, amount, price)
   - [ ] 9.7 Test on mobile device — verify quick-sale flow < 30 seconds
-  - [ ] 9.8 Update CHANGELOG.md
+  - [x] 9.8 Update CHANGELOG.md
 
-- [ ] 10.0 Pre-order management
-  - [ ] 10.1 Add sale_type field to POS form (Direct/Pre-order)
-  - [ ] 10.2 Create pre-order list page — filter by status (Pending/Confirmed/Delivered/Cancelled)
-  - [ ] 10.3 Allow status change from list (mark as Delivered → auto-record in sales report)
-  - [ ] 10.4 Update CHANGELOG.md
+- [x] 10.0 Pre-order management
+  - [x] 10.1 Add sale_type field to POS form (Direct/Pre-order)
+  - [x] 10.2 Create pre-order list page — filter by status (Pending/Confirmed/Delivered/Cancelled)
+  - [x] 10.3 Allow status change from list (mark as Delivered → auto-record in sales report)
+  - [x] 10.4 Update CHANGELOG.md
 
 ### Phase 1C — Dashboard & Reports (Minggu 5-6)
 

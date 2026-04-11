@@ -4,6 +4,49 @@ Semua perubahan penting pada proyek ini didokumentasikan di file ini.
 
 ---
 
+## [v0.7.0] — 2026-04-11
+
+### Ditambahkan — Phase 1B: POS — Input Penjualan (Task 9.0)
+- Halaman **POS / Quick Sale** (`/pos`) — input penjualan cepat dengan target < 30 detik per transaksi (US-011)
+- Komponen `QuickSaleGrid` — grid produk 2 kolom mobile-first, tap +/- untuk atur jumlah:
+  - Kartu produk: placeholder gambar, nama, harga, counter qty
+  - Highlight biru saat produk terpilih (outline-blue-700/30)
+  - Harga otomatis switch ke bundling_price saat mode bundling aktif
+- Komponen `SaleForm` — form penjualan lengkap sesuai FR-013:
+  - **Required fields:** Nama Pembeli, Tanggal (default hari ini), Produk (via grid), Jumlah, Bundling toggle, Status Bayar (segmented control Sudah/Belum)
+  - **Optional fields (collapsible):** Menu Detail, Topping, Tipe Penjualan (Direct/Pre-order), Tanggal Pre-order (kondisional), Catatan
+  - Ringkasan pesanan real-time — list produk terpilih, qty, subtotal
+  - Sticky footer: total pembayaran + tombol "SIMPAN TRANSAKSI"
+- **Auto price calculation** (Formula 5.1) — harga dihitung real-time setiap kali qty atau bundling toggle berubah
+- **Dynamic bundling** (FR-015) — bundling toggle berlaku untuk semua produk yang punya bundling_price, bukan hanya Pannacotta 3-pack
+- **Multi-produk per transaksi** — user bisa pilih beberapa produk sekaligus, tiap produk jadi 1 sale row
+- **Submit flow:** Insert ke tabel sales → DB trigger otomatis:
+  - `trg_calculate_profit` — hitung profit per transaksi (Formula 5.4)
+  - `trg_deduct_stock_on_sale` — kurangi stok bahan dari BOM
+  - `trg_upsert_customer` — auto-update database pelanggan
+- **Toast sukses** dengan ringkasan: nama pembeli, produk, total harga, status bayar
+- **Form auto-reset** setelah submit berhasil via key remount pattern
+- Validasi form: nama wajib, minimal 1 produk, tanggal pre-order wajib jika tipe Pre-order
+
+### Ditambahkan — Phase 1B: Pre-order Management (Task 10.0)
+- Halaman **Pre-order Management** (`/preorders`) — daftar semua pre-order dengan filter status
+- Komponen `PreorderList` — daftar pre-order dengan:
+  - **Filter tabs:** All / Pending / Confirmed / Delivered / Cancelled (scrollable, badge count)
+  - **Kartu pre-order:** avatar inisial, nama pembeli, produk × qty, tanggal pesan, tanggal ambil, total harga, status bayar
+  - **Border warna per status:** amber (Pending), blue (Confirmed), emerald (Delivered), zinc (Cancelled)
+  - **Tombol aksi kontekstual:** Pending → Konfirmasi/Batalkan, Confirmed → Tandai Delivered/Batalkan
+- **Sale type field** sudah terintegrasi di SaleForm POS (Direct/Pre-order toggle + tanggal pre-order kondisional)
+- **Mark as Delivered** (FR-059):
+  - Update `pre_order_status = "Delivered"`
+  - Update `payment_status = "Sudah"` → otomatis tercatat di laporan penjualan
+  - DB trigger `trg_calculate_profit` recalculate profit otomatis
+- Toast notifikasi per aksi status change
+
+### Diperbarui — Translations
+- `id.json` & `en.json`: 20+ key baru untuk modul POS + 20+ key baru untuk modul Pre-orders
+
+---
+
 ## [v0.6.1] — 2026-04-11
 
 ### Diperbarui — Design Alignment Phase 1B (Task 7.0 & 8.0)
