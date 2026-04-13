@@ -21,7 +21,6 @@ import {
   PieChart,
   Pie,
   Cell,
-  Legend,
 } from 'recharts'
 import { formatRupiah } from '@/lib/formulas'
 
@@ -87,7 +86,7 @@ export function SalesDistributionChart({
             <CartesianGrid strokeDasharray="3 3" stroke="#f4f4f5" horizontal={false} />
             <XAxis
               type="number"
-              tickFormatter={(v) => `${(v / 1000).toFixed(0)}k`}
+              tickFormatter={(v: number) => `${(v / 1000).toFixed(0)}k`}
               tick={{ fontSize: 10, fill: '#a1a1aa' }}
               axisLine={false}
               tickLine={false}
@@ -101,7 +100,7 @@ export function SalesDistributionChart({
               width={120}
             />
             <Tooltip
-              formatter={(value) => formatRupiah(Number(value))}
+              formatter={(value) => formatRupiah(Number(value as number))}
               labelStyle={{ fontWeight: 700, color: '#1f2937' }}
               contentStyle={{
                 borderRadius: 8,
@@ -174,8 +173,8 @@ export function BundlingRatioChart({
             </Pie>
             <Tooltip
               formatter={(value, name) => [
-                `${Number(value)} transaksi`,
-                String(name),
+                `${Number(value as number)} transaksi`,
+                String(name as string),
               ]}
               contentStyle={{
                 borderRadius: 8,
@@ -272,24 +271,24 @@ export function DailyRevenueChart({
               tick={{ fontSize: 10, fill: '#94a3b8' }}
               axisLine={false}
               tickLine={false}
-              tickFormatter={(v) => {
+              tickFormatter={(v: string) => {
                 const d = new Date(v)
                 return d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })
               }}
             />
             <YAxis
-              tickFormatter={(v) => `${(v / 1000).toFixed(0)}k`}
+              tickFormatter={(v: number) => `${(v / 1000).toFixed(0)}k`}
               tick={{ fontSize: 10, fill: '#94a3b8' }}
               axisLine={false}
               tickLine={false}
             />
             <Tooltip
               formatter={(value, name) => [
-                formatRupiah(Number(value)),
-                String(name),
+                formatRupiah(Number(value as number)),
+                String(name as string),
               ]}
               labelFormatter={(label) => {
-                const d = new Date(label)
+                const d = new Date(String(label))
                 return d.toLocaleDateString('id-ID', {
                   weekday: 'long',
                   day: 'numeric',
