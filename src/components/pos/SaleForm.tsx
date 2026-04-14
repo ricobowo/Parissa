@@ -13,6 +13,7 @@
 // ============================================================
 
 import { useState, useMemo } from 'react'
+import { useTranslations } from 'next-intl'
 import { Product } from '@/types'
 import { calcSalePrice, formatRupiah } from '@/lib/formulas'
 import { QuickSaleGrid, CartItems } from './QuickSaleGrid'
@@ -41,6 +42,8 @@ interface SaleFormProps {
 }
 
 export function SaleForm({ products, submitting, onSubmit }: SaleFormProps) {
+  const t = useTranslations('pos')
+
   // --- State form required fields ---
   const [customerName, setCustomerName] = useState('')
   const [date, setDate] = useState(() => new Date().toISOString().split('T')[0])
@@ -127,19 +130,19 @@ export function SaleForm({ products, submitting, onSubmit }: SaleFormProps) {
     const newErrors: Record<string, string> = {}
 
     if (!customerName.trim()) {
-      newErrors.customerName = 'Nama pembeli wajib diisi'
+      newErrors.customerName = t('customerNameRequired')
     }
 
     if (!date) {
-      newErrors.date = 'Tanggal wajib diisi'
+      newErrors.date = t('dateRequired')
     }
 
     if (totalItems === 0) {
-      newErrors.cart = 'Pilih minimal 1 produk'
+      newErrors.cart = t('selectMinProduct')
     }
 
     if (saleType === 'Pre-order' && !preOrderDate) {
-      newErrors.preOrderDate = 'Tanggal pre-order wajib untuk tipe Pre-order'
+      newErrors.preOrderDate = t('preorderDateRequired')
     }
 
     setErrors(newErrors)
@@ -196,7 +199,7 @@ export function SaleForm({ products, submitting, onSubmit }: SaleFormProps) {
         {/* Field: Nama Pembeli */}
         <div className="flex flex-col gap-1">
           <label className="text-zinc-600 text-[10px] font-medium uppercase leading-4 tracking-wide">
-            NAMA PEMBELI <span className="text-red-500">*</span>
+            {t('customerName')} <span className="text-red-500">*</span>
           </label>
           <input
             type="text"
@@ -207,7 +210,7 @@ export function SaleForm({ products, submitting, onSubmit }: SaleFormProps) {
                 setErrors((p) => { const n = { ...p }; delete n.customerName; return n })
               }
             }}
-            placeholder="Masukkan nama pelanggan..."
+            placeholder={t('customerNamePlaceholder')}
             className={`w-full px-4 py-3.5 bg-white rounded-sm outline outline-1 outline-offset-[-1px] text-base font-normal text-gray-800 placeholder:text-gray-500 focus:outline-blue-700/40 transition-colors ${
               errors.customerName ? 'outline-red-400' : 'outline-zinc-400/20'
             }`}
@@ -222,7 +225,7 @@ export function SaleForm({ products, submitting, onSubmit }: SaleFormProps) {
           {/* Field: Tanggal */}
           <div className="flex-1 flex flex-col gap-1">
             <label className="text-zinc-600 text-[10px] font-medium uppercase leading-4 tracking-wide">
-              TANGGAL <span className="text-red-500">*</span>
+              {t('date')} <span className="text-red-500">*</span>
             </label>
             <input
               type="date"
@@ -240,7 +243,7 @@ export function SaleForm({ products, submitting, onSubmit }: SaleFormProps) {
           {/* Field: Status Bayar — segmented control sesuai HTML ref */}
           <div className="flex-1 flex flex-col gap-1 pb-2">
             <label className="text-zinc-600 text-[10px] font-medium uppercase leading-4 tracking-wide">
-              STATUS BAYAR <span className="text-red-500">*</span>
+              {t('paymentStatus')} <span className="text-red-500">*</span>
             </label>
             <div className="p-1 bg-zinc-100 rounded-sm outline outline-1 outline-offset-[-1px] outline-zinc-400/10 flex">
               <button
@@ -252,7 +255,7 @@ export function SaleForm({ products, submitting, onSubmit }: SaleFormProps) {
                     : 'text-zinc-600 hover:text-gray-800'
                 }`}
               >
-                SUDAH
+                {t('paid')}
               </button>
               <button
                 type="button"
@@ -263,7 +266,7 @@ export function SaleForm({ products, submitting, onSubmit }: SaleFormProps) {
                     : 'text-zinc-600 hover:text-gray-800'
                 }`}
               >
-                BELUM
+                {t('unpaid')}
               </button>
             </div>
           </div>
@@ -273,10 +276,10 @@ export function SaleForm({ products, submitting, onSubmit }: SaleFormProps) {
         <div className="p-4 bg-zinc-100 rounded-lg outline outline-1 outline-offset-[-1px] outline-zinc-400/10 flex items-center justify-between">
           <div>
             <p className="text-gray-800 text-sm font-bold leading-5">
-              Bundling Promo
+              {t('bundlingPromo')}
             </p>
             <p className="text-zinc-600 text-xs font-normal leading-4">
-              Aktifkan harga paket bundling
+              {t('bundlingDescription')}
             </p>
           </div>
           <button
@@ -321,7 +324,7 @@ export function SaleForm({ products, submitting, onSubmit }: SaleFormProps) {
         <div className="bg-white rounded-lg outline outline-1 outline-offset-[-1px] outline-zinc-400/20 overflow-hidden">
           <div className="px-4 py-3 bg-neutral-50 border-b border-zinc-100">
             <p className="text-zinc-600 text-[10px] font-bold uppercase tracking-wide">
-              RINGKASAN PESANAN — {totalItems} item
+              {t('orderSummary')} — {totalItems} {t('items')}
             </p>
           </div>
           <div className="divide-y divide-zinc-100">
@@ -363,7 +366,7 @@ export function SaleForm({ products, submitting, onSubmit }: SaleFormProps) {
         >
           <div className="p-4 flex items-center justify-between">
             <span className="text-gray-800 text-sm font-bold leading-5">
-              Detail Tambahan
+              {t('additionalDetails')}
             </span>
             <svg
               width="12"
@@ -383,12 +386,12 @@ export function SaleForm({ products, submitting, onSubmit }: SaleFormProps) {
             {/* Field: Menu Detail */}
             <div className="flex flex-col gap-1">
               <label className="text-zinc-600 text-[10px] font-medium uppercase leading-4 tracking-wide">
-                MENU DETAIL
+                {t('menuDetail')}
               </label>
               <textarea
                 value={menuDetail}
                 onChange={(e) => setMenuDetail(e.target.value)}
-                placeholder="Detail menu pesanan..."
+                placeholder={t('menuDetailPlaceholder')}
                 rows={2}
                 className="w-full px-4 py-3 bg-white rounded-sm outline outline-1 outline-offset-[-1px] outline-zinc-400/20 text-sm font-normal text-gray-800 placeholder:text-gray-500 focus:outline-blue-700/40 transition-colors resize-none"
               />
@@ -397,12 +400,12 @@ export function SaleForm({ products, submitting, onSubmit }: SaleFormProps) {
             {/* Field: Topping */}
             <div className="flex flex-col gap-1">
               <label className="text-zinc-600 text-[10px] font-medium uppercase leading-4 tracking-wide">
-                TOPPING
+                {t('topping')}
               </label>
               <textarea
                 value={topping}
                 onChange={(e) => setTopping(e.target.value)}
-                placeholder="Topping tambahan..."
+                placeholder={t('toppingPlaceholder')}
                 rows={2}
                 className="w-full px-4 py-3 bg-white rounded-sm outline outline-1 outline-offset-[-1px] outline-zinc-400/20 text-sm font-normal text-gray-800 placeholder:text-gray-500 focus:outline-blue-700/40 transition-colors resize-none"
               />
@@ -411,7 +414,7 @@ export function SaleForm({ products, submitting, onSubmit }: SaleFormProps) {
             {/* Field: Tipe Penjualan — Direct / Pre-order */}
             <div className="flex flex-col gap-1">
               <label className="text-zinc-600 text-[10px] font-medium uppercase leading-4 tracking-wide">
-                TIPE PENJUALAN
+                {t('saleType')}
               </label>
               <div className="p-1 bg-zinc-100 rounded-sm outline outline-1 outline-offset-[-1px] outline-zinc-400/10 flex">
                 <button
@@ -426,7 +429,7 @@ export function SaleForm({ products, submitting, onSubmit }: SaleFormProps) {
                       : 'text-zinc-600 hover:text-gray-800'
                   }`}
                 >
-                  DIRECT
+                  {t('direct')}
                 </button>
                 <button
                   type="button"
@@ -437,7 +440,7 @@ export function SaleForm({ products, submitting, onSubmit }: SaleFormProps) {
                       : 'text-zinc-600 hover:text-gray-800'
                   }`}
                 >
-                  PRE-ORDER
+                  {t('preorder')}
                 </button>
               </div>
             </div>
@@ -446,7 +449,7 @@ export function SaleForm({ products, submitting, onSubmit }: SaleFormProps) {
             {saleType === 'Pre-order' && (
               <div className="flex flex-col gap-1">
                 <label className="text-zinc-600 text-[10px] font-medium uppercase leading-4 tracking-wide">
-                  TANGGAL PRE-ORDER <span className="text-red-500">*</span>
+                  {t('preorderDate')} <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="date"
@@ -470,12 +473,12 @@ export function SaleForm({ products, submitting, onSubmit }: SaleFormProps) {
             {/* Field: Catatan */}
             <div className="flex flex-col gap-1">
               <label className="text-zinc-600 text-[10px] font-medium uppercase leading-4 tracking-wide">
-                CATATAN
+                {t('notes')}
               </label>
               <textarea
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
-                placeholder="Tulis catatan pesanan..."
+                placeholder={t('notesPlaceholder')}
                 rows={2}
                 className="w-full px-4 py-3 bg-white rounded-sm outline outline-1 outline-offset-[-1px] outline-zinc-400/20 text-sm font-normal text-gray-800 placeholder:text-gray-500 focus:outline-blue-700/40 transition-colors resize-none"
               />
@@ -493,7 +496,7 @@ export function SaleForm({ products, submitting, onSubmit }: SaleFormProps) {
           <div className="flex items-end justify-between">
             <div>
               <p className="text-zinc-600 text-[10px] font-medium uppercase leading-4 tracking-wide">
-                TOTAL PEMBAYARAN
+                {t('totalPayment')}
               </p>
               <p className="text-slate-900 text-2xl font-extrabold leading-8">
                 {formatRupiah(totalPrice)}
@@ -501,7 +504,7 @@ export function SaleForm({ products, submitting, onSubmit }: SaleFormProps) {
             </div>
             {totalItems > 0 && (
               <p className="text-zinc-600 text-[10px] font-medium uppercase leading-4 tracking-wide text-right">
-                {totalItems} ITEM{totalItems > 1 ? 'S' : ''}
+                {totalItems} {t('items')}
               </p>
             )}
           </div>
@@ -514,15 +517,15 @@ export function SaleForm({ products, submitting, onSubmit }: SaleFormProps) {
           >
             {submitting ? (
               <span className="text-white text-base font-bold leading-6">
-                Menyimpan...
+                {t('saving')}
               </span>
             ) : (
               <>
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                   <path d="M13.3 2.7L6 10L2.7 6.7" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
-                <span className="text-white text-base font-bold leading-6">
-                  SIMPAN TRANSAKSI
+                <span className="text-white text-base font-bold leading-6 uppercase">
+                  {t('saveTransaction')}
                 </span>
               </>
             )}

@@ -4,6 +4,26 @@ Semua perubahan penting pada proyek ini didokumentasikan di file ini.
 
 ---
 
+## [v0.8.1] — 2026-04-14
+
+### Diperbaiki — Task 4.5: Verifikasi Bilingual (ID/EN)
+- Ganti **100+ hardcoded strings** di 10 file komponen → `useTranslations()` dari next-intl
+- Halaman yang diperbaiki: Dashboard, POS, Products, Recipes, Preorders, Settings
+- Komponen yang diperbaiki: KpiCards, TransactionLists, SalesCharts, SaleForm, QuickSaleGrid, PreorderList
+- Tambah **~30 translation keys baru** per locale di `id.json` dan `en.json`:
+  - Namespace `dashboard`: overview, filter labels, KPI subtitles, transaction labels
+  - Namespace `pos`: productCount
+  - Namespace `products`: inventoryControl, totalProducts, toast messages
+  - Namespace `recipes`: catalogProcurement, selectedProduct, activeCount/inactiveCount
+  - Namespace `preorders`: paymentLabel
+  - Namespace `settings`: rolesDesc, usersDesc, languageDesc, whatsappDesc
+
+### Diperbaiki — Task 5.6: PWA Installability
+- Tambah **ikon PWA** placeholder 192×192 dan 512×512 PNG di `public/icons/`
+- Manifest `public/manifest.json` sudah valid mereferensi kedua ikon
+
+---
+
 ## [v0.8.0] — 2026-04-11
 
 ### Ditambahkan — Phase 1C: Dashboard (Task 11.0)

@@ -96,7 +96,7 @@ Update the file after completing each sub-task, not just after completing an ent
   - [x] 4.2 Create translation files: `src/lib/i18n/id.json` and `en.json` (all UI labels, placeholders, error messages, button text)
   - [x] 4.3 Create language toggle component in header
   - [x] 4.4 Save language preference to user profile in database
-  - [ ] 4.5 Verify all pages render correctly in both languages
+  - [x] 4.5 Verify all pages render correctly in both languages
   - [x] 4.6 Update CHANGELOG.md
 
 - [x] 5.0 PWA setup + layout + base UI
@@ -105,7 +105,7 @@ Update the file after completing each sub-task, not just after completing an ent
   - [x] 5.3 Implement role-based navigation — different menu items per role
   - [x] 5.4 Ensure all colors use CSS variables (dark mode ready) — dark mode toggle NOT implemented in Phase 1, only the code structure is prepared
   - [x] 5.5 Create shared components (minimalist, monochrome): page header, loading skeleton, empty state, toast notifications — no shadows, no decorative colors, generous whitespace
-  - [ ] 5.6 Test PWA installability on Android/iOS
+  - [x] 5.6 Test PWA installability on Android/iOS
   - [x] 5.7 Update CHANGELOG.md
 
 - [x] 6.0 Migrasi data dari Airtable

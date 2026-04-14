@@ -9,6 +9,7 @@
 //            FR-006: Kartu metrik dashboard.
 // ============================================================
 
+import { useTranslations } from 'next-intl'
 import { formatRupiah } from '@/lib/formulas'
 
 export interface KpiData {
@@ -26,6 +27,8 @@ interface KpiCardsProps {
 }
 
 export function KpiCards({ data }: KpiCardsProps) {
+  const t = useTranslations('dashboard')
+
   // Definisi 6 kartu KPI sesuai PRD FR-006
   const cards: {
     label: string
@@ -34,41 +37,41 @@ export function KpiCards({ data }: KpiCardsProps) {
     valueColor: string
   }[] = [
     {
-      label: 'TOTAL REVENUE',
+      label: t('totalRevenue'),
       value: formatRupiah(data.totalRevenue),
-      subtitle: 'Transaksi lunas',
+      subtitle: t('subtitlePaidTxns'),
       valueColor: 'text-slate-900',
     },
     {
-      label: 'TOTAL COST',
+      label: t('totalCost'),
       value: formatRupiah(data.totalCost),
-      subtitle: 'Biaya operasional',
+      subtitle: t('subtitleOpCost'),
       valueColor: 'text-slate-900',
     },
     {
-      label: 'TOTAL PROFIT',
+      label: t('totalProfit'),
       value: formatRupiah(data.totalProfit),
-      subtitle: data.totalProfit > 0 ? 'Positif' : 'Negatif',
+      subtitle: data.totalProfit > 0 ? t('subtitlePositive') : t('subtitleNegative'),
       valueColor: 'text-blue-700',
     },
     {
-      label: 'UNPAID',
+      label: t('unpaid'),
       value: formatRupiah(data.totalUnpaid),
-      subtitle: `${data.unpaidCount} transaksi pending`,
+      subtitle: t('subtitlePendingTxns', { count: data.unpaidCount }),
       valueColor: 'text-pink-800',
     },
     {
-      label: 'TOTAL UNITS',
+      label: t('totalUnits'),
       value: data.totalUnits.toLocaleString('id-ID'),
-      subtitle: 'Pcs terjual',
+      subtitle: t('subtitleUnitsSold'),
       valueColor: 'text-slate-900',
     },
     {
-      label: 'TRANSACTIONS',
+      label: t('totalTransactions'),
       value: data.totalTransactions.toLocaleString('id-ID'),
       subtitle: data.totalTransactions > 0
-        ? `Rata-rata ${formatRupiah(Math.round(data.totalRevenue / data.totalTransactions))}`
-        : 'Belum ada transaksi',
+        ? t('subtitleAvgPrice', { amount: formatRupiah(Math.round(data.totalRevenue / data.totalTransactions)) })
+        : t('subtitleNoTxns'),
       valueColor: 'text-slate-900',
     },
   ]

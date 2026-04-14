@@ -12,6 +12,7 @@
 // ============================================================
 
 import { useState, useEffect, useCallback } from 'react'
+import { useTranslations } from 'next-intl'
 import { createClient } from '@/lib/supabase/client'
 import { Product } from '@/types'
 import { calcSalePrice, formatRupiah } from '@/lib/formulas'
@@ -20,6 +21,7 @@ import { useToast } from '@/lib/hooks/use-toast'
 import { SaleForm, SaleSubmitData } from '@/components/pos/SaleForm'
 
 export default function PosPage() {
+  const t = useTranslations('pos')
   const [products, setProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
   const [submitting, setSubmitting] = useState(false)
@@ -43,7 +45,7 @@ export default function PosPage() {
       setProducts(data ?? [])
     } catch (err) {
       console.error('Gagal memuat produk:', err)
-      addToast({ title: 'Gagal memuat data produk.', variant: 'error' })
+      addToast({ title: t('loadFailed'), variant: 'error' })
     } finally {
       setLoading(false)
     }
@@ -101,7 +103,7 @@ export default function PosPage() {
 
       // Validasi ada data untuk disimpan
       if (saleRows.length === 0) {
-        addToast({ title: 'Tidak ada produk untuk disimpan.', variant: 'error' })
+        addToast({ title: t('noProductsToSave'), variant: 'error' })
         setSubmitting(false)
         return
       }
@@ -128,7 +130,7 @@ export default function PosPage() {
 
       // Toast sukses dengan detail ringkasan (Task 9.6)
       addToast({
-        title: 'Penjualan berhasil dicatat!',
+        title: t('saleSuccess'),
         description: `${data.customerName} — ${productNames} = ${formatRupiah(totalPrice)} (${data.paymentStatus})`,
         variant: 'success',
       })
@@ -139,8 +141,8 @@ export default function PosPage() {
     } catch (err) {
       console.error('Gagal menyimpan penjualan:', err)
       addToast({
-        title: 'Gagal menyimpan penjualan.',
-        description: 'Periksa koneksi internet dan coba lagi.',
+        title: t('saleFailed'),
+        description: t('saleFailedDescription'),
         variant: 'error',
       })
     } finally {
@@ -164,7 +166,7 @@ export default function PosPage() {
           </svg>
           <div>
             <h1 className="text-slate-900 text-lg md:text-2xl font-bold leading-7">
-              Quick Sale
+              {t('quickSale')}
             </h1>
           </div>
         </div>
@@ -172,7 +174,7 @@ export default function PosPage() {
         {/* Info jumlah produk tersedia */}
         <div className="px-3 py-1.5 bg-zinc-100 rounded-md flex items-center gap-2">
           <span className="text-zinc-600 text-xs font-semibold uppercase tracking-wide">
-            {products.length} Produk
+            {t('productCount', { count: products.length })}
           </span>
         </div>
       </div>

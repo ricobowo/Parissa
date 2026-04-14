@@ -11,6 +11,7 @@
 // ============================================================
 
 import { useState } from 'react'
+import { useTranslations } from 'next-intl'
 import { Sale, Product } from '@/types'
 import { formatRupiah } from '@/lib/formulas'
 
@@ -23,13 +24,13 @@ interface SaleWithProduct extends Sale {
 const PREORDER_STATUSES = ['Pending', 'Confirmed', 'Delivered', 'Cancelled'] as const
 type PreorderStatus = (typeof PREORDER_STATUSES)[number]
 
-// Tab filter termasuk "All"
-const FILTER_TABS: { label: string; value: PreorderStatus | 'All' }[] = [
-  { label: 'ALL', value: 'All' },
-  { label: 'PENDING', value: 'Pending' },
-  { label: 'CONFIRMED', value: 'Confirmed' },
-  { label: 'DELIVERED', value: 'Delivered' },
-  { label: 'CANCELLED', value: 'Cancelled' },
+// Key i18n untuk setiap tab filter
+const FILTER_TAB_KEYS: { key: string; value: PreorderStatus | 'All' }[] = [
+  { key: 'all', value: 'All' },
+  { key: 'pending', value: 'Pending' },
+  { key: 'confirmed', value: 'Confirmed' },
+  { key: 'delivered', value: 'Delivered' },
+  { key: 'cancelled', value: 'Cancelled' },
 ]
 
 interface PreorderListProps {
@@ -42,6 +43,7 @@ interface PreorderListProps {
 }
 
 export function PreorderList({ preorders, updatingId, onStatusChange }: PreorderListProps) {
+  const t = useTranslations('preorders')
   // Filter status yang aktif
   const [activeFilter, setActiveFilter] = useState<PreorderStatus | 'All'>('All')
 
@@ -64,7 +66,7 @@ export function PreorderList({ preorders, updatingId, onStatusChange }: Preorder
       {/* Filter tabs — scrollable horizontal sesuai HTML reference */}
       {/* ================================================================ */}
       <div className="flex items-center gap-2 overflow-x-auto pb-1 -mx-1 px-1">
-        {FILTER_TABS.map((tab) => {
+        {FILTER_TAB_KEYS.map((tab) => {
           const isActive = activeFilter === tab.value
           const count =
             tab.value === 'All'
@@ -76,13 +78,13 @@ export function PreorderList({ preorders, updatingId, onStatusChange }: Preorder
               key={tab.value}
               type="button"
               onClick={() => setActiveFilter(tab.value)}
-              className={`flex-shrink-0 px-4 py-2 rounded-xl text-xs font-bold leading-4 tracking-tight transition-colors ${
+              className={`flex-shrink-0 px-4 py-2 rounded-xl text-xs font-bold leading-4 tracking-tight transition-colors uppercase ${
                 isActive
                   ? 'bg-indigo-100 text-blue-800'
                   : 'bg-zinc-100 text-zinc-600 hover:bg-zinc-200'
               }`}
             >
-              {tab.label}
+              {t(tab.key)}
               {count > 0 && (
                 <span className="ml-1.5 text-[10px] opacity-70">
                   {count}
@@ -100,8 +102,8 @@ export function PreorderList({ preorders, updatingId, onStatusChange }: Preorder
         <div className="flex flex-col items-center justify-center py-16 bg-white rounded-lg outline outline-1 outline-offset-[-1px] outline-zinc-100">
           <p className="text-sm text-zinc-400">
             {activeFilter === 'All'
-              ? 'Belum ada pre-order.'
-              : `Tidak ada pre-order dengan status "${activeFilter}".`}
+              ? t('noPreorders')
+              : t('noPreordersFiltered', { status: activeFilter })}
           </p>
         </div>
       ) : (
@@ -132,6 +134,7 @@ function PreorderCard({
   isUpdating: boolean
   onStatusChange: (saleId: string, newStatus: PreorderStatus) => Promise<void>
 }) {
+  const t = useTranslations('preorders')
   const status = (preorder.pre_order_status || 'Pending') as PreorderStatus
 
   // Warna dan style per status
@@ -166,7 +169,7 @@ function PreorderCard({
   }
 
   // Aksi status yang tersedia berdasarkan status saat ini
-  const availableActions = getAvailableActions(status)
+  const availableActions = getAvailableActions(status, t)
 
   return (
     <div
@@ -206,7 +209,7 @@ function PreorderCard({
       <div className="grid grid-cols-3 gap-2">
         <div>
           <p className="text-zinc-600 text-[9px] font-bold uppercase leading-3 tracking-wide">
-            TGL PESAN
+            {t('orderDate')}
           </p>
           <p className="text-gray-800 text-xs font-medium leading-4 mt-0.5">
             {formatDate(preorder.date)}
@@ -214,7 +217,7 @@ function PreorderCard({
         </div>
         <div>
           <p className="text-zinc-600 text-[9px] font-bold uppercase leading-3 tracking-wide">
-            TGL AMBIL
+            {t('pickupDate')}
           </p>
           <p className="text-gray-800 text-xs font-medium leading-4 mt-0.5">
             {preorder.pre_order_date
@@ -224,7 +227,7 @@ function PreorderCard({
         </div>
         <div className="text-right">
           <p className="text-zinc-600 text-[9px] font-bold uppercase leading-3 tracking-wide">
-            TOTAL
+            {t('total')}
           </p>
           <p className="text-blue-700 text-xs font-bold leading-4 mt-0.5">
             {formatRupiah(preorder.sale_price)}
@@ -241,7 +244,7 @@ function PreorderCard({
             }`}
           />
           <span className="text-xs text-zinc-600">
-            Bayar: <strong>{preorder.payment_status}</strong>
+            {t('paymentLabel')} <strong>{preorder.payment_status}</strong>
           </span>
         </div>
 
@@ -277,18 +280,19 @@ function PreorderCard({
 // Tentukan aksi yang tersedia berdasarkan status saat ini
 // -------------------------------------------------------------------
 function getAvailableActions(
-  status: PreorderStatus
+  status: PreorderStatus,
+  t: (key: string) => string
 ): { label: string; status: PreorderStatus; className: string }[] {
   switch (status) {
     case 'Pending':
       return [
         {
-          label: 'KONFIRMASI',
+          label: t('confirm'),
           status: 'Confirmed',
           className: 'bg-blue-700 text-white hover:bg-blue-800',
         },
         {
-          label: 'BATALKAN',
+          label: t('cancel'),
           status: 'Cancelled',
           className: 'bg-white text-red-600 outline outline-1 outline-offset-[-1px] outline-zinc-200 hover:bg-red-50',
         },
@@ -296,21 +300,19 @@ function getAvailableActions(
     case 'Confirmed':
       return [
         {
-          label: 'TANDAI DELIVERED',
+          label: t('markDelivered'),
           status: 'Delivered',
           className: 'bg-emerald-600 text-white hover:bg-emerald-700',
         },
         {
-          label: 'BATALKAN',
+          label: t('cancel'),
           status: 'Cancelled',
           className: 'bg-white text-red-600 outline outline-1 outline-offset-[-1px] outline-zinc-200 hover:bg-red-50',
         },
       ]
     case 'Delivered':
-      // Sudah selesai, tidak ada aksi
       return []
     case 'Cancelled':
-      // Sudah dibatalkan, tidak ada aksi
       return []
     default:
       return []

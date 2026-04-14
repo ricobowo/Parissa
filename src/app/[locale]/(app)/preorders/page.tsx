@@ -11,6 +11,7 @@
 // ============================================================
 
 import { useState, useEffect, useCallback } from 'react'
+import { useTranslations } from 'next-intl'
 import { createClient } from '@/lib/supabase/client'
 import { Sale, Product } from '@/types'
 import { PageSkeleton } from '@/components/ui/loading-skeleton'
@@ -23,6 +24,7 @@ interface SaleWithProduct extends Sale {
 }
 
 export default function PreordersPage() {
+  const t = useTranslations('preorders')
   const [preorders, setPreorders] = useState<SaleWithProduct[]>([])
   const [loading, setLoading] = useState(true)
   const [updatingId, setUpdatingId] = useState<string | null>(null)
@@ -55,7 +57,7 @@ export default function PreordersPage() {
       setPreorders(typedData)
     } catch (err) {
       console.error('Gagal memuat pre-order:', err)
-      addToast({ title: 'Gagal memuat data pre-order.', variant: 'error' })
+      addToast({ title: t('loadFailed'), variant: 'error' })
     } finally {
       setLoading(false)
     }
@@ -100,9 +102,9 @@ export default function PreordersPage() {
 
       // Toast sesuai status
       const statusMessages: Record<string, string> = {
-        Confirmed: `Pre-order ${customerName} telah dikonfirmasi.`,
-        Delivered: `Pre-order ${customerName} telah dikirim! Status bayar diperbarui ke "Sudah".`,
-        Cancelled: `Pre-order ${customerName} telah dibatalkan.`,
+        Confirmed: t('statusConfirmed'),
+        Delivered: t('statusDelivered'),
+        Cancelled: t('statusCancelled'),
       }
 
       addToast({
@@ -114,7 +116,7 @@ export default function PreordersPage() {
       await fetchPreorders()
     } catch (err) {
       console.error('Gagal mengubah status pre-order:', err)
-      addToast({ title: 'Gagal mengubah status pre-order.', variant: 'error' })
+      addToast({ title: t('statusChangeFailed'), variant: 'error' })
     } finally {
       setUpdatingId(null)
     }
@@ -134,10 +136,10 @@ export default function PreordersPage() {
       <div className="flex items-end justify-between mb-6">
         <div>
           <p className="text-zinc-600 text-xs font-normal uppercase leading-4 tracking-wide mb-1">
-            MANAGEMENT
+            {t('management')}
           </p>
           <h1 className="text-gray-800 text-2xl md:text-3xl font-bold leading-8">
-            Pre-Orders
+            {t('title')}
           </h1>
         </div>
 
@@ -147,7 +149,7 @@ export default function PreordersPage() {
             <div className="px-3 py-1.5 bg-amber-50 rounded-md flex items-center gap-2">
               <span className="size-2 bg-amber-500 rounded-full" />
               <span className="text-amber-700 text-xs font-bold">
-                {pendingCount} Pending
+                {pendingCount} {t('pending')}
               </span>
             </div>
           )}
@@ -155,7 +157,7 @@ export default function PreordersPage() {
             <div className="px-3 py-1.5 bg-blue-50 rounded-md flex items-center gap-2">
               <span className="size-2 bg-blue-500 rounded-full" />
               <span className="text-blue-700 text-xs font-bold">
-                {confirmedCount} Confirmed
+                {confirmedCount} {t('confirmed')}
               </span>
             </div>
           )}

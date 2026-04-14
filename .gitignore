@@ -65,3 +65,9 @@ supabase/.temp/
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# cc-sessions runtime files
+sessions/sessions-state.json
+sessions/package.json
+sessions/transcripts/
+sessions/.archived/

@@ -9,6 +9,7 @@
 //            Desain diselaraskan dengan HTML reference (Mobile.html).
 // ============================================================
 
+import { useTranslations } from 'next-intl'
 import { Product } from '@/types'
 import { formatRupiah } from '@/lib/formulas'
 
@@ -32,15 +33,17 @@ export function QuickSaleGrid({
   isBundling,
   onUpdateQty,
 }: QuickSaleGridProps) {
+  const t = useTranslations('pos')
+
   return (
     <div className="flex flex-col gap-4">
       {/* Header section: label + refresh */}
       <div className="flex items-center justify-between">
         <p className="text-zinc-600 text-[10px] font-medium font-['Inter'] uppercase leading-4 tracking-wide">
-          PRODUCT MENU
+          {t('productMenu')}
         </p>
         <span className="text-blue-700 text-[10px] font-bold font-['Inter'] leading-4">
-          {products.length} produk
+          {t('productCount', { count: products.length })}
         </span>
       </div>
 
@@ -97,6 +100,7 @@ function ProductCard({
   onIncrement: () => void
   onDecrement: () => void
 }) {
+  const t = useTranslations('pos')
   // Kelas outline berbeda untuk kartu yang dipilih vs tidak
   const outlineClass = isSelected
     ? 'outline-blue-700/30 shadow-[0px_0px_0px_1px_rgba(0,83,219,0.10)]'
@@ -141,7 +145,7 @@ function ProductCard({
           {formatRupiah(displayPrice)}
           {showBundlingPrice && (
             <span className="ml-1 text-[9px] font-bold text-blue-700/60 uppercase">
-              bundling
+              {t('bundling')}
             </span>
           )}
         </p>

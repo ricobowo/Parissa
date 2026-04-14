@@ -10,6 +10,7 @@
 //            Palette grayscale + blue-700 sesuai PRD & HTML ref.
 // ============================================================
 
+import { useTranslations } from 'next-intl'
 import {
   BarChart,
   Bar,
@@ -65,17 +66,19 @@ export function SalesDistributionChart({
 }: {
   data: ProductSalesData[]
 }) {
-  if (data.length === 0) return <ChartEmpty label="Sales per Product" />
+  const t = useTranslations('dashboard')
+
+  if (data.length === 0) return <ChartEmpty label={t('salesPerProduct')} />
 
   return (
     <div className="bg-white rounded-2xl outline outline-1 outline-offset-[-1px] outline-zinc-400/20 p-6 md:p-8 font-['Inter']">
       {/* Header */}
       <div className="mb-6">
         <p className="text-zinc-600 text-[10px] font-bold uppercase leading-4 tracking-wide">
-          PRODUCT PERFORMANCE
+          {t('productPerformance')}
         </p>
         <h3 className="text-slate-900 text-lg md:text-xl font-bold leading-7 mt-0.5">
-          Penjualan per Produk
+          {t('salesPerProduct')}
         </h3>
       </div>
 
@@ -110,7 +113,7 @@ export function SalesDistributionChart({
             />
             <Bar
               dataKey="totalRevenue"
-              name="Revenue"
+              name={t('revenue')}
               fill="#1d4ed8"
               fillOpacity={0.8}
               radius={[0, 4, 4, 0]}
@@ -131,7 +134,9 @@ export function BundlingRatioChart({
 }: {
   data: BundlingData[]
 }) {
-  if (data.length === 0) return <ChartEmpty label="Bundling Ratio" />
+  const t = useTranslations('dashboard')
+
+  if (data.length === 0) return <ChartEmpty label={t('bundlingRatio')} />
 
   const total = data.reduce((sum, d) => sum + d.value, 0)
   const bundlingPct = total > 0
@@ -143,10 +148,10 @@ export function BundlingRatioChart({
       {/* Header */}
       <div className="mb-4">
         <p className="text-slate-900 text-sm font-normal uppercase leading-5 tracking-wider">
-          PURCHASE RATIO
+          {t('purchaseRatio')}
         </p>
         <p className="text-zinc-600 text-xs font-normal leading-4">
-          Bundling vs Non-Bundling
+          {t('bundlingRatio')}
         </p>
       </div>
 
@@ -173,7 +178,7 @@ export function BundlingRatioChart({
             </Pie>
             <Tooltip
               formatter={(value, name) => [
-                `${Number(value as number)} transaksi`,
+                `${Number(value as number)} ${t('transactions')}`,
                 String(name as string),
               ]}
               contentStyle={{
@@ -228,7 +233,9 @@ export function DailyRevenueChart({
   data: DailySalesData[]
   productNames: string[]
 }) {
-  if (data.length === 0) return <ChartEmpty label="Daily Revenue" />
+  const t = useTranslations('dashboard')
+
+  if (data.length === 0) return <ChartEmpty label={t('dailyRevenueTitle')} />
 
   return (
     <div className="bg-zinc-100 rounded-2xl p-6 md:p-8 font-['Inter'] overflow-hidden">
@@ -236,10 +243,10 @@ export function DailyRevenueChart({
       <div className="flex items-start justify-between mb-6">
         <div>
           <h3 className="text-slate-900 text-lg md:text-xl font-bold leading-7">
-            Revenue Harian
+            {t('dailyRevenueTitle')}
           </h3>
           <p className="text-zinc-600 text-sm font-normal leading-5">
-            Revenue harian per produk
+            {t('dailyRevenueSubtitle')}
           </p>
         </div>
         {/* Legend mini */}
@@ -321,10 +328,12 @@ export function DailyRevenueChart({
 // Empty state untuk chart
 // -------------------------------------------------------------------
 function ChartEmpty({ label }: { label: string }) {
+  const t = useTranslations('dashboard')
+
   return (
     <div className="bg-white rounded-2xl outline outline-1 outline-offset-[-1px] outline-zinc-400/20 p-8 flex flex-col items-center justify-center h-64 font-['Inter']">
       <p className="text-zinc-400 text-sm">{label}</p>
-      <p className="text-zinc-300 text-xs mt-1">Belum ada data</p>
+      <p className="text-zinc-300 text-xs mt-1">{t('noDataYet')}</p>
     </div>
   )
 }

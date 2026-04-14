@@ -9,6 +9,7 @@
 // ============================================================
 
 import { useState, useEffect, useCallback } from 'react'
+import { useTranslations } from 'next-intl'
 import { createClient } from '@/lib/supabase/client'
 import { Product } from '@/types'
 import { calcCostPerUnit, calcIngredientCostPerUnit, calcProfitMargin } from '@/lib/formulas'
@@ -24,6 +25,7 @@ interface ProductWithCost extends Product {
 }
 
 export default function ProductsPage({ params }: { params: Promise<{ locale: string }> }) {
+  const t = useTranslations('products')
   const [locale, setLocale] = useState('id')
   const [products, setProducts] = useState<ProductWithCost[]>([])
   const [loading, setLoading] = useState(true)
@@ -117,7 +119,7 @@ export default function ProductsPage({ params }: { params: Promise<{ locale: str
       setProducts(enriched)
     } catch (err) {
       console.error('Gagal memuat produk:', err)
-      addToast({ title: 'Gagal memuat data produk.', variant: 'error' })
+      addToast({ title: t('loadFailed'), variant: 'error' })
     } finally {
       setLoading(false)
     }
@@ -148,12 +150,11 @@ export default function ProductsPage({ params }: { params: Promise<{ locale: str
       .eq('id', product.id)
 
     if (error) {
-      addToast({ title: 'Gagal mengubah status produk.', variant: 'error' })
+      addToast({ title: t('toggleFailed'), variant: 'error' })
       return
     }
 
-    const status = !product.is_active ? 'diaktifkan' : 'dinonaktifkan'
-    addToast({ title: `Produk berhasil ${status}.`, variant: 'success' })
+    addToast({ title: !product.is_active ? t('activated') : t('deactivated'), variant: 'success' })
     fetchProducts()
   }
 
@@ -171,19 +172,19 @@ export default function ProductsPage({ params }: { params: Promise<{ locale: str
         .eq('id', selectedProduct.id)
 
       if (error) {
-        addToast({ title: 'Gagal menyimpan produk.', variant: 'error' })
+        addToast({ title: t('saveFailed'), variant: 'error' })
         throw error
       }
-      addToast({ title: 'Produk berhasil diperbarui!', variant: 'success' })
+      addToast({ title: t('updated'), variant: 'success' })
     } else {
       // Mode tambah — insert baris baru
       const { error } = await supabase.from('products').insert(data)
 
       if (error) {
-        addToast({ title: 'Gagal menambahkan produk.', variant: 'error' })
+        addToast({ title: t('saveFailed'), variant: 'error' })
         throw error
       }
-      addToast({ title: 'Produk berhasil ditambahkan!', variant: 'success' })
+      addToast({ title: t('addSuccess'), variant: 'success' })
     }
 
     // Refresh daftar produk setelah simpan
@@ -199,10 +200,10 @@ export default function ProductsPage({ params }: { params: Promise<{ locale: str
       <div className="flex items-end justify-between mb-6">
         <div>
           <p className="text-blue-700 text-[10px] font-bold uppercase leading-4 tracking-wide mb-1">
-            INVENTORY CONTROL
+            {t('inventoryControl')}
           </p>
           <h1 className="text-gray-800 text-3xl font-extrabold leading-9">
-            Manajemen Produk
+            {t('title')}
           </h1>
         </div>
         <button
@@ -210,15 +211,15 @@ export default function ProductsPage({ params }: { params: Promise<{ locale: str
           className="px-4 py-2.5 bg-blue-700 rounded-sm shadow-sm flex items-center gap-2 text-white text-sm font-semibold hover:bg-blue-800 transition-colors"
         >
           <span className="text-base leading-none">+</span>
-          Tambah Produk
+          {t('addProduct')}
         </button>
       </div>
 
       {/* Ringkasan total produk */}
       <div className="flex items-center gap-3 mb-6">
-        <StatChip label="Total Produk" value={products.length} />
-        <StatChip label="Aktif" value={products.filter((p) => p.is_active).length} color="success" />
-        <StatChip label="Nonaktif" value={products.filter((p) => !p.is_active).length} color="muted" />
+        <StatChip label={t('totalProducts')} value={products.length} />
+        <StatChip label={t('active')} value={products.filter((p) => p.is_active).length} color="success" />
+        <StatChip label={t('inactive')} value={products.filter((p) => !p.is_active).length} color="muted" />
       </div>
 
       {/* Tabel daftar produk */}

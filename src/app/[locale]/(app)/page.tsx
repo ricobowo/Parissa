@@ -13,6 +13,7 @@
 // ============================================================
 
 import { useState, useEffect, useCallback, useMemo } from 'react'
+import { useTranslations } from 'next-intl'
 import { createClient } from '@/lib/supabase/client'
 import { Product, Sale } from '@/types'
 import { PageSkeleton } from '@/components/ui/loading-skeleton'
@@ -34,6 +35,8 @@ interface SaleWithProduct extends Sale {
 }
 
 export default function DashboardPage() {
+  const t = useTranslations('dashboard')
+
   // --- State data ---
   const [kpi, setKpi] = useState<KpiData | null>(null)
   const [salesByProduct, setSalesByProduct] = useState<ProductSalesData[]>([])
@@ -158,7 +161,7 @@ export default function DashboardPage() {
       }
     } catch (err) {
       console.error('Gagal memuat dashboard:', err)
-      addToast({ title: 'Gagal memuat data dashboard.', variant: 'error' })
+      addToast({ title: t('loadFailed'), variant: 'error' })
     } finally {
       setLoading(false)
     }
@@ -190,13 +193,13 @@ export default function DashboardPage() {
       {/* ================================================================ */}
       <div className="mb-6">
         <p className="text-blue-700 text-xs font-semibold uppercase leading-4 tracking-wide">
-          OVERVIEW
+          {t('overview')}
         </p>
         <h1 className="text-gray-800 text-2xl md:text-3xl font-bold leading-8 mt-0.5">
-          Performance Hub
+          {t('performanceHub')}
         </h1>
         <p className="text-zinc-600 text-sm font-normal leading-5 mt-1">
-          Ringkasan performa harian Parissa
+          {t('subtitle')}
         </p>
       </div>
 
@@ -208,30 +211,30 @@ export default function DashboardPage() {
           {/* Filter: Status Bayar */}
           <div className="flex flex-col gap-1">
             <label className="text-zinc-600 text-[10px] font-bold uppercase leading-4 tracking-wide">
-              PAYMENT STATUS
+              {t('paymentStatusFilter')}
             </label>
             <select
               value={filterPayment}
               onChange={(e) => setFilterPayment(e.target.value)}
               className="min-w-40 px-4 py-2 bg-white rounded-sm outline outline-1 outline-offset-[-1px] outline-zinc-400/20 text-gray-800 text-sm font-normal"
             >
-              <option value="all">Semua Status</option>
-              <option value="Sudah">Sudah Bayar</option>
-              <option value="Belum">Belum Bayar</option>
+              <option value="all">{t('allStatuses')}</option>
+              <option value="Sudah">{t('paidFilter')}</option>
+              <option value="Belum">{t('unpaidFilter')}</option>
             </select>
           </div>
 
           {/* Filter: Produk */}
           <div className="flex flex-col gap-1">
             <label className="text-zinc-600 text-[10px] font-bold uppercase leading-4 tracking-wide">
-              PRODUCT SELECTOR
+              {t('productFilter')}
             </label>
             <select
               value={filterProduct}
               onChange={(e) => setFilterProduct(e.target.value)}
               className="min-w-48 px-4 py-2 bg-white rounded-sm outline outline-1 outline-offset-[-1px] outline-zinc-400/20 text-gray-800 text-sm font-normal"
             >
-              <option value="all">Semua Produk</option>
+              <option value="all">{t('allProducts')}</option>
               {products.map((p) => (
                 <option key={p.id} value={p.id}>
                   {p.name}
@@ -251,7 +254,7 @@ export default function DashboardPage() {
             }}
             className="px-6 py-2 bg-white rounded-sm outline outline-1 outline-offset-[-1px] outline-zinc-400/20 text-gray-800 text-sm font-medium hover:bg-zinc-50 transition-colors"
           >
-            Reset Filter
+            {t('resetFilter')}
           </button>
         )}
       </div>

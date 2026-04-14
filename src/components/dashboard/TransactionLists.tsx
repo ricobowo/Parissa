@@ -9,6 +9,7 @@
 //            Desain diselaraskan dengan HTML reference.
 // ============================================================
 
+import { useTranslations } from 'next-intl'
 import { Sale, Product } from '@/types'
 import { formatRupiah } from '@/lib/formulas'
 
@@ -23,24 +24,30 @@ interface TransactionListsProps {
 }
 
 export function TransactionLists({ transactions }: TransactionListsProps) {
+  const t = useTranslations('dashboard')
+
   // Pisahkan transaksi lunas dan belum lunas
-  const paidTxns = transactions.filter((t) => t.payment_status === 'Sudah')
-  const unpaidTxns = transactions.filter((t) => t.payment_status === 'Belum')
+  const paidTxns = transactions.filter((txn) => txn.payment_status === 'Sudah')
+  const unpaidTxns = transactions.filter((txn) => txn.payment_status === 'Belum')
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 font-['Inter']">
       {/* Tabel Transaksi Lunas */}
       <TransactionTable
-        title="Transaksi Lunas"
-        subtitle={`${paidTxns.length} transaksi`}
+        title={t('paidTransactions')}
+        subtitle={t('txnCount', { count: paidTxns.length })}
+        emptyText={t('noTransactions')}
+        moreText={(count: number) => t('moreTransactions', { count })}
         transactions={paidTxns}
         statusColor="emerald"
       />
 
       {/* Tabel Transaksi Belum Lunas */}
       <TransactionTable
-        title="Transaksi Belum Lunas"
-        subtitle={`${unpaidTxns.length} transaksi`}
+        title={t('unpaidTransactions')}
+        subtitle={t('txnCount', { count: unpaidTxns.length })}
+        emptyText={t('noTransactions')}
+        moreText={(count: number) => t('moreTransactions', { count })}
         transactions={unpaidTxns}
         statusColor="amber"
       />
@@ -54,11 +61,15 @@ export function TransactionLists({ transactions }: TransactionListsProps) {
 function TransactionTable({
   title,
   subtitle,
+  emptyText,
+  moreText,
   transactions,
   statusColor,
 }: {
   title: string
   subtitle: string
+  emptyText: string
+  moreText: (count: number) => string
   transactions: SaleWithProduct[]
   statusColor: 'emerald' | 'amber'
 }) {
@@ -83,7 +94,7 @@ function TransactionTable({
       {/* Body tabel */}
       {transactions.length === 0 ? (
         <div className="px-5 py-10 text-center">
-          <p className="text-zinc-400 text-sm">Tidak ada transaksi</p>
+          <p className="text-zinc-400 text-sm">{emptyText}</p>
         </div>
       ) : (
         <div className="max-h-[360px] overflow-y-auto">
@@ -123,7 +134,7 @@ function TransactionTable({
           {transactions.length > 20 && (
             <div className="px-5 py-3 border-t border-zinc-100 text-center">
               <p className="text-zinc-400 text-xs">
-                +{transactions.length - 20} transaksi lainnya
+                {moreText(transactions.length - 20)}
               </p>
             </div>
           )}

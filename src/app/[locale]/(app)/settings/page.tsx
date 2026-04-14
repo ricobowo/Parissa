@@ -13,10 +13,10 @@ export default function SettingsPage() {
 
   // Daftar menu pengaturan
   const settingsMenu = [
-    { href: 'settings/roles', label: t('roles'), desc: 'CRUD role & permission matrix' },
-    { href: 'settings/users', label: t('users'), desc: 'Tambah/edit/deaktivasi user' },
-    { href: '#', label: t('language'), desc: 'Ganti bahasa ID/EN' },
-    { href: '#', label: t('whatsapp'), desc: 'Konfigurasi notifikasi WA (Phase 1E)' },
+    { href: 'settings/roles', label: t('roles'), desc: t('rolesDesc') },
+    { href: 'settings/users', label: t('users'), desc: t('usersDesc') },
+    { href: '#', label: t('language'), desc: t('languageDesc') },
+    { href: '#', label: t('whatsapp'), desc: t('whatsappDesc') },
   ]
 
   return (

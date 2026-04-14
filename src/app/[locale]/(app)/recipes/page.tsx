@@ -10,6 +10,7 @@
 // ============================================================
 
 import { useState, useEffect, useCallback } from 'react'
+import { useTranslations } from 'next-intl'
 import { useSearchParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { Product, Ingredient, Recipe } from '@/types'
@@ -25,6 +26,7 @@ interface RecipeWithIngredient extends Recipe {
 }
 
 export default function RecipesPage() {
+  const t = useTranslations('recipes')
   const searchParams = useSearchParams()
 
   const [products, setProducts] = useState<Product[]>([])
@@ -78,7 +80,7 @@ export default function RecipesPage() {
 
     init().catch((err) => {
       console.error('Gagal memuat data awal resep:', err)
-      addToast({ title: 'Gagal memuat data.', variant: 'error' })
+      addToast({ title: t('initLoadFailed'), variant: 'error' })
       setLoadingInit(false)
     })
   }, [searchParams, addToast])
@@ -107,7 +109,7 @@ export default function RecipesPage() {
       setRecipes((data as RecipeWithIngredient[]) ?? [])
     } catch (err) {
       console.error('Gagal memuat resep:', err)
-      addToast({ title: 'Gagal memuat data resep.', variant: 'error' })
+      addToast({ title: t('recipesLoadFailed'), variant: 'error' })
     } finally {
       setLoadingRecipes(false)
     }
@@ -124,13 +126,13 @@ export default function RecipesPage() {
       {/* Header halaman — sesuai referensi HTML */}
       <div className="mb-6">
         <p className="text-blue-700 text-[10px] font-bold uppercase leading-4 tracking-wide mb-1">
-          CATALOG &amp; PROCUREMENT
+          {t('catalogProcurement')}
         </p>
         <h1 className="text-gray-800 text-3xl font-extrabold leading-9">
-          Resep / BOM
+          {t('title')}
         </h1>
         <p className="text-zinc-600 text-sm mt-1">
-          Kelola komposisi bahan baku per produk dan kalkulasi biaya
+          {t('description')}
         </p>
       </div>
 
@@ -154,10 +156,10 @@ export default function RecipesPage() {
                 <span className="text-lg">📋</span>
               </div>
               <p className="text-sm font-semibold text-gray-800 mb-1">
-                Pilih Produk
+                {t('selectProduct')}
               </p>
               <p className="text-xs text-zinc-400 text-center">
-                Pilih produk dari panel kiri untuk melihat atau mengedit resepnya
+                {t('selectProductHint')}
               </p>
             </div>
           ) : (
@@ -166,7 +168,7 @@ export default function RecipesPage() {
               <div className="flex items-center justify-between px-5 py-4 bg-white rounded-lg outline outline-1 outline-offset-[-1px] outline-zinc-100">
                 <div>
                   <p className="text-[10px] font-bold text-zinc-600 uppercase tracking-wide mb-0.5">
-                    Produk Terpilih
+                    {t('selectedProduct')}
                   </p>
                   <div className="flex items-center gap-2">
                     <h2 className="text-base font-bold text-gray-800">
@@ -179,7 +181,7 @@ export default function RecipesPage() {
                     )}
                   </div>
                   <p className="text-xs text-zinc-500 mt-0.5">
-                    Harga jual: <span className="font-bold text-blue-700">{formatRupiah(selectedProduct.selling_price)}</span>
+                    {t('sellingPriceLabel')} <span className="font-bold text-blue-700">{formatRupiah(selectedProduct.selling_price)}</span>
                   </p>
                 </div>
               </div>
@@ -187,7 +189,7 @@ export default function RecipesPage() {
               {/* Editor resep */}
               {loadingRecipes ? (
                 <div className="py-8 text-center text-sm text-zinc-400">
-                  Memuat resep...
+                  {t('loadingRecipes')}
                 </div>
               ) : (
                 <RecipeEditor
@@ -225,6 +227,7 @@ function ProductPickerPanel({
   selectedId: string
   onSelect: (id: string) => void
 }) {
+  const t = useTranslations('recipes')
   const activeProducts = products.filter((p) => p.is_active)
   const inactiveProducts = products.filter((p) => !p.is_active)
 
@@ -233,7 +236,7 @@ function ProductPickerPanel({
       {/* Header panel */}
       <div className="px-4 py-3 bg-neutral-50 border-b border-zinc-100">
         <p className="text-[10px] font-bold text-zinc-600 uppercase tracking-wide">
-          Pilih Produk
+          {t('selectProduct')}
         </p>
       </div>
 
@@ -242,7 +245,7 @@ function ProductPickerPanel({
         {activeProducts.length > 0 && (
           <>
             <div className="px-4 py-2 text-[10px] font-bold text-zinc-400 uppercase tracking-wide border-b border-zinc-100 bg-neutral-50/50">
-              Aktif ({activeProducts.length})
+              {t('activeCount', { count: activeProducts.length })}
             </div>
             {activeProducts.map((p) => (
               <ProductPickerItem
@@ -259,7 +262,7 @@ function ProductPickerPanel({
         {inactiveProducts.length > 0 && (
           <>
             <div className="px-4 py-2 text-[10px] font-bold text-zinc-400 uppercase tracking-wide border-t border-zinc-100 border-b bg-neutral-50/50">
-              Nonaktif ({inactiveProducts.length})
+              {t('inactiveCount', { count: inactiveProducts.length })}
             </div>
             {inactiveProducts.map((p) => (
               <ProductPickerItem
@@ -275,7 +278,7 @@ function ProductPickerPanel({
         {/* State kosong */}
         {products.length === 0 && (
           <div className="px-4 py-8 text-center text-xs text-zinc-400">
-            Belum ada produk
+            {t('noProductsYet')}
           </div>
         )}
       </div>
