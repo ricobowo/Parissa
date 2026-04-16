@@ -4,6 +4,97 @@ Semua perubahan penting pada proyek ini didokumentasikan di file ini.
 
 ---
 
+## [v0.12.0] — 2026-04-17
+
+### Ditambahkan — Phase 1D: Batching & Expiry Tracker (Task 16.0)
+- Halaman **Produksi** (`/batching`) — form batch + tabs List & Kalender Expiry
+- Komponen `BatchForm` — Zod validation, preview bahan dipotong (BOM × qty) real-time:
+  - Field: produk, batch_quantity (pcs), batch_date, expiration_date, notes
+  - Preview per-bahan: qty dibutuhkan vs tersedia, highlight merah jika shortage
+  - Tombol Simpan disable otomatis saat stok tidak cukup (selain guard DB)
+  - `batch_number` di-generate otomatis oleh trigger (format `PREFIX-YYYYMMDD-NN`)
+- Komponen `BatchList` — tabel batch dengan state-machine inline:
+  - Planned → In Progress → Completed (linear, divalidasi di DB)
+  - Planned / In Progress dapat ditandai Expired
+  - Badge expiry dengan sufiks sisa hari (mis. `10 Apr 2026 (2h lagi)`)
+  - Warna badge: H-1/expired = `--color-danger`, H-3 = `--color-warning`
+- Komponen `ExpiryCalendar` — grid 6×7 per bulan, navigator prev/next:
+  - Sel highlight background sesuai bucket (color-mix dengan bg agar soft)
+  - Sel hari ini dibatasi border `--color-accent`
+  - Nama produk ditampilkan di sel (max 2, sisanya `+N`)
+  - Legenda: expired, H-1, H-3, aman
+- Komponen dashboard `ExpiryAlerts` — card "Akan Kadaluarsa":
+  - Zero-noise: tidak dirender jika tidak ada batch H ≤ 3
+  - Hanya batch dengan status Planned / In Progress yang ditampilkan
+  - Link "Lihat semua" ke `/batching`
+- Migration `004_batching_triggers.sql`:
+  - `trg_generate_batch_number` (BEFORE INSERT) — auto-format nomor batch
+  - `trg_deduct_stock_on_batch` (AFTER INSERT) — potong stok bahan sesuai BOM
+    dengan guard stok negatif (raise exception P0001, pesan berbahasa Indonesia)
+  - `trg_guard_batch_status` (BEFORE UPDATE OF status) — state machine strict:
+    Completed/Expired = terminal; Planned hanya ke In Progress/Expired; In
+    Progress hanya ke Completed/Expired
+  - View `batches_with_expiry` — kolom computed `days_until_expiry` dan
+    `expiry_bucket` (expired/h1/h3/ok); "Expired" auto-flag sepenuhnya
+    computed (tidak mengubah kolom status)
+- Tipe baru di `types/index.ts`: `BatchStatus`, `ExpiryBucket`, `BatchWithExpiry`
+- Translations ID/EN lengkap untuk namespace `batching.*`
+- Semua warna via CSS variables (monokrom + fungsional, dark-mode ready)
+
+### Catatan teknis
+- Faktor deduct stok: `quantity_per_batch × (batch_quantity / pcs_per_batch)` —
+  resep disimpan per-batch, batch_quantity di schema adalah pcs yang diproduksi
+- Expiry tidak memakai cron/edge function — murni computed view (Phase 1 lean)
+- Kalender tanpa library eksternal (custom grid), konsisten dengan stack
+
+---
+
+## [v0.11.0] — 2026-04-17
+
+### Ditambahkan — Phase 1D: Purchase / Restock (Task 15.0)
+- Halaman **Pembelian** (`/purchases`) — form input pembelian + riwayat transaksi
+- Komponen `PurchaseForm` — form dengan Zod validation:
+  - Field: bahan (dropdown), qty, harga total, supplier, tanggal, catatan
+  - **Preview cost/unit realtime (Formula 5.7)** — update otomatis saat user isi qty+harga
+  - Mode inline panel (bukan modal) untuk pengalaman desktop yang lebih baik
+- Komponen `PurchaseHistoryTable` — tabel riwayat dengan cost/unit computed per baris
+- Filter riwayat: bahan (dropdown), supplier (search), rentang tanggal (from-to), tombol reset
+- **Auto-update stok** via trigger existing `trg_update_stock_on_purchase` (migration 001)
+  - Verifikasi: insert purchase → stok bahan bertambah sesuai `qty_purchased`
+- Translations ID/EN untuk seluruh modul `purchases.*`
+
+---
+
+## [v0.10.0] — 2026-04-17
+
+### Ditambahkan — Phase 1D: Stok & Bahan Baku (Task 14.0)
+- Halaman **Stok & Bahan** (`/stock`) — daftar bahan baku dengan status otomatis
+  - Tabel: nama, qty_available, unit, supplier, min level, status badge
+  - Filter status (Aman/Menipis/Habis) + search nama (client-side)
+  - Chip ringkasan: total, aman, menipis, habis
+  - Monokrom Notion-style, warna status via CSS variables (bukan hardcoded)
+- Komponen `StockStatusBadge` — dot + label, warna dari `--color-success/warning/danger`
+- Komponen `StockTable` — tabel responsif, no zebra stripe, border-bottom row separator
+- Komponen `MinLevelModal` — modal edit `minimum_stock_level` dengan validasi Zod
+  - Tombol "Ubah Min Level" hanya tampil untuk user dengan izin `stock.edit_min_level`
+- Migration `003_stock_integrity.sql`:
+  - **Guard stok negatif** di trigger deduct-on-sale → raise exception berbahasa Indonesia dengan nama bahan, stok tersedia & jumlah dibutuhkan
+  - **Void-sale restoration**: kolom `is_void`, `void_reason`, `voided_at`, `voided_by` di tabel sales + trigger `trg_restore_stock_on_void` yang mengembalikan stok saat sale di-void
+  - **Permission baru** `stock.edit_min_level` — default true hanya untuk Owner & Admin Keuangan
+  - Trigger `guard_min_stock_level_edit` memblokir perubahan `minimum_stock_level` tanpa izin khusus
+  - View `ingredients_with_status` — status dihitung di DB (konsisten dengan Formula 5.6)
+- Tipe baru `IngredientWithStatus` + permission key `stock.edit_min_level` di `src/types/index.ts`
+- Tambah 5 unit test edge case untuk `calcStockStatus`: qty=0, qty negatif, min=0, boundary desimal (total 31 tests pass)
+- Stok Navigasi: link `/stock` di Sidebar (sudah ada) + ditambahkan ke BottomTabs mobile
+- Translations ID/EN untuk seluruh modul stok (`stock.*`)
+
+### Keputusan desain
+- **Trigger DB vs application layer** untuk deduct/restore stok → memilih trigger DB karena atomicity + race-proof + integritas lintas jalur insert
+- **Guard stok negatif** via `RAISE EXCEPTION` (bukan CHECK constraint) → pesan user-friendly bilingual yang actionable di toast
+- **Permission `stock.edit_min_level` dipisah** dari permission `stock` umum karena perubahan threshold adalah keputusan strategis (pengaruh reorder + cashflow) dan rentan manipulasi
+
+---
+
 ## [v0.9.1] — 2026-04-16
 
 ### Ditambahkan — Phase 1C: Export ke Excel (Task 13.0)

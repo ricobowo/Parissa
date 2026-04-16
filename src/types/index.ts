@@ -55,6 +55,11 @@ export interface Ingredient {
   updated_at: string
 }
 
+// Ingredient + status dari view ingredients_with_status (Formula 5.6)
+export interface IngredientWithStatus extends Ingredient {
+  stock_status: StockStatus
+}
+
 // --- Recipe / BOM ---
 export interface Recipe {
   id: string
@@ -100,6 +105,8 @@ export interface ProfitCalculation {
 }
 
 // --- Batches ---
+export type BatchStatus = 'Planned' | 'In Progress' | 'Completed' | 'Expired'
+
 export interface Batch {
   id: string
   product_id: string
@@ -107,11 +114,19 @@ export interface Batch {
   batch_date: string
   batch_quantity: number
   expiration_date: string
-  status: 'Planned' | 'In Progress' | 'Completed' | 'Expired'
+  status: BatchStatus
   notes: string | null
   created_by: string | null
   created_at: string
   product?: Product
+}
+
+// Batch + kolom computed dari view batches_with_expiry
+export type ExpiryBucket = 'expired' | 'h1' | 'h3' | 'ok'
+export interface BatchWithExpiry extends Batch {
+  product_name: string | null
+  days_until_expiry: number
+  expiry_bucket: ExpiryBucket
 }
 
 // --- Purchases ---
@@ -193,3 +208,4 @@ export type ModulePermission =
   | 'reports'
   | 'customers'
   | 'settings'
+  | 'stock.edit_min_level'

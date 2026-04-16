@@ -28,6 +28,7 @@ import {
   DailySalesData,
 } from '@/components/dashboard/SalesCharts'
 import { TransactionLists } from '@/components/dashboard/TransactionLists'
+import { ExpiryAlerts } from '@/components/dashboard/ExpiryAlerts'
 
 // Tipe sale yang sudah join ke product
 interface SaleWithProduct extends Sale {
@@ -263,6 +264,13 @@ export default function DashboardPage() {
       {/* KPI Cards (FR-006) */}
       {/* ================================================================ */}
       {kpi && <KpiCards data={kpi} />}
+
+      {/* ================================================================ */}
+      {/* Expiry Alerts (Task 16.5) — hanya tampil jika ada batch H ≤ 3 */}
+      {/* ================================================================ */}
+      <div className="mt-6">
+        <ExpiryAlerts />
+      </div>
 
       {/* ================================================================ */}
       {/* Charts Section */}

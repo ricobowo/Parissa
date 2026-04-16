@@ -178,28 +178,28 @@ Update the file after completing each sub-task, not just after completing an ent
 
 ### Phase 1D — Stock, Batching, Customer (Minggu 7-8)
 
-- [ ] 14.0 Stock & Bahan Baku
-  - [ ] 14.1 Create ingredients list page — name, qty, unit, status (Aman/Menipis/Habis), min level
-  - [ ] 14.2 Implement auto status calculation (Formula 5.6) with color indicators
-  - [ ] 14.3 Implement auto stock deduction on sale (based on BOM × qty sold)
-  - [ ] 14.4 Implement auto stock increase on purchase/restock
-  - [ ] 14.5 Write unit tests for stock formulas
-  - [ ] 14.6 Update CHANGELOG.md
+- [x] 14.0 Stock & Bahan Baku
+  - [x] 14.1 Create ingredients list page — name, qty, unit, status (Aman/Menipis/Habis), min level
+  - [x] 14.2 Implement auto status calculation (Formula 5.6) with color indicators
+  - [x] 14.3 Implement auto stock deduction on sale (based on BOM × qty sold)
+  - [x] 14.4 Implement auto stock increase on purchase/restock
+  - [x] 14.5 Write unit tests for stock formulas
+  - [x] 14.6 Update CHANGELOG.md
 
-- [ ] 15.0 Purchase / Restock
-  - [ ] 15.1 Create purchase form — ingredient, qty, price, supplier, date, notes
-  - [ ] 15.2 Auto-calculate cost per unit (Formula 5.7)
-  - [ ] 15.3 Auto-update ingredient stock after purchase
-  - [ ] 15.4 Create purchase history page with filters (ingredient, supplier, date range)
-  - [ ] 15.5 Update CHANGELOG.md
+- [x] 15.0 Purchase / Restock
+  - [x] 15.1 Create purchase form — ingredient, qty, price, supplier, date, notes
+  - [x] 15.2 Auto-calculate cost per unit (Formula 5.7)
+  - [x] 15.3 Auto-update ingredient stock after purchase
+  - [x] 15.4 Create purchase history page with filters (ingredient, supplier, date range)
+  - [x] 15.5 Update CHANGELOG.md
 
-- [ ] 16.0 Batching & Expiry Tracker
-  - [ ] 16.1 Create batch form — product, qty, production date, expiry date, status, notes
-  - [ ] 16.2 Auto-deduct ingredient stock on batch creation (BOM × batch qty)
-  - [ ] 16.3 Create batch list with status management (Planned → In Progress → Completed → Expired)
-  - [ ] 16.4 Create Expiry Tracker calendar view — highlight H-3 (yellow) and H-1 (red)
-  - [ ] 16.5 Show expiry alerts on dashboard
-  - [ ] 16.6 Update CHANGELOG.md
+- [x] 16.0 Batching & Expiry Tracker
+  - [x] 16.1 Create batch form — product, qty, production date, expiry date, status, notes
+  - [x] 16.2 Auto-deduct ingredient stock on batch creation (BOM × batch qty)
+  - [x] 16.3 Create batch list with status management (Planned → In Progress → Completed → Expired)
+  - [x] 16.4 Create Expiry Tracker calendar view — highlight H-3 (yellow) and H-1 (red)
+  - [x] 16.5 Show expiry alerts on dashboard
+  - [x] 16.6 Update CHANGELOG.md
 
 - [ ] 17.0 Daily Production Planner
   - [ ] 17.1 Calculate avg sales per product (last 7 days) + pending pre-orders

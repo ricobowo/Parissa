@@ -13,9 +13,11 @@ import Link from 'next/link'
 
 // Tab yang tampil di mobile — prioritas berdasarkan frekuensi penggunaan
 // Maksimal 5 tab untuk thumb-friendly navigation
+// Urutan = prioritas; slice(0,5) mengambil tab tervisible teratas per role
 const MOBILE_TABS = [
   { key: 'dashboard', href: '', icon: '▦' },
   { key: 'pos', href: '/pos', icon: '◎' },
+  { key: 'stock', href: '/stock', icon: '▧' },
   { key: 'products', href: '/products', icon: '▤' },
   { key: 'reports', href: '/reports', icon: '▩' },
   { key: 'settings', href: '/settings', icon: '⚙' },

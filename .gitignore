@@ -71,3 +71,7 @@ sessions/sessions-state.json
 sessions/package.json
 sessions/transcripts/
 sessions/.archived/
+
+# Claude local config (jangan di-push — hanya ada di lokal)
+.claude/
+.claude-prompts/

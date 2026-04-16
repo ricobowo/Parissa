@@ -150,6 +150,26 @@ describe('calcStockStatus', () => {
     expect(calcStockStatus({ qtyAvailable: 201, minStockLevel: 100 })).toBe('Aman')
     expect(calcStockStatus({ qtyAvailable: 500, minStockLevel: 100 })).toBe('Aman')
   })
+
+  it('Habis saat qty = 0 (edge case bahan habis total)', () => {
+    expect(calcStockStatus({ qtyAvailable: 0, minStockLevel: 100 })).toBe('Habis')
+  })
+
+  it('Habis saat qty negatif (defensive — data corruption guard)', () => {
+    // Stok tidak seharusnya negatif, tapi jika terjadi harus flagged
+    expect(calcStockStatus({ qtyAvailable: -10, minStockLevel: 100 })).toBe('Habis')
+  })
+
+  it('menangani minStockLevel = 0 (bahan tanpa threshold)', () => {
+    // qty > 0 → Aman, qty = 0 → Habis
+    expect(calcStockStatus({ qtyAvailable: 5, minStockLevel: 0 })).toBe('Aman')
+    expect(calcStockStatus({ qtyAvailable: 0, minStockLevel: 0 })).toBe('Habis')
+  })
+
+  it('boundary pecahan desimal', () => {
+    expect(calcStockStatus({ qtyAvailable: 100.01, minStockLevel: 100 })).toBe('Menipis')
+    expect(calcStockStatus({ qtyAvailable: 200.01, minStockLevel: 100 })).toBe('Aman')
+  })
 })
 
 // -------------------------------------------------------------------
