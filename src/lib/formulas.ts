@@ -224,6 +224,25 @@ export function calcMinSellingPrice(params: {
 }
 
 // -------------------------------------------------------------------
+// 5.12 — Pertumbuhan Month-over-Month (%)
+// growth = ((current - previous) / previous) × 100
+// Jika previous = 0 dan current > 0, return 100 (naik penuh)
+// Jika keduanya 0, return 0
+// -------------------------------------------------------------------
+export function calcGrowthPercent(params: {
+  current: number
+  previous: number
+}): number {
+  const { current, previous } = params
+
+  if (previous === 0) {
+    return current > 0 ? 100 : 0
+  }
+
+  return ((current - previous) / Math.abs(previous)) * 100
+}
+
+// -------------------------------------------------------------------
 // Helper: Format Rupiah
 // -------------------------------------------------------------------
 export function formatRupiah(amount: number): string {

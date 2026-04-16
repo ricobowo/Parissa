@@ -4,6 +4,53 @@ Semua perubahan penting pada proyek ini didokumentasikan di file ini.
 
 ---
 
+## [v0.9.1] — 2026-04-16
+
+### Ditambahkan — Phase 1C: Export ke Excel (Task 13.0)
+- Utility `src/lib/export.ts` — `generateExcelBuffer()`, `downloadExcel()`, `buildExportFilename()`, `formatRupiahExcel()`
+  - Multi-sheet support (Sheet 1: Ringkasan, Sheet 2+: Detail)
+  - Auto-width kolom berdasarkan konten
+  - Format Rupiah: "Rp 1.000.000" (string, bukan number)
+  - Nama file standar: `Parissa-[Tipe]-[YYYY-MM].xlsx`
+- Tombol **"Export Excel"** di halaman laporan (profit report & monthly report)
+  - Export respek filter aktif (periode, produk, status bayar)
+  - Profit export: 2 sheet (Ringkasan + Detail per Produk)
+  - Monthly export: 3 sheet (Ringkasan + Penjualan Harian + Distribusi Produk)
+- **12 unit tests** di `src/lib/export.test.ts` — semua pass
+  - Test: format Rupiah, nama file, buffer valid, multi-sheet, data kosong, autoWidth
+- Setup Jest + ts-jest dengan `tsconfig.jest.json` terpisah
+- Install `xlsx` (SheetJS) v0.18.5 sebagai dependency
+
+---
+
+## [v0.9.0] — 2026-04-16
+
+### Ditambahkan — Phase 1C: Laporan Profit & Bulanan (Task 12.0)
+- Halaman **Laporan** (`/reports`) — 2 tab: Laporan Profit & Laporan Bulanan
+- Komponen `ReportFilters` — Filter periode (12 bulan terakhir), produk, status bayar
+- Komponen `ProfitSummaryCards` (12.1) — 3 kartu: Total Revenue, Total Cost, Total Profit
+  - Indikator pertumbuhan month-over-month (arrow + persentase hijau/merah)
+- Komponen `ProfitMarginTable` (12.2) — Tabel margin per produk:
+  - Kolom: Produk, Revenue, Cost, Profit, Margin %, Unit terjual
+  - Baris total di footer, angka monospace JetBrains Mono
+  - Style: no zebra stripe, gray border-bottom separator
+- Komponen `MonthlyCharts` (12.3) — 3 chart interaktif:
+  - **Bar chart**: Penjualan harian dalam 1 bulan
+  - **Line chart**: Trend revenue & profit (dual line, dashed profit)
+  - **Pie chart**: Distribusi produk (grayscale + blue aksen)
+- Month-over-month comparison (12.4) — Growth % pada summary cards dan monthly summary
+- Summary metrics (12.5) — 4 kartu: Total Revenue, Growth %, Best Seller, Avg Txns/Hari
+- Formula baru `calcGrowthPercent` di `formulas.ts` (5.12)
+- Translation keys namespace `reports` di `id.json` dan `en.json` (~40 keys per locale)
+- Tab navigation underline style (monokrom, bukan pill/button)
+- Data dari Supabase: query `sales` + `profit_calculations` + `products`, aggregate client-side
+- Fully responsive: scroll pada mobile, grid layout desktop
+
+### Diperbaiki
+- Install `@types/jest` yang hilang dari devDependencies (pre-existing build error)
+
+---
+
 ## [v0.8.1] — 2026-04-14
 
 ### Diperbaiki — Task 4.5: Verifikasi Bilingual (ID/EN)

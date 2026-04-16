@@ -160,21 +160,21 @@ Update the file after completing each sub-task, not just after completing an ent
   - [x] 11.7 Make dashboard fully responsive (scroll cards mobile, grid desktop)
   - [x] 11.8 Update CHANGELOG.md
 
-- [ ] 12.0 Laporan Profit & Bulanan
-  - [ ] 12.1 Create profit report page — Total Revenue, Cost, Profit with filters (period, product, payment status)
-  - [ ] 12.2 Create profit margin per product table
-  - [ ] 12.3 Create monthly report page — bar chart daily sales, line chart revenue+profit trend, pie chart product distribution
-  - [ ] 12.4 Implement month-over-month comparison (this month vs last month, growth %)
-  - [ ] 12.5 Create summary metrics: total revenue, growth %, best seller, avg daily transactions
-  - [ ] 12.6 Update CHANGELOG.md
+- [x] 12.0 Laporan Profit & Bulanan
+  - [x] 12.1 Create profit report page — Total Revenue, Cost, Profit with filters (period, product, payment status)
+  - [x] 12.2 Create profit margin per product table
+  - [x] 12.3 Create monthly report page — bar chart daily sales, line chart revenue+profit trend, pie chart product distribution
+  - [x] 12.4 Implement month-over-month comparison (this month vs last month, growth %)
+  - [x] 12.5 Create summary metrics: total revenue, growth %, best seller, avg daily transactions
+  - [x] 12.6 Update CHANGELOG.md
 
-- [ ] 13.0 Export ke Excel
-  - [ ] 13.1 Install and configure SheetJS (xlsx library)
-  - [ ] 13.2 Create export utility (`src/lib/export.ts`) — accepts data array, generates .xlsx with Rupiah formatting
-  - [ ] 13.3 Add "Export ke Excel" button to all report pages
-  - [ ] 13.4 Ensure export respects active filters
-  - [ ] 13.5 Write unit tests for export utility
-  - [ ] 13.6 Update CHANGELOG.md
+- [x] 13.0 Export ke Excel
+  - [x] 13.1 Install and configure SheetJS (xlsx library)
+  - [x] 13.2 Create export utility (`src/lib/export.ts`) — accepts data array, generates .xlsx with Rupiah formatting
+  - [x] 13.3 Add "Export ke Excel" button to all report pages
+  - [x] 13.4 Ensure export respects active filters
+  - [x] 13.5 Write unit tests for export utility
+  - [x] 13.6 Update CHANGELOG.md
 
 ### Phase 1D — Stock, Batching, Customer (Minggu 7-8)
 
