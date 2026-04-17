@@ -4,7 +4,7 @@
 > Dibangun untuk UMKM & retail kecil-menengah di Indonesia.
 
 **Branch:** `feature/parissa-pos-mvp`
-**Versi saat ini:** `v0.13.0`
+**Versi saat ini:** `v0.14.0`
 **Status:** 🚧 Active Development — Phase 1 (Target selesai: awal Juli 2026)
 **Repository:** https://github.com/ricobowo/Parissa.git
 
@@ -109,8 +109,8 @@ sessions/           # cc-sessions task files
 - [x] **Phase 1B — Core POS & Produk** — POS form, quick-sale grid, produk CRUD, resep, pre-order
 - [x] **Phase 1C — Dashboard & Laporan** — Metrik, charts, export Excel, laporan bulanan
 - [x] **Phase 1D — Stok, Batching, Planner** — Stok, purchase, batching, expiry tracker, daily production planner (Formula 5.10)
-- [ ] **Phase 1D (lanjutan)** — Customer database, CRM, waste tracking, audit trail
-- [ ] **Phase 1E — Polish & WhatsApp** — Riwayat transaksi lengkap, notif Fonnte, UAT, deploy
+- [x] **Phase 1D (lanjutan)** — Customer database & CRM (label, overdue, follow-up history), waste tracking (Formula 5.9 + adjusted profit), audit trail 10 tabel, riwayat transaksi
+- [ ] **Phase 1E — Polish & WhatsApp** — Notif Fonnte, UAT, deploy production
 
 Detail changelog: [CHANGELOG.md](./CHANGELOG.md)
 Detail rules & arsitektur: [CLAUDE.md](./CLAUDE.md)
@@ -148,7 +148,9 @@ Design tokens didefinisikan sebagai CSS variables — komponen tidak boleh hardc
 
 ## 📊 Database
 
-Tabel utama: `roles`, `users`, `products`, `ingredients`, `recipes`, `sales`, `profit_calculations`, `batches`, `purchases`, `customers`, `waste_logs`, `audit_logs`, `stock_notifications`.
+Tabel utama: `roles`, `users`, `products`, `ingredients`, `recipes`, `sales`, `profit_calculations`, `batches`, `purchases`, `customers`, `customer_labels`, `sales_followups`, `waste_logs`, `audit_logs`, `stock_notifications`.
+
+Views: `ingredients_with_status`, `batches_with_expiry`, `daily_production_planner`, `customer_stats`, `overdue_payments`, `profit_report_with_waste`.
 
 - Primary key: UUID (`gen_random_uuid()`)
 - Row Level Security (RLS) per role

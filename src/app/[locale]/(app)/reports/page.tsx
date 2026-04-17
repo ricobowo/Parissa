@@ -40,6 +40,14 @@ interface SaleWithDetails extends Sale {
 // Tab aktif
 type ReportTab = 'profit' | 'monthly'
 
+// Row waste untuk agregasi bulanan (subset kolom yang dibutuhkan)
+interface WasteAggRow {
+  waste_cost: number
+  quantity: number
+  product_id: string
+  date: string
+}
+
 export default function ReportsPage() {
   const t = useTranslations('reports')
   const { toast: addToast } = useToast()
@@ -61,6 +69,8 @@ export default function ReportsPage() {
 
   // --- Data bulan sebelumnya (untuk growth comparison) ---
   const [prevMonthSales, setPrevMonthSales] = useState<SaleWithDetails[]>([])
+  // --- Waste logs bulan ini (Task 19.3 — adjusted profit) ---
+  const [wasteLogs, setWasteLogs] = useState<WasteAggRow[]>([])
 
   // Hitung range tanggal dari filter bulan
   const getDateRange = useCallback((monthStr: string) => {
@@ -88,8 +98,8 @@ export default function ReportsPage() {
         : `${year}-${String(month - 1).padStart(2, '0')}`
       const prevRange = getDateRange(prevMonth)
 
-      // Fetch paralel: sales bulan ini, sales bulan lalu, products
-      const [salesRes, prevSalesRes, prodRes] = await Promise.all([
+      // Fetch paralel: sales bulan ini, sales bulan lalu, products, waste bulan ini
+      const [salesRes, prevSalesRes, prodRes, wasteRes] = await Promise.all([
         supabase
           .from('sales')
           .select('*, product:products (*), profit_calculations (*)')
@@ -106,7 +116,16 @@ export default function ReportsPage() {
           .select('*')
           .eq('is_active', true)
           .order('name'),
+        supabase
+          .from('waste_logs')
+          .select('waste_cost, quantity, product_id, date')
+          .gte('date', start)
+          .lte('date', end),
       ])
+
+      if (wasteRes.data) {
+        setWasteLogs(wasteRes.data as WasteAggRow[])
+      }
 
       if (salesRes.data) {
         // Transform data — profit_calculations adalah array dari join, ambil elemen pertama
@@ -197,6 +216,21 @@ export default function ReportsPage() {
         : null,
     }
   }, [filteredSales, prevMonthSales])
+
+  // --- Waste summary (Formula 5.9 — adjusted profit) ---
+  const wasteSummary = useMemo(() => {
+    // Filter berdasarkan productId bila ada
+    const scoped = filters.productId === 'all'
+      ? wasteLogs
+      : wasteLogs.filter((w) => w.product_id === filters.productId)
+    const totalCost = scoped.reduce((sum, w) => sum + Number(w.waste_cost), 0)
+    const totalQty = scoped.reduce((sum, w) => sum + w.quantity, 0)
+    return {
+      totalWasteCost: totalCost,
+      totalWasteQty: totalQty,
+      adjustedProfit: profitSummary.totalProfit - totalCost,
+    }
+  }, [wasteLogs, filters.productId, profitSummary.totalProfit])
 
   // --- PROFIT TAB: Tabel margin per produk ---
   const profitByProduct: ProductProfitRow[] = useMemo(() => {
@@ -321,6 +355,8 @@ export default function ReportsPage() {
       { Metrik: t('totalRevenue'), Nilai: formatRupiahExcel(profitSummary.totalRevenue) },
       { Metrik: t('totalCost'), Nilai: formatRupiahExcel(profitSummary.totalCost) },
       { Metrik: t('totalProfit'), Nilai: formatRupiahExcel(profitSummary.totalProfit) },
+      { Metrik: 'Total Waste Cost', Nilai: formatRupiahExcel(wasteSummary.totalWasteCost) },
+      { Metrik: 'Adjusted Profit', Nilai: formatRupiahExcel(wasteSummary.adjustedProfit) },
     ]
 
     // Sheet 2: Detail margin per produk
@@ -341,7 +377,7 @@ export default function ReportsPage() {
       ],
       autoWidth: true,
     })
-  }, [profitSummary, profitByProduct, filters.month, t])
+  }, [profitSummary, profitByProduct, wasteSummary, filters.month, t])
 
   // --- Export handler: monthly report ---
   const handleExportMonthly = useCallback(() => {
@@ -457,6 +493,24 @@ export default function ReportsPage() {
           {/* 12.1 — Summary cards dengan growth indicator */}
           <ProfitSummaryCards data={profitSummary} />
 
+          {/* 19.3 — Waste cost & adjusted profit (Formula 5.9) */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <WasteCard
+              label="Total Waste Cost"
+              value={formatRupiah(wasteSummary.totalWasteCost)}
+              tone="danger"
+            />
+            <WasteCard
+              label="Total Unit Waste"
+              value={`${wasteSummary.totalWasteQty} pcs`}
+            />
+            <WasteCard
+              label="Adjusted Profit"
+              value={formatRupiah(wasteSummary.adjustedProfit)}
+              tone={wasteSummary.adjustedProfit >= 0 ? 'success' : 'danger'}
+            />
+          </div>
+
           {/* 12.2 — Tabel margin per produk */}
           <ProfitMarginTable data={profitByProduct} />
         </div>
@@ -466,7 +520,7 @@ export default function ReportsPage() {
       {/* Tab Content: Monthly Report */}
       {/* ================================================================ */}
       {activeTab === 'monthly' && (
-        <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-6">{/* Monthly tab content */}
           {/* 12.5 — Summary metrics */}
           <MonthlySummaryCards data={monthlySummary} />
 
@@ -485,5 +539,43 @@ export default function ReportsPage() {
         </div>
       )}
     </main>
+  )
+}
+
+// -------------------------------------------------------------------
+// Kartu kecil untuk metrik waste (monokrom, tone via CSS variable)
+// -------------------------------------------------------------------
+function WasteCard({
+  label,
+  value,
+  tone = 'default',
+}: {
+  label: string
+  value: string
+  tone?: 'default' | 'danger' | 'success'
+}) {
+  const toneMap: Record<string, string> = {
+    default: 'var(--color-text)',
+    danger: 'var(--color-danger)',
+    success: 'var(--color-success)',
+  }
+  return (
+    <div
+      className="px-4 py-3 rounded-md border flex flex-col gap-1"
+      style={{ borderColor: 'var(--color-border)', background: 'var(--color-bg)' }}
+    >
+      <span
+        className="text-[10px] font-bold uppercase tracking-wide"
+        style={{ color: 'var(--color-text-secondary)' }}
+      >
+        {label}
+      </span>
+      <span
+        className="text-base font-bold font-mono tabular-nums"
+        style={{ color: toneMap[tone] }}
+      >
+        {value}
+      </span>
+    </div>
   )
 }

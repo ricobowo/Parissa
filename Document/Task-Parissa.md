@@ -207,21 +207,21 @@ Update the file after completing each sub-task, not just after completing an ent
   - [x] 17.3 Display recommendation card on production staff dashboard
   - [x] 17.4 Update CHANGELOG.md
 
-- [ ] 18.0 Customer Database & CRM
-  - [ ] 18.1 Auto-populate customers table from sales (upsert on customer_name)
-  - [ ] 18.2 Create customer list page — name, total txns, total spending, favorite product, last purchase
-  - [ ] 18.3 Allow label assignment (VIP, Regular, custom labels)
-  - [ ] 18.4 Create overdue payment list — transactions "Belum" > 3 days (FR-054)
-  - [ ] 18.5 Allow marking as "Followed-up" or "Bad debt"
-  - [ ] 18.6 Update CHANGELOG.md
+- [x] 18.0 Customer Database & CRM
+  - [x] 18.1 Auto-populate customers table from sales (upsert on customer_name)
+  - [x] 18.2 Create customer list page — name, total txns, total spending, favorite product, last purchase
+  - [x] 18.3 Allow label assignment (VIP, Regular, custom labels)
+  - [x] 18.4 Create overdue payment list — transactions "Belum" > 3 days (FR-054)
+  - [x] 18.5 Allow marking as "Followed-up" or "Bad debt"
+  - [x] 18.6 Update CHANGELOG.md
 
-- [ ] 19.0 Waste Tracking & Audit Trail
-  - [ ] 19.1 Create waste log form — product, qty, reason (Expired/Damaged/Sample/Other), date
-  - [ ] 19.2 Auto-calculate waste cost (Formula 5.9)
-  - [ ] 19.3 Include waste in profit reports (adjusted_profit = profit - waste_cost)
-  - [ ] 19.4 Implement audit trail — log INSERT/UPDATE/DELETE on key tables with old/new values
-  - [ ] 19.5 Create transaction history page with search and filters
-  - [ ] 19.6 Update CHANGELOG.md
+- [x] 19.0 Waste Tracking & Audit Trail
+  - [x] 19.1 Create waste log form — product, qty, reason (Expired/Damaged/Sample/Other), date
+  - [x] 19.2 Auto-calculate waste cost (Formula 5.9)
+  - [x] 19.3 Include waste in profit reports (adjusted_profit = profit - waste_cost)
+  - [x] 19.4 Implement audit trail — log INSERT/UPDATE/DELETE on key tables with old/new values
+  - [x] 19.5 Create transaction history page with search and filters
+  - [x] 19.6 Update CHANGELOG.md
 
 ### Phase 1E — Polish & WhatsApp (Minggu 9-10)
 

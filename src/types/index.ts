@@ -90,6 +90,13 @@ export interface Sale {
   created_by: string | null
   created_at: string
   updated_at: string
+  // Soft-delete (migration 003)
+  is_void: boolean
+  void_reason: string | null
+  voided_at: string | null
+  voided_by: string | null
+  // Follow-up status (migration 007)
+  followup_status: 'pending' | 'followed_up' | 'bad_debt' | 'paid' | null
   product?: Product
   profit_calculation?: ProfitCalculation
 }
@@ -222,4 +229,71 @@ export type ModulePermission =
   | 'reports'
   | 'customers'
   | 'settings'
+  | 'waste'
+  | 'history'
+  | 'audit'
   | 'stock.edit_min_level'
+
+// --- Customer Labels (master data) ---
+export type CustomerLabelColor =
+  | 'gray' | 'blue' | 'green' | 'orange' | 'red' | 'purple'
+
+export interface CustomerLabel {
+  id: string
+  name: string
+  color: CustomerLabelColor
+  is_system: boolean
+  created_at: string
+  updated_at: string
+}
+
+// Row dari view customer_stats — customer + favorite product + label color
+export interface CustomerStats extends Customer {
+  favorite_product_id: string | null
+  favorite_product_name: string | null
+  label_color: CustomerLabelColor | null
+}
+
+// --- Sales Followups (CRM history) ---
+export type FollowupAction =
+  | 'followed_up' | 'marked_bad_debt' | 'payment_received'
+  | 'note_added' | 'reopened'
+
+export type FollowupStatus =
+  | 'pending' | 'followed_up' | 'bad_debt' | 'paid'
+
+export interface SalesFollowup {
+  id: string
+  sale_id: string
+  action: FollowupAction
+  notes: string | null
+  created_by: string | null
+  created_at: string
+}
+
+// Row dari view overdue_payments
+export interface OverduePayment {
+  sale_id: string
+  sale_date: string
+  customer_name: string
+  customer_phone: string | null
+  product_name: string
+  amount: number
+  sale_price: number
+  payment_status: 'Belum'
+  notes: string | null
+  followup_status: FollowupStatus | null
+  days_overdue: number
+  created_at: string
+}
+
+// --- Profit Report With Waste (view row) ---
+export interface ProfitReportWithWaste {
+  date: string
+  total_revenue: number
+  total_cost: number
+  total_profit: number
+  total_waste_cost: number
+  total_waste_qty: number
+  adjusted_profit: number
+}

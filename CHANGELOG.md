@@ -4,6 +4,81 @@ Semua perubahan penting pada proyek ini didokumentasikan di file ini.
 
 ---
 
+## [v0.14.0] — 2026-04-17
+
+### Ditambahkan — Phase 1D: Customer CRM, Waste Tracking, Audit Trail, History (Task 18.0 & 19.0)
+
+**Task 18.0 — Customer Database & CRM**
+- Halaman `/customers` baru dengan 2 tab:
+  - **Daftar Pelanggan** — dari view `customer_stats`: nama, telepon, label
+    (VIP/Regular/custom), total transaksi, total belanja, produk favorit,
+    terakhir beli. Search nama + filter label.
+  - **Piutang Overdue** — dari view `overdue_payments`: transaksi `Belum` bayar
+    > 3 hari (PRD Section 5.10). Highlight kuning-oranye.
+- Dialog edit label pelanggan (+ notes internal). Pilihan label dari master
+  `customer_labels` (bisa di-manage, punya warna).
+- Aksi CRM overdue: **Mark Followed-up / Mark Bad Debt / Mark Paid**.
+  Setiap aksi tercatat di tabel history `sales_followups` (action, notes,
+  created_by, timestamp). "Mark Paid" juga update `payment_status='Sudah'`.
+- Auto-upsert customer dari transaksi (trigger sudah ada sejak v0.1).
+
+**Task 19.0 — Waste Tracking & Audit Trail**
+- Halaman `/waste` baru — catat waste/spoilage dengan form (produk, qty,
+  alasan: Expired/Damaged/Sample/Other, tanggal, catatan).
+- `waste_cost` dihitung otomatis oleh DB trigger (**Formula 5.9**:
+  `quantity × cost_per_unit`) — client kirim `0`, trigger overwrite.
+- **Adjusted profit** di halaman Laporan: 3 kartu baru (Total Waste Cost,
+  Total Unit Waste, Adjusted Profit) + dimasukkan ke Excel export.
+- **Audit trail generic** — trigger `trigger_audit_row` pasang ke 10 tabel
+  bisnis inti (sales, products, ingredients, batches, purchases, recipes,
+  waste_logs, customers, roles, users). Catat INSERT/UPDATE/DELETE lengkap
+  dengan old/new JSONB dan user yang mengubah.
+- Halaman `/history` baru — riwayat transaksi dengan search teks, filter
+  status bayar (Sudah/Belum/Void), filter tipe (Direct/Pre-order), date range.
+
+### Database
+- Migration `007_customer_crm.sql`:
+  - Tabel master `customer_labels` (name, color, is_system) + seed VIP/Regular/New.
+  - Kolom `sales.followup_status` (pending/followed_up/bad_debt/paid) + CHECK constraint.
+  - Tabel `sales_followups` — history aksi CRM (immutable; no UPDATE/DELETE policy).
+  - Trigger `trigger_sync_sale_followup_status` — sync `sales.followup_status`.
+  - View `customer_stats` — agregasi customer + favorite product + label color.
+  - View `overdue_payments` — list piutang > 3 hari, exclude paid/bad_debt.
+- Migration `008_waste_and_audit.sql`:
+  - `trigger_calculate_waste_cost` (BEFORE INSERT) — Formula 5.9.
+  - `trigger_audit_row` — generic audit logger (skip update yang hanya ubah `updated_at`).
+  - Pasang trigger audit ke 10 tabel bisnis inti.
+  - View `profit_report_with_waste` — total_profit, total_waste_cost, adjusted_profit per hari.
+  - Permission baru: `waste`, `audit`, `history` (Owner: 3, Produksi: waste+history, Admin Keuangan: history).
+- Helper `current_app_user_id()` resolve `auth.uid()` untuk audit logger.
+
+### Komponen baru
+- `src/components/customers/CustomerTable.tsx`, `LabelBadge.tsx`,
+  `LabelDialog.tsx`, `OverdueList.tsx`
+- `src/components/waste/WasteForm.tsx`, `WasteTable.tsx`
+- `src/lib/utils.ts` — helper `formatRupiah()` dan `formatDate()` (Inter locale).
+
+### UI/Nav
+- Sidebar menu baru: **Waste** (`/waste`), **Riwayat** (`/history`).
+- Types baru: `CustomerLabel`, `CustomerStats`, `SalesFollowup`, `FollowupAction`,
+  `FollowupStatus`, `OverduePayment`, `ProfitReportWithWaste`.
+- i18n ID/EN: namespace `customers.*`, `waste.*`, `history.*` — seluruh label,
+  placeholder, error message bilingual.
+
+### Keputusan desain
+- **Label pelanggan = tabel master terpisah** (`customer_labels`) bukan enum —
+  agar user bisa tambah/edit/hapus label di Settings; label bawaan `is_system=true`
+  tidak bisa dihapus. Kolom `customers.label` tetap VARCHAR (soft link ke nama).
+- **Follow-up = tabel history terpisah** (`sales_followups`) dengan kolom cache
+  `sales.followup_status` — agar query list overdue cepat, tapi history audit
+  tetap lengkap. Tidak ada policy UPDATE/DELETE di `sales_followups`.
+- **Audit trigger skip updated_at-only changes** — mencegah noise saat trigger
+  lain (mis. `trigger_set_updated_at`) jalan.
+- **Halaman `/history` terpisah dari `/pos`** — POS dioptimalkan < 30 detik
+  quick-sale; history untuk analisis/audit (search, filter, export).
+
+---
+
 ## [v0.13.0] — 2026-04-17
 
 ### Ditambahkan — Phase 1D: Daily Production Planner (Task 17.0)

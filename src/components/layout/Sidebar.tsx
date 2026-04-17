@@ -26,6 +26,8 @@ const NAV_ITEMS = [
   { key: 'reports', href: '/reports', icon: '▩' },
   { key: 'customers', href: '/customers', icon: '◉' },
   { key: 'preorders', href: '/preorders', icon: '◐' },
+  { key: 'waste', href: '/waste', icon: '✕' },
+  { key: 'history', href: '/history', icon: '◷' },
   { key: 'settings', href: '/settings', icon: '⚙' },
 ] as const
 
