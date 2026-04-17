@@ -29,6 +29,7 @@ import {
 } from '@/components/dashboard/SalesCharts'
 import { TransactionLists } from '@/components/dashboard/TransactionLists'
 import { ExpiryAlerts } from '@/components/dashboard/ExpiryAlerts'
+import { DailyProductionPlanner } from '@/components/dashboard/DailyProductionPlanner'
 
 // Tipe sale yang sudah join ke product
 interface SaleWithProduct extends Sale {
@@ -270,6 +271,14 @@ export default function DashboardPage() {
       {/* ================================================================ */}
       <div className="mt-6">
         <ExpiryAlerts />
+      </div>
+
+      {/* ================================================================ */}
+      {/* Daily Production Planner (Task 17.0) — Formula 5.10 PRD */}
+      {/* Zero-noise & permission-gated (hanya role dgn izin 'batching')   */}
+      {/* ================================================================ */}
+      <div className="mt-6">
+        <DailyProductionPlanner />
       </div>
 
       {/* ================================================================ */}

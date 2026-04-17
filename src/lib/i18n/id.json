@@ -339,6 +339,24 @@
     },
     "noIngredientsDeducted": "Produk belum punya resep — stok tidak akan dipotong."
   },
+  "planner": {
+    "title": "Rekomendasi Produksi Hari Ini",
+    "subtitle": "Berdasarkan rata-rata penjualan 7 hari terakhir + pre-order",
+    "product": "Produk",
+    "avg7d": "Avg 7 hari",
+    "preorder": "Pre-order",
+    "stock": "Stok Siap",
+    "recommended": "Rekomendasi",
+    "batch": "batch",
+    "batches": "batch",
+    "pcs": "pcs",
+    "pcsPerBatch": "pcs/batch",
+    "createBatch": "Buat Batch",
+    "noRecommendation": "Semua produk stoknya cukup.",
+    "noRecipe": "Belum ada resep — tidak bisa dihitung.",
+    "loadFailed": "Gagal memuat rekomendasi produksi.",
+    "footnote": "Stok Siap = batch \"Completed\" yang belum kadaluarsa."
+  },
   "reports": {
     "title": "Laporan",
     "profitReport": "Laporan Profit",

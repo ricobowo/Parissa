@@ -4,6 +4,39 @@ Semua perubahan penting pada proyek ini didokumentasikan di file ini.
 
 ---
 
+## [v0.13.0] — 2026-04-17
+
+### Ditambahkan — Phase 1D: Daily Production Planner (Task 17.0)
+- Komponen dashboard `DailyProductionPlanner` — rekomendasi produksi harian:
+  - Tabel per produk: Avg 7d, Pre-order, Stok Siap, Rekomendasi (batch)
+  - Perkiraan total pcs (rekomendasi × pcs_per_batch) di bawah nilai batch
+  - Badge peringatan "Belum ada resep" jika produk tidak punya BOM
+  - Permission gate: hanya user dgn izin `batching` (Owner & Produksi default)
+  - Zero-noise: card hide total jika tidak ada rekomendasi > 0
+  - Link "Buat Batch →" ke halaman `/batching`
+- Migration `006_production_planner.sql` — view `daily_production_planner`:
+  - `avg_sales_7d` = SUM(amount) sales 7 hari terakhir / 7 (exclude void)
+  - `pending_preorders` = SUM(amount) sale_type='Pre-order' & status
+    Pending/Confirmed & pre_order_date >= hari ini
+  - `current_stock` = SUM(batch_quantity) batches Completed belum expired
+  - `pcs_per_batch` = MAX(recipes.pcs_per_batch) per produk
+  - `recommended_batches` = **Formula 5.10**:
+    CEIL((avg_sales_7d + pending_preorders - current_stock) / pcs_per_batch),
+    min 0; juga 0 bila produk belum punya resep
+  - `shortfall` — selisih kebutuhan sebelum dibagi batch (untuk transparansi)
+- Tipe baru `ProductionRecommendation` di `types/index.ts`
+- Translations ID/EN untuk namespace `planner.*`
+
+### Keputusan desain
+- **View DB vs client-side**: pilih view DB (satu sumber kebenaran, konsisten
+  dengan pola `ingredients_with_status` & `batches_with_expiry`)
+- **Reuse permission `batching`**: tidak bikin key baru agar tidak proliferasi
+  (Owner & Produksi sudah punya akses produksi)
+- **Current stock = batch Completed belum expired** (PRD 5.7): stok produk jadi
+  yang siap dijual, bukan kapasitas produksi
+
+---
+
 ## [v0.12.2] — 2026-04-17
 
 ### Ditambahkan — Dokumentasi

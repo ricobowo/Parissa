@@ -121,6 +121,20 @@ export interface Batch {
   product?: Product
 }
 
+// --- Daily Production Planner (Formula 5.10) ---
+// Row dari view daily_production_planner — 1 baris per produk aktif.
+export interface ProductionRecommendation {
+  product_id: string
+  product_name: string
+  product_active: boolean
+  avg_sales_7d: number        // rata-rata harian 7 hari terakhir
+  pending_preorders: number   // qty pre-order Pending/Confirmed ke depan
+  current_stock: number       // batch Completed belum expired
+  pcs_per_batch: number       // dari recipes; 0 = belum punya resep
+  shortfall: number           // selisih kebutuhan (sebelum dibagi batch)
+  recommended_batches: number // hasil Formula 5.10
+}
+
 // Batch + kolom computed dari view batches_with_expiry
 export type ExpiryBucket = 'expired' | 'h1' | 'h3' | 'ok'
 export interface BatchWithExpiry extends Batch {

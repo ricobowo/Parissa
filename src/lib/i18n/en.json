@@ -339,6 +339,24 @@
     },
     "noIngredientsDeducted": "Product has no recipe — stock will not be deducted."
   },
+  "planner": {
+    "title": "Today's Production Recommendation",
+    "subtitle": "Based on 7-day sales average + upcoming pre-orders",
+    "product": "Product",
+    "avg7d": "7d avg",
+    "preorder": "Pre-order",
+    "stock": "Ready Stock",
+    "recommended": "Recommendation",
+    "batch": "batch",
+    "batches": "batches",
+    "pcs": "pcs",
+    "pcsPerBatch": "pcs/batch",
+    "createBatch": "Create Batch",
+    "noRecommendation": "All products have sufficient stock.",
+    "noRecipe": "No recipe yet — cannot calculate.",
+    "loadFailed": "Failed to load production recommendations.",
+    "footnote": "Ready Stock = Completed batches not yet expired."
+  },
   "reports": {
     "title": "Reports",
     "profitReport": "Profit Report",

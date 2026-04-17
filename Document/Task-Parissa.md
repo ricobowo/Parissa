@@ -201,11 +201,11 @@ Update the file after completing each sub-task, not just after completing an ent
   - [x] 16.5 Show expiry alerts on dashboard
   - [x] 16.6 Update CHANGELOG.md
 
-- [ ] 17.0 Daily Production Planner
-  - [ ] 17.1 Calculate avg sales per product (last 7 days) + pending pre-orders
-  - [ ] 17.2 Apply Formula 5.10 to recommend batch quantities
-  - [ ] 17.3 Display recommendation card on production staff dashboard
-  - [ ] 17.4 Update CHANGELOG.md
+- [x] 17.0 Daily Production Planner
+  - [x] 17.1 Calculate avg sales per product (last 7 days) + pending pre-orders
+  - [x] 17.2 Apply Formula 5.10 to recommend batch quantities
+  - [x] 17.3 Display recommendation card on production staff dashboard
+  - [x] 17.4 Update CHANGELOG.md
 
 - [ ] 18.0 Customer Database & CRM
   - [ ] 18.1 Auto-populate customers table from sales (upsert on customer_name)

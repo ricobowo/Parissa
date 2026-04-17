@@ -4,7 +4,7 @@
 > Dibangun untuk UMKM & retail kecil-menengah di Indonesia.
 
 **Branch:** `feature/parissa-pos-mvp`
-**Versi saat ini:** `v0.12.2`
+**Versi saat ini:** `v0.13.0`
 **Status:** 🚧 Active Development — Phase 1 (Target selesai: awal Juli 2026)
 **Repository:** https://github.com/ricobowo/Parissa.git
 
@@ -108,7 +108,7 @@ sessions/           # cc-sessions task files
 - [x] **Phase 1A — Foundation** — Auth, role management, i18n, PWA, layout
 - [x] **Phase 1B — Core POS & Produk** — POS form, quick-sale grid, produk CRUD, resep, pre-order
 - [x] **Phase 1C — Dashboard & Laporan** — Metrik, charts, export Excel, laporan bulanan
-- [x] **Phase 1D — Stok, Batching** — Stok, purchase, batching, expiry tracker
+- [x] **Phase 1D — Stok, Batching, Planner** — Stok, purchase, batching, expiry tracker, daily production planner (Formula 5.10)
 - [ ] **Phase 1D (lanjutan)** — Customer database, CRM, waste tracking, audit trail
 - [ ] **Phase 1E — Polish & WhatsApp** — Riwayat transaksi lengkap, notif Fonnte, UAT, deploy
 
