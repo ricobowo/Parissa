@@ -11,6 +11,7 @@ import { routing } from '@/i18n/routing'
 import { Inter } from 'next/font/google'
 import { QueryProvider } from '@/components/providers/QueryProvider'
 import { Toaster } from '@/components/ui/toaster'
+import { Analytics } from '@vercel/analytics/next'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -43,6 +44,7 @@ export default async function LocaleLayout({
             <Toaster />
           </QueryProvider>
         </NextIntlClientProvider>
+        <Analytics />
       </body>
     </html>
   )
