@@ -4,6 +4,15 @@ Semua perubahan penting pada proyek ini didokumentasikan di file ini.
 
 ---
 
+## [v0.12.1] — 2026-04-17
+
+### Diperbaiki — Security Warnings (Supabase Database Linter)
+- **`function_search_path_mutable`**: Tambah `SET search_path = public` ke 13 fungsi database (`trigger_deduct_stock_on_sale`, `trigger_restore_stock_on_void`, `guard_min_stock_level_edit`, `trigger_generate_batch_number`, `trigger_deduct_stock_on_batch`, `guard_batch_status_transition`, `user_is_owner`, `calculate_product_cost`, `trigger_upsert_customer`, `trigger_update_stock_on_purchase`, `trigger_calculate_profit`, `trigger_set_updated_at`, `user_has_permission`) — mencegah search_path injection attack
+- **`rls_policy_always_true`**: Perbaiki policy `stock_notifications_insert` dari `WITH CHECK (true)` ke `WITH CHECK (user_has_permission('stock'))` — hanya user dengan akses stok yang bisa insert notifikasi
+- Migration: `005_fix_security_warnings.sql`
+
+---
+
 ## [v0.12.0] — 2026-04-17
 
 ### Ditambahkan — Phase 1D: Batching & Expiry Tracker (Task 16.0)
