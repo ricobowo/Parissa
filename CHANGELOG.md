@@ -4,6 +4,23 @@ Semua perubahan penting pada proyek ini didokumentasikan di file ini.
 
 ---
 
+## [v0.12.2] — 2026-04-17
+
+### Ditambahkan — Dokumentasi
+- **`README.md`** (baru) — living document untuk branch `feature/parissa-pos-mvp`:
+  - Deskripsi project, tech stack, getting started, struktur folder
+  - Progress checklist Phase 1A–1E
+  - Ringkasan rules bisnis, design system, success metrics
+  - Akan di-update terus sampai project selesai
+
+### Diubah — Working Rules (CLAUDE.md)
+- **RULE 10 — ALWAYS UPDATE README BEFORE PUSH** (baru):
+  - Wajib update `README.md` sebelum commit final / siap-push
+  - Sinkronkan versi, centang Progress Phase 1, update Tech Stack & Struktur Folder bila perlu
+  - README sebagai living document — dilaporkan di SESSION SUMMARY
+
+---
+
 ## [v0.12.1] — 2026-04-17
 
 ### Diperbaiki — Security Warnings (Supabase Database Linter)

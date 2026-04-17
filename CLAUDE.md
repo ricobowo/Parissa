@@ -354,6 +354,15 @@ Jika mengubah schema database, selalu buat migration file terpisah — jangan la
 ### RULE 9 — TRI-STATE UI
 Setiap fitur baru wajib dilengkapi: **loading state**, **error state**, **empty state**.
 
+### RULE 10 — ALWAYS UPDATE README BEFORE PUSH
+Setiap commit final sebelum siap-push (akhir fase/fitur), **wajib update `README.md`**:
+- Sinkronkan **versi saat ini** dengan `VERSION` & `CHANGELOG.md`
+- Centang / tambahkan item di **Progress Phase 1**
+- Update **Tech Stack** bila ada dependency baru
+- Update **Struktur Folder** bila ada perubahan signifikan
+- README.md adalah **"living document"** — terus direvisi sampai project selesai
+- Laporkan update README di `SESSION SUMMARY` (RULE 3)
+
 ---
 
 ## 11. Development Timeline
