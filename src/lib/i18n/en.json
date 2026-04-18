@@ -416,7 +416,16 @@
     "rolesDesc": "Manage roles & permission matrix",
     "usersDesc": "Add/edit/deactivate users",
     "languageDesc": "Switch language ID/EN",
-    "whatsappDesc": "WA notification config (Phase 1E)"
+    "whatsappDesc": "Configure phone & stock alert notifications",
+    "waSubtitle": "Receive automated alerts when ingredients run low.",
+    "waPhoneLabel": "WhatsApp Number",
+    "waPhoneHint": "Format: 628xxxxxxxxx (no + sign or spaces).",
+    "waPhoneInvalid": "Invalid number. Use format 628xxxxxxxxx.",
+    "waEnableLabel": "Enable notifications",
+    "waEnableHint": "When off, you will not receive WA messages.",
+    "waSaved": "WhatsApp configuration saved.",
+    "waInfoTitle": "How does this work?",
+    "waInfoBody": "The system checks ingredient stock every day at 08:00. If any item reaches Low or Out status, an alert is sent via Fonnte to this number (max 1x per ingredient per day)."
   },
   "customers": {
     "eyebrow": "CRM",

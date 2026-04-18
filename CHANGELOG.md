@@ -4,6 +4,66 @@ Semua perubahan penting pada proyek ini didokumentasikan di file ini.
 
 ---
 
+## [v0.15.0] — 2026-04-18
+
+### Ditambahkan — Phase 1E: Notifikasi WhatsApp via Fonnte (Task 20.0)
+
+**DB & Backend**
+- Migration `009_wa_config.sql`:
+  - Tabel `wa_config` (1 row per user: `phone`, `is_enabled`) dengan CHECK
+    constraint format `628xxxxxxxxx`, trigger `updated_at`, dan RLS
+    per-user (user hanya melihat/mengubah barisnya sendiri).
+  - View `active_wa_recipients` — daftar penerima aktif, dipakai Edge
+    Function via service_role.
+  - RPC `calc_avg_daily_usage(ingredient_id)` — hitung rata-rata
+    pemakaian bahan 30 hari terakhir dari `sales × recipes` untuk
+    **Formula 5.8** (saran pembelian).
+  - Template SQL scheduling `pg_cron` (komentar) — tiap hari 01:00 UTC
+    (08:00 WIB) memanggil Edge Function via `pg_net`.
+- Edge Function `supabase/functions/stock-alert/index.ts`:
+  - Query bahan status Menipis/Habis (`qty ≤ 2 × min`).
+  - Anti-spam via `stock_notifications` (UNIQUE `ingredient_id + date`) —
+    maks 1 pesan/bahan/hari meski cron dipanggil berkali-kali.
+  - Hitung suggested qty (Formula 5.8) via RPC, kirim ke Fonnte
+    (`https://api.fonnte.com/send`) dengan header `Authorization: TOKEN`.
+  - Format pesan sesuai FR-060:
+    ```
+    [Nama Bahan] hampir habis!
+    Sisa: [qty] [unit] (Min: [min] [unit])
+    Saran beli: [qty] [unit]
+    - Parissa POS
+    ```
+  - Token Fonnte di Supabase Secrets (`FONNTE_TOKEN`), BUKAN di `.env`
+    repo — rekomendasi keamanan didokumentasikan di README function.
+
+**Frontend**
+- Halaman `/settings/whatsapp` baru (`WhatsappConfig.tsx`):
+  - Input nomor HP dengan validasi regex `^628[0-9]{8,13}$`.
+  - Toggle aktif/nonaktif (monokrom, accent color hanya untuk on-state).
+  - Upsert ke `wa_config` keyed by `user_id` (RLS enforced).
+  - Card info "Bagaimana ini bekerja?" yang menjelaskan waktu cron.
+- Settings landing page — link WhatsApp yang sebelumnya `#` sekarang
+  mengarah ke `/settings/whatsapp`.
+- i18n ID/EN: 10 key baru (`waSubtitle`, `waPhoneLabel`, `waPhoneHint`,
+  `waPhoneInvalid`, `waEnableLabel`, `waEnableHint`, `waSaved`,
+  `waInfoTitle`, `waInfoBody`) + update `whatsappDesc`.
+
+**Dokumentasi**
+- `supabase/functions/stock-alert/README.md` — panduan deploy lengkap:
+  set secret, deploy function, test manual (curl), schedule cron,
+  unschedule, perbandingan Supabase Secrets vs kolom DB (rekomendasi:
+  Supabase Secrets — 1 akun bisnis Fonnte untuk seluruh sistem).
+- `lib/wa.ts` helper — `getMyWaConfig()` + `isValidPhone()`.
+
+**Catatan operasional (WAJIB dilakukan manual saat token Fonnte sudah ada):**
+1. `supabase secrets set FONNTE_TOKEN=<token>`
+2. `supabase functions deploy stock-alert`
+3. Enable extension `pg_cron` & `pg_net` di dashboard Supabase.
+4. Jalankan `SELECT cron.schedule(...)` (template ada di migration 009
+   dan README Edge Function).
+
+---
+
 ## [v0.14.1] — 2026-04-18
 
 ### Diperbaiki

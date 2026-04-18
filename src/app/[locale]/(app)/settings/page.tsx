@@ -16,7 +16,7 @@ export default function SettingsPage() {
     { href: 'settings/roles', label: t('roles'), desc: t('rolesDesc') },
     { href: 'settings/users', label: t('users'), desc: t('usersDesc') },
     { href: '#', label: t('language'), desc: t('languageDesc') },
-    { href: '#', label: t('whatsapp'), desc: t('whatsappDesc') },
+    { href: 'settings/whatsapp', label: t('whatsapp'), desc: t('whatsappDesc') },
   ]
 
   return (

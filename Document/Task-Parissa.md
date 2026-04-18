@@ -225,13 +225,13 @@ Update the file after completing each sub-task, not just after completing an ent
 
 ### Phase 1E — Polish & WhatsApp (Minggu 9-10)
 
-- [ ] 20.0 Notifikasi WhatsApp via Fonnte (PRIORITAS AKHIR)
-  - [ ] 20.1 Create Supabase Edge Function `stock-alert` — triggered by stock status change
-  - [ ] 20.2 Integrate with Fonnte free API — send message to owner phone number
-  - [ ] 20.3 Message content: ingredient name, qty left, min level, suggested purchase (Formula 5.8)
-  - [ ] 20.4 Implement anti-spam: max 1 notification per ingredient per day (stock_notifications table)
-  - [ ] 20.5 Create WA configuration page in Settings (phone number, enable/disable)
-  - [ ] 20.6 Update CHANGELOG.md
+- [x] 20.0 Notifikasi WhatsApp via Fonnte (PRIORITAS AKHIR)
+  - [x] 20.1 Create Supabase Edge Function `stock-alert` — triggered by stock status change
+  - [x] 20.2 Integrate with Fonnte free API — send message to owner phone number
+  - [x] 20.3 Message content: ingredient name, qty left, min level, suggested purchase (Formula 5.8)
+  - [x] 20.4 Implement anti-spam: max 1 notification per ingredient per day (stock_notifications table)
+  - [x] 20.5 Create WA configuration page in Settings (phone number, enable/disable)
+  - [x] 20.6 Update CHANGELOG.md
 
 - [ ] 21.0 Testing & Deployment
   - [ ] 21.1 End-to-end testing: complete sale flow (POS → profit calc → stock deduction → dashboard update)

@@ -416,7 +416,16 @@
     "rolesDesc": "CRUD role & permission matrix",
     "usersDesc": "Tambah/edit/deaktivasi user",
     "languageDesc": "Ganti bahasa ID/EN",
-    "whatsappDesc": "Konfigurasi notifikasi WA (Phase 1E)"
+    "whatsappDesc": "Atur nomor & aktifkan notifikasi stok via WA",
+    "waSubtitle": "Terima notifikasi otomatis saat bahan baku hampir habis.",
+    "waPhoneLabel": "Nomor WhatsApp",
+    "waPhoneHint": "Format: 628xxxxxxxxx (tanpa tanda + atau spasi).",
+    "waPhoneInvalid": "Nomor tidak valid. Gunakan format 628xxxxxxxxx.",
+    "waEnableLabel": "Aktifkan notifikasi",
+    "waEnableHint": "Jika dimatikan, Anda tidak akan menerima pesan WA.",
+    "waSaved": "Konfigurasi WhatsApp disimpan.",
+    "waInfoTitle": "Bagaimana ini bekerja?",
+    "waInfoBody": "Sistem mengecek stok bahan baku setiap hari jam 08:00. Jika ada bahan dengan status Menipis atau Habis, notifikasi dikirim via Fonnte ke nomor ini (maks. 1x per bahan per hari)."
   },
   "customers": {
     "eyebrow": "CRM",

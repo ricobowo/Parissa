@@ -4,7 +4,7 @@
 > Dibangun untuk UMKM & retail kecil-menengah di Indonesia.
 
 **Branch:** `feature/parissa-pos-mvp`
-**Versi saat ini:** `v0.14.1`
+**Versi saat ini:** `v0.15.0`
 **Status:** 🚧 Active Development — Phase 1 (Target selesai: awal Juli 2026)
 **Repository:** https://github.com/ricobowo/Parissa.git
 
@@ -110,7 +110,7 @@ sessions/           # cc-sessions task files
 - [x] **Phase 1C — Dashboard & Laporan** — Metrik, charts, export Excel, laporan bulanan
 - [x] **Phase 1D — Stok, Batching, Planner** — Stok, purchase, batching, expiry tracker, daily production planner (Formula 5.10)
 - [x] **Phase 1D (lanjutan)** — Customer database & CRM (label, overdue, follow-up history), waste tracking (Formula 5.9 + adjusted profit), audit trail 10 tabel, riwayat transaksi
-- [ ] **Phase 1E — Polish & WhatsApp** — Notif Fonnte, UAT, deploy production
+- [~] **Phase 1E — Polish & WhatsApp** — Notif Fonnte WA via Edge Function + cron harian (Task 20 ✅) · UAT & deploy production (Task 21 pending)
 
 Detail changelog: [CHANGELOG.md](./CHANGELOG.md)
 Detail rules & arsitektur: [CLAUDE.md](./CLAUDE.md)
