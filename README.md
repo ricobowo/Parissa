@@ -4,7 +4,7 @@
 > Dibangun untuk UMKM & retail kecil-menengah di Indonesia.
 
 **Branch:** `feature/parissa-pos-mvp`
-**Versi saat ini:** `v0.14.0`
+**Versi saat ini:** `v0.14.1`
 **Status:** 🚧 Active Development — Phase 1 (Target selesai: awal Juli 2026)
 **Repository:** https://github.com/ricobowo/Parissa.git
 

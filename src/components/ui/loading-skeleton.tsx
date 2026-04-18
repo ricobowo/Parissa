@@ -1,6 +1,6 @@
 // ============================================================
 // File: src/components/ui/loading-skeleton.tsx
-// Versi: v0.5.0
+// Versi: v0.14.1
 // Deskripsi: Komponen skeleton loading — animasi pulse minimalis
 //            Tersedia varian: card, table row, dan generic
 // ============================================================
@@ -62,11 +62,18 @@ export function PageSkeleton() {
         <CardSkeleton />
       </div>
 
-      {/* Skeleton tabel */}
-      <div>
-        {Array.from({ length: 5 }).map((_, i) => (
-          <TableRowSkeleton key={i} />
-        ))}
+      {/* Skeleton tabel — wrap dengan table+tbody supaya valid HTML */}
+      <div
+        className="border rounded-md overflow-hidden"
+        style={{ borderColor: 'var(--color-border)' }}
+      >
+        <table className="w-full">
+          <tbody>
+            {Array.from({ length: 5 }).map((_, i) => (
+              <TableRowSkeleton key={i} />
+            ))}
+          </tbody>
+        </table>
       </div>
     </div>
   )

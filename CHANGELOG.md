@@ -4,6 +4,18 @@ Semua perubahan penting pada proyek ini didokumentasikan di file ini.
 
 ---
 
+## [v0.14.1] — 2026-04-18
+
+### Diperbaiki
+- **Hydration warning** — `PageSkeleton` sebelumnya me-render `<TableRowSkeleton>`
+  (`<tr>`) langsung di dalam `<div>` tanpa `<table><tbody>`, menyebabkan warning
+  "In HTML, `<tr>` cannot be a child of `<div>`" dan hydration mismatch di semua
+  halaman yang memakai `PageSkeleton` (customers, history, dll). Diperbaiki di
+  `src/components/ui/loading-skeleton.tsx` dengan membungkus baris dalam
+  `<table><tbody>`.
+
+---
+
 ## [v0.14.0] — 2026-04-17
 
 ### Ditambahkan — Phase 1D: Customer CRM, Waste Tracking, Audit Trail, History (Task 18.0 & 19.0)
