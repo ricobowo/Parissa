@@ -4,6 +4,99 @@ Semua perubahan penting pada proyek ini didokumentasikan di file ini.
 
 ---
 
+## [v0.17.0] — 2026-04-18
+
+### Ditambahkan / Diubah — Redesign Fase 1B: Design System Cleanup
+
+**Dashboard — token-driven theming**
+- `src/components/dashboard/KpiCards.tsx` (v0.8 → v0.9)
+  - `bg-white` / `bg-zinc-100` / `outline-zinc-400/20` → `bg-card` / `bg-border` / `border-border`.
+  - Warna angka: `text-slate-900`/`text-blue-700`/`text-pink-800` diganti
+    token aksen fungsional — profit hijau (success) hanya bila > 0,
+    unpaid oranye (warning) hanya bila > 0, lainnya `text-foreground`.
+  - Angka pakai `font-mono tabular-nums` (§6.3).
+- `src/components/dashboard/SalesCharts.tsx` (v0.8 → v0.9)
+  - Palette Recharts migrasi dari hex literal → `var(--color-accent)` /
+    `var(--color-text-secondary)` / `var(--color-border)`.
+  - CartesianGrid, XAxis tick, tooltip, legend semua pakai token.
+  - Container bg & border jadi `bg-card` / `border-border`.
+  - Legenda dan label donut pakai `font-mono tabular-nums` untuk angka.
+- `src/components/dashboard/TransactionLists.tsx` (v0.8 → v0.9)
+  - Prop `statusColor` menjadi `status: 'success' | 'warning'`.
+  - Dot dari `bg-emerald-500`/`bg-amber-500` → `var(--color-success)` /
+    `var(--color-warning)`.
+  - Semua container, border, text → semantic token.
+
+**Sidebar & Bottom Tabs — icon set unified**
+- `src/components/layout/Sidebar.tsx` (v0.4 → v0.5)
+  - Icon glyph ad-hoc (`▦◎▤◈▧⬡…`) diganti `lucide-react`:
+    LayoutDashboard, ShoppingCart, Package, BookOpen, Boxes, Hexagon,
+    Receipt, BarChart3, Users, CalendarClock, Trash2, History, Settings.
+  - Tombol collapse: PanelLeftClose / PanelLeftOpen.
+  - Logout: icon LogOut + label.
+  - Hapus import `Role` yang tidak terpakai.
+- `src/components/layout/BottomTabs.tsx` (v0.4 → v0.5)
+  - Icon glyph → lucide-react yang sama dengan Sidebar.
+  - `aria-current="page"` saat tab aktif.
+
+**Komponen shared primitives (dipakai di Fase 2)**
+- `src/components/shared/PageHeader.tsx` v0.1.0 — kicker + H1 + subtitle
+  + slot `actions`. Kicker uppercase muted (bukan biru) sesuai §6.
+- `src/components/shared/BadgeDot.tsx` v0.1.0 — badge dot + teks,
+  4 varian (success/warning/danger/neutral).
+- `src/components/shared/StatCard.tsx` v0.1.0 — kartu stat minimal,
+  angka monospace tabular-nums.
+
+### Catatan
+- Sisa hardcoded color (~440 occurrences di 25 file feature) **tidak**
+  difix di Fase 1B. Akan dibersihkan saat polish per-halaman di Fase 2
+  (Dashboard → POS → Stok → dst.).
+- Belum ada perubahan logika bisnis.
+
+---
+
+## [v0.16.0] — 2026-04-18
+
+### Ditambahkan — Redesign Fase 1A: Pondasi Dark Mode
+
+**Tema & tokens**
+- `src/app/globals.css` — tambahkan override legacy tokens CLAUDE.md §6.2
+  (`--color-bg`, `--color-bg-secondary`, `--color-bg-hover`, `--color-border`,
+  `--color-text`, `--color-text-secondary`, `--color-text-tertiary`,
+  `--color-accent`, `--color-success`, `--color-warning`, `--color-danger`)
+  di block `.dark`. Palet diadopsi dari Notion dark, aksen dicerahkan agar
+  kontras ≥ 4.5:1 (WCAG AA).
+- Hapus komentar placeholder `@media (prefers-color-scheme: dark)` — dark
+  mode sekarang via class-based `.dark` di `<html>`.
+
+**Provider & komponen baru**
+- `src/components/providers/ThemeProvider.tsx` — wrapper `next-themes`
+  (`attribute="class"`, `defaultTheme="system"`, `enableSystem`,
+  `disableTransitionOnChange`).
+- `src/components/shared/ThemeToggle.tsx` — tombol cycle
+  Light → Dark → System dengan ikon Sun / Moon / Monitor (lucide-react).
+  Hydration-safe (mounted guard).
+
+**Integrasi**
+- `src/app/[locale]/layout.tsx` — wrap tree dengan `<ThemeProvider>`,
+  tambahkan `suppressHydrationWarning` di `<html>`.
+- `src/components/layout/AppShell.tsx` — header menampilkan `ThemeToggle`
+  di samping `LanguageToggle`.
+
+**Dependencies**
+- `next-themes@^0.4.6` — theme switching SSR-safe.
+- `lucide-react@^1.8.0` — icon set untuk Fase 1B.
+
+**Dokumentasi**
+- `Document/Task-Parissa-Redesign.md` — task list redesign per fase.
+
+### Catatan
+- Banyak komponen feature masih hardcode `bg-white` / warna literal —
+  akan difix per halaman di Fase 2 (Dashboard → POS → dst.).
+- Belum ada perubahan logika bisnis.
+
+---
+
 ## [v0.15.0] — 2026-04-18
 
 ### Ditambahkan — Phase 1E: Notifikasi WhatsApp via Fonnte (Task 20.0)

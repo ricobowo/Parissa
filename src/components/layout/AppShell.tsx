@@ -1,14 +1,15 @@
 // ============================================================
 // File: src/components/layout/AppShell.tsx
-// Versi: v0.4.0
+// Versi: v0.5.0
 // Deskripsi: Layout utama aplikasi — Sidebar (desktop) + BottomTabs (mobile)
-//            Menggabungkan navigasi, header, dan konten area
+//            Header: ThemeToggle + LanguageToggle
 // ============================================================
 
 import { getCurrentUser } from '@/lib/auth'
 import { Sidebar } from './Sidebar'
 import { BottomTabs } from './BottomTabs'
 import { LanguageToggle } from './LanguageToggle'
+import { ThemeToggle } from '@/components/shared/ThemeToggle'
 
 interface Props {
   children: React.ReactNode
@@ -30,11 +31,12 @@ export async function AppShell({ children, locale }: Props) {
 
       {/* Area konten utama */}
       <div className="flex-1 flex flex-col min-h-screen">
-        {/* Header — language toggle */}
+        {/* Header — theme + language toggle */}
         <header
-          className="flex items-center justify-end px-4 h-12 border-b"
+          className="flex items-center justify-end gap-2 px-4 h-12 border-b"
           style={{ borderColor: 'var(--color-border)' }}
         >
+          <ThemeToggle />
           <LanguageToggle />
         </header>
 

@@ -2,11 +2,10 @@
 
 // ============================================================
 // File: src/components/dashboard/TransactionLists.tsx
-// Versi: v0.8.0
+// Versi: v0.9.0
 // Deskripsi: Tabel detail transaksi Paid dan Unpaid terpisah (FR-011).
-//            No zebra striping, gray border-bottom separator,
-//            minimal status badges (dot + text, bukan pill penuh).
-//            Desain diselaraskan dengan HTML reference.
+//            Token-driven theming (adaptif dark mode).
+//            No zebra, badge dot-style sesuai §6.4 CLAUDE.md.
 // ============================================================
 
 import { useTranslations } from 'next-intl'
@@ -31,7 +30,7 @@ export function TransactionLists({ transactions }: TransactionListsProps) {
   const unpaidTxns = transactions.filter((txn) => txn.payment_status === 'Belum')
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 font-['Inter']">
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
       {/* Tabel Transaksi Lunas */}
       <TransactionTable
         title={t('paidTransactions')}
@@ -39,7 +38,7 @@ export function TransactionLists({ transactions }: TransactionListsProps) {
         emptyText={t('noTransactions')}
         moreText={(count: number) => t('moreTransactions', { count })}
         transactions={paidTxns}
-        statusColor="emerald"
+        status="success"
       />
 
       {/* Tabel Transaksi Belum Lunas */}
@@ -49,14 +48,14 @@ export function TransactionLists({ transactions }: TransactionListsProps) {
         emptyText={t('noTransactions')}
         moreText={(count: number) => t('moreTransactions', { count })}
         transactions={unpaidTxns}
-        statusColor="amber"
+        status="warning"
       />
     </div>
   )
 }
 
 // -------------------------------------------------------------------
-// Tabel transaksi individual — sesuai HTML reference
+// Tabel transaksi individual — token-driven
 // -------------------------------------------------------------------
 function TransactionTable({
   title,
@@ -64,29 +63,33 @@ function TransactionTable({
   emptyText,
   moreText,
   transactions,
-  statusColor,
+  status,
 }: {
   title: string
   subtitle: string
   emptyText: string
   moreText: (count: number) => string
   transactions: SaleWithProduct[]
-  statusColor: 'emerald' | 'amber'
+  status: 'success' | 'warning'
 }) {
-  // Warna dot per status
-  const dotClass = statusColor === 'emerald' ? 'bg-emerald-500' : 'bg-amber-500'
+  // Warna dot dari token semantic aksen fungsional
+  const dotColor =
+    status === 'success' ? 'var(--color-success)' : 'var(--color-warning)'
 
   return (
-    <div className="bg-white rounded-lg outline outline-1 outline-offset-[-1px] outline-zinc-400/20 overflow-hidden">
+    <div className="bg-card border border-border rounded-lg overflow-hidden">
       {/* Header tabel */}
-      <div className="px-5 py-4 border-b border-zinc-100 flex items-center justify-between">
+      <div className="px-5 py-4 border-b border-border flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <span className={`size-2 rounded-full ${dotClass}`} />
-          <h3 className="text-gray-800 text-sm font-bold leading-5">
+          <span
+            className="size-2 rounded-full"
+            style={{ backgroundColor: dotColor }}
+          />
+          <h3 className="text-foreground text-sm font-semibold leading-5">
             {title}
           </h3>
         </div>
-        <span className="text-zinc-400 text-xs font-medium">
+        <span className="text-muted-foreground text-xs font-medium">
           {subtitle}
         </span>
       </div>
@@ -94,7 +97,7 @@ function TransactionTable({
       {/* Body tabel */}
       {transactions.length === 0 ? (
         <div className="px-5 py-10 text-center">
-          <p className="text-zinc-400 text-sm">{emptyText}</p>
+          <p className="text-muted-foreground text-sm">{emptyText}</p>
         </div>
       ) : (
         <div className="max-h-[360px] overflow-y-auto">
@@ -102,25 +105,25 @@ function TransactionTable({
             <div
               key={txn.id}
               className={`px-5 py-3 flex items-center justify-between ${
-                index > 0 ? 'border-t border-zinc-100' : ''
+                index > 0 ? 'border-t border-border' : ''
               }`}
             >
               {/* Info kiri: nama + produk */}
               <div className="flex-1 min-w-0">
-                <p className="text-gray-800 text-sm font-semibold leading-5 truncate">
+                <p className="text-foreground text-sm font-semibold leading-5 truncate">
                   {txn.customer_name}
                 </p>
-                <p className="text-zinc-500 text-xs leading-4">
+                <p className="text-muted-foreground text-xs leading-4">
                   {txn.product?.name ?? '—'} × {txn.amount}
                 </p>
               </div>
 
               {/* Info kanan: harga + tanggal */}
               <div className="text-right ml-3 flex-shrink-0">
-                <p className="text-gray-800 text-sm font-bold leading-5">
+                <p className="text-foreground text-sm font-semibold leading-5 font-mono tabular-nums">
                   {formatRupiah(txn.sale_price)}
                 </p>
-                <p className="text-zinc-400 text-[10px] leading-4">
+                <p className="text-muted-foreground text-[10px] leading-4">
                   {new Date(txn.date).toLocaleDateString('id-ID', {
                     day: 'numeric',
                     month: 'short',
@@ -132,8 +135,8 @@ function TransactionTable({
 
           {/* Info jika data terpotong */}
           {transactions.length > 20 && (
-            <div className="px-5 py-3 border-t border-zinc-100 text-center">
-              <p className="text-zinc-400 text-xs">
+            <div className="px-5 py-3 border-t border-border text-center">
+              <p className="text-muted-foreground text-xs">
                 {moreText(transactions.length - 20)}
               </p>
             </div>

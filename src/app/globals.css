@@ -1,7 +1,8 @@
 /* ============================================================
    File: src/app/globals.css
-   Versi: v0.1.0
+   Versi: v0.2.0
    Deskripsi: Design tokens dan tema global — Notion-style monokrom
+              + dukungan dark mode (class-based `.dark`)
    ============================================================ */
 
 @import "tailwindcss";
@@ -151,20 +152,8 @@
   --radius-4xl:             calc(var(--radius) * 2.6);
 }
 
-/* Dark mode siap — belum diaktifkan di Phase 1 */
-/* @media (prefers-color-scheme: dark) {
-  :root {
-    --color-bg:             #191919;
-    --color-bg-secondary:   #202020;
-    --color-bg-hover:       #2C2C2C;
-    --color-border:         #333333;
-    --color-text:           #E8E8E8;
-    --color-text-secondary: #9B9B9B;
-    --color-text-tertiary:  #6B6B6B;
-    --background:           var(--color-bg);
-    --foreground:           var(--color-text);
-  }
-} */
+/* Dark mode — aktif via class `.dark` di <html> (next-themes)
+   Nilai warna diadopsi dari palet Notion, disesuaikan kontras WCAG AA */
 
 * {
   box-sizing: border-box;
@@ -219,6 +208,22 @@ h3 { font-size: 14px; font-weight: 500; }
 ::-webkit-scrollbar-thumb:hover { background: var(--color-text-tertiary); }
 
 .dark {
+  /* --- Legacy tokens (§6.2 CLAUDE.md) — palet Notion dark --- */
+  --color-bg:             #191919;
+  --color-bg-secondary:   #202020;
+  --color-bg-hover:       #2C2C2C;
+  --color-border:         #2F2F2F;
+  --color-text:           #E8E8E8;
+  --color-text-secondary: #9B9B9B;
+  --color-text-tertiary:  #6B6B6B;
+
+  /* Aksen fungsional — sedikit lebih cerah agar kontras ≥4.5:1 di bg gelap */
+  --color-accent:         #4D9FE8;
+  --color-success:        #4CAF50;
+  --color-warning:        #E89B3C;
+  --color-danger:         #F26464;
+
+  /* --- Shadcn tokens (alias Tailwind) --- */
   --background:             oklch(0.145 0 0);
   --foreground:             oklch(0.985 0 0);
   --card:             oklch(0.205 0 0);

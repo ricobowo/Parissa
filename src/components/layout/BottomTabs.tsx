@@ -1,8 +1,8 @@
 // ============================================================
 // File: src/components/layout/BottomTabs.tsx
-// Versi: v0.4.0
+// Versi: v0.5.0
 // Deskripsi: Bottom tab bar navigasi mobile — max 5 tab, role-based
-//            Menampilkan tab sesuai permissions user
+//            Icon dari lucide-react (unify dengan Sidebar).
 // ============================================================
 
 'use client'
@@ -10,18 +10,25 @@
 import { usePathname } from 'next/navigation'
 import { useTranslations } from 'next-intl'
 import Link from 'next/link'
+import {
+  LayoutDashboard,
+  ShoppingCart,
+  Boxes,
+  Package,
+  BarChart3,
+  Settings,
+  type LucideIcon,
+} from 'lucide-react'
 
-// Tab yang tampil di mobile — prioritas berdasarkan frekuensi penggunaan
-// Maksimal 5 tab untuk thumb-friendly navigation
-// Urutan = prioritas; slice(0,5) mengambil tab tervisible teratas per role
-const MOBILE_TABS = [
-  { key: 'dashboard', href: '', icon: '▦' },
-  { key: 'pos', href: '/pos', icon: '◎' },
-  { key: 'stock', href: '/stock', icon: '▧' },
-  { key: 'products', href: '/products', icon: '▤' },
-  { key: 'reports', href: '/reports', icon: '▩' },
-  { key: 'settings', href: '/settings', icon: '⚙' },
-] as const
+// Tab mobile — prioritas frekuensi penggunaan (max 5 thumb-friendly)
+const MOBILE_TABS: Array<{ key: string; href: string; Icon: LucideIcon }> = [
+  { key: 'dashboard', href: '', Icon: LayoutDashboard },
+  { key: 'pos', href: '/pos', Icon: ShoppingCart },
+  { key: 'stock', href: '/stock', Icon: Boxes },
+  { key: 'products', href: '/products', Icon: Package },
+  { key: 'reports', href: '/reports', Icon: BarChart3 },
+  { key: 'settings', href: '/settings', Icon: Settings },
+]
 
 interface Props {
   locale: string
@@ -50,6 +57,7 @@ export function BottomTabs({ locale, permissions }: Props) {
         const isActive = tab.href === ''
           ? pathname === `/${locale}` || pathname === `/${locale}/`
           : pathname.startsWith(href)
+        const Icon = tab.Icon
 
         return (
           <Link
@@ -59,11 +67,10 @@ export function BottomTabs({ locale, permissions }: Props) {
             style={{
               color: isActive ? 'var(--color-text)' : 'var(--color-text-tertiary)',
             }}
+            aria-current={isActive ? 'page' : undefined}
           >
-            <span className="text-lg">{tab.icon}</span>
-            <span className="text-[10px] font-medium">
-              {t(tab.key)}
-            </span>
+            <Icon size={20} strokeWidth={isActive ? 2 : 1.75} />
+            <span className="text-[10px] font-medium">{t(tab.key)}</span>
           </Link>
         )
       })}

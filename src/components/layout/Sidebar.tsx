@@ -1,8 +1,8 @@
 // ============================================================
 // File: src/components/layout/Sidebar.tsx
-// Versi: v0.4.0
+// Versi: v0.5.0
 // Deskripsi: Sidebar navigasi desktop — 240px, collapsible, role-based menu
-//            Menu ditampilkan/disembunyikan berdasarkan permissions user
+//            Icon dari lucide-react (unify icon family).
 // ============================================================
 
 'use client'
@@ -11,25 +11,45 @@ import { useState } from 'react'
 import { usePathname } from 'next/navigation'
 import { useTranslations } from 'next-intl'
 import Link from 'next/link'
-import type { Role } from '@/types'
-
-// Definisi icon sederhana sebagai SVG inline (menghindari dependency tambahan)
-// Setiap menu punya: key (untuk permission check), href, dan label
-const NAV_ITEMS = [
-  { key: 'dashboard', href: '', icon: '▦' },
-  { key: 'pos', href: '/pos', icon: '◎' },
-  { key: 'products', href: '/products', icon: '▤' },
-  { key: 'recipes', href: '/recipes', icon: '◈' },
-  { key: 'stock', href: '/stock', icon: '▧' },
-  { key: 'batching', href: '/batching', icon: '⬡' },
-  { key: 'purchases', href: '/purchases', icon: '▨' },
-  { key: 'reports', href: '/reports', icon: '▩' },
-  { key: 'customers', href: '/customers', icon: '◉' },
-  { key: 'preorders', href: '/preorders', icon: '◐' },
-  { key: 'waste', href: '/waste', icon: '✕' },
-  { key: 'history', href: '/history', icon: '◷' },
-  { key: 'settings', href: '/settings', icon: '⚙' },
-] as const
+import {
+  LayoutDashboard,
+  ShoppingCart,
+  Package,
+  BookOpen,
+  Boxes,
+  Hexagon,
+  Receipt,
+  BarChart3,
+  Users,
+  CalendarClock,
+  Trash2,
+  History,
+  Settings,
+  PanelLeftClose,
+  PanelLeftOpen,
+  LogOut,
+  type LucideIcon,
+} from 'lucide-react'
+// Setiap menu: key (permission), href, Icon
+const NAV_ITEMS: Array<{
+  key: string
+  href: string
+  Icon: LucideIcon
+}> = [
+  { key: 'dashboard', href: '', Icon: LayoutDashboard },
+  { key: 'pos', href: '/pos', Icon: ShoppingCart },
+  { key: 'products', href: '/products', Icon: Package },
+  { key: 'recipes', href: '/recipes', Icon: BookOpen },
+  { key: 'stock', href: '/stock', Icon: Boxes },
+  { key: 'batching', href: '/batching', Icon: Hexagon },
+  { key: 'purchases', href: '/purchases', Icon: Receipt },
+  { key: 'reports', href: '/reports', Icon: BarChart3 },
+  { key: 'customers', href: '/customers', Icon: Users },
+  { key: 'preorders', href: '/preorders', Icon: CalendarClock },
+  { key: 'waste', href: '/waste', Icon: Trash2 },
+  { key: 'history', href: '/history', Icon: History },
+  { key: 'settings', href: '/settings', Icon: Settings },
+]
 
 interface Props {
   locale: string
@@ -67,10 +87,12 @@ export function Sidebar({ locale, permissions, userName }: Props) {
         )}
         <button
           onClick={() => setCollapsed(!collapsed)}
-          className="p-1 rounded hover:bg-[var(--color-bg-hover)] text-xs"
+          className="p-1.5 rounded hover:bg-[var(--color-bg-hover)] transition-colors"
+          style={{ color: 'var(--color-text-secondary)' }}
           title={collapsed ? 'Expand' : 'Collapse'}
+          aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
         >
-          {collapsed ? '→' : '←'}
+          {collapsed ? <PanelLeftOpen size={16} /> : <PanelLeftClose size={16} />}
         </button>
       </div>
 
@@ -82,6 +104,7 @@ export function Sidebar({ locale, permissions, userName }: Props) {
             ? pathname === `/${locale}` || pathname === `/${locale}/`
             : pathname.startsWith(href)
 
+          const Icon = item.Icon
           return (
             <Link
               key={item.key}
@@ -94,7 +117,7 @@ export function Sidebar({ locale, permissions, userName }: Props) {
               }}
               title={collapsed ? t(item.key) : undefined}
             >
-              <span className="text-base w-5 text-center flex-shrink-0">{item.icon}</span>
+              <Icon size={16} strokeWidth={1.75} className="flex-shrink-0" />
               {!collapsed && <span>{t(item.key)}</span>}
             </Link>
           )
@@ -114,10 +137,12 @@ export function Sidebar({ locale, permissions, userName }: Props) {
         <form action={`/${locale}/auth/logout`} method="POST">
           <button
             type="submit"
-            className="text-xs hover:underline"
+            className="inline-flex items-center gap-1.5 text-xs hover:underline"
             style={{ color: 'var(--color-text-tertiary)' }}
+            aria-label={tAuth('logout')}
           >
-            {collapsed ? '⏻' : tAuth('logout')}
+            <LogOut size={12} strokeWidth={1.75} />
+            {!collapsed && <span>{tAuth('logout')}</span>}
           </button>
         </form>
       </div>
