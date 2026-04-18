@@ -4,7 +4,7 @@
 # CLAUDE.md — Parissa POS System
 
 > **⚠️ DOKUMEN PERMANEN** — Jangan ubah file ini kecuali PRD-Parissa juga diperbarui.
-> Versi PRD yang menjadi acuan: **v2.1 (10 April 2026)**
+> Versi PRD yang menjadi acuan: **v2.2 (19 April 2026)** — revisi design direction ke "Crafted Minimalism"
 > Repository: https://github.com/ricobowo/Parissa.git
 
 ---
@@ -159,62 +159,125 @@ IF suggested_qty < 0: suggested_qty = 0
 
 ---
 
-## 6. Design System
+## 6. Design System — "Crafted Minimalism"
 
 ### 6.1 Filosofi
-Minimalis seperti **Notion** — monokrom, content-first, whitespace generous. Warna hanya untuk fungsi (status, alert, aksi), bukan estetika. Semua warna didefinisikan sebagai CSS variables — komponen tidak boleh hardcode warna.
+Referensi visual: **Zentra / Linear / Stripe Dashboard** — premium SaaS modern.
+Monokrom sebagai basis + aksen fungsional + **subtle depth** (layering, shadow ringan, radius besar, display-scale typography). Content-first tetap, tapi dengan "kerajinan" visual: setiap surface punya hierarchy yang terasa, interaksi punya micro-motion, angka hero punya presence.
 
-### 6.2 Design Tokens (globals.css / theme.ts)
+**Prinsip:**
+- **Layering** — 3 tingkat bg (app → surface → elevated card). Card benar-benar terangkat dari background via shadow ringan + bg lebih terang.
+- **Friendly radius** — card `14px`, container besar `18px`, chip/icon button full pill. Tidak kaku.
+- **Display-scale hero** — metric penting pakai angka besar (28–48px), bukan 20px seperti sebelumnya.
+- **Purposeful color** — aksen biru/pink/teal boleh muncul di chart multi-series, progress bar, insight card. Tapi untuk status/aksi tetap semantic (success/warning/danger).
+- **Micro-motion** — semua interaktif punya transisi `motion-fast` (120ms) atau `motion-base` (180ms) dengan `ease-out`.
+- **Mobile-first** — desain 360px dulu, lalu tablet & desktop. Interaksi thumb-friendly.
+- **Token-only** — komponen dilarang hardcode warna/radius/shadow. Semua via CSS variables.
+
+### 6.2 Design Tokens (lihat `src/app/globals.css`)
+
+**Base & layering:**
 ```css
-:root {
-  /* Base — monokrom */
-  --color-bg:             #FFFFFF;
-  --color-bg-secondary:   #F7F7F5;   /* card/surface */
-  --color-bg-hover:       #F0F0EE;
-  --color-border:         #E5E5E3;
-  --color-text:           #1A1A1A;
-  --color-text-secondary: #6B6B6B;
-  --color-text-tertiary:  #9B9B9B;
+--color-bg:             #EFEEEC;   /* app bg (soft off-white) */
+--color-bg-secondary:   #F5F4F2;   /* panel/sub-surface */
+--color-bg-elevated:    #FFFFFF;   /* card (terangkat) */
+--color-bg-hover:       #EDECE9;
+--color-border:         #E5E4E1;
+--color-border-strong:  #D8D7D3;
+--color-text:           #161615;
+--color-text-secondary: #6A6A68;
+--color-text-tertiary:  #9A9A97;
+```
 
-  /* Aksen fungsional — hanya untuk status/aksi */
-  --color-accent:         #2383E2;   /* tombol utama, link */
-  --color-success:        #0F7B0F;   /* "Sudah", stok "Aman" */
-  --color-warning:        #D9730D;   /* "Menipis", overdue */
-  --color-danger:         #E03E3E;   /* "Habis", error */
-}
+**Aksen fungsional (status/aksi):**
+```css
+--color-accent:    #2F6FEB;   /* biru — tombol/link utama */
+--color-success:   #0E8345;   /* hijau — "Sudah", "Aman" */
+--color-warning:   #D9730D;   /* oranye — "Menipis", overdue */
+--color-danger:    #DC3545;   /* merah — "Habis", error */
+```
+
+**Chart palette (muted accent, untuk data visualization):**
+```css
+--chart-primary:     #3B82F6;
+--chart-secondary:   #93C5FD;
+--chart-tertiary:    #BEDBFF;
+--chart-accent-pink: #EC4899;
+--chart-accent-teal: #14B8A6;
+--chart-neutral:     #9CA3AF;
+```
+
+**Radius (Zentra-scale):**
+```css
+--radius-sm:   8px;     /* badge kecil */
+--radius-md:   10px;    /* input, button */
+--radius-lg:   14px;    /* card standar */
+--radius-xl:   18px;    /* hero card / container besar */
+--radius-pill: 9999px;  /* chip, icon button, nav pill */
+```
+
+**Shadow (soft, untuk elevation bukan dekorasi):**
+```css
+--shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.04);
+--shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.06), 0 1px 2px -1px rgb(0 0 0 / 0.04);
+--shadow-md: 0 4px 12px -2px rgb(0 0 0 / 0.08);
+--shadow-lg: 0 12px 28px -4px rgb(0 0 0 / 0.10);
+```
+
+**Motion:**
+```css
+--motion-fast:   120ms;
+--motion-base:   180ms;
+--motion-slow:   280ms;
+--ease-out:      cubic-bezier(0.16, 1, 0.3, 1);
 ```
 
 ### 6.3 Tipografi
-| Style | Size | Weight | Penggunaan |
-|-------|------|--------|------------|
-| Heading 1 | 24px | 600 | Judul halaman |
-| Heading 2 | 18px | 600 | Judul section |
+| Style | Size (mobile → desktop) | Weight | Penggunaan |
+|-------|------------------------|--------|------------|
+| Display LG | — / 48px | 600 | Hero metric card (angka utama Gross Volume, dll) |
+| Display MD | 28px / 36px | 600 | Judul halaman (H1 PageHeader) |
+| Display SM | — / 28px | 600 | Hero number di KPI penting |
+| Heading 2 | 18px | 600 | Judul section/card |
 | Heading 3 | 14px | 500 | Label grup |
 | Body | 14px | 400 | Teks umum, tabel |
 | Caption | 12px | 400 | Keterangan, timestamp |
-| Monospace | 13px | 400 | Angka Rupiah (JetBrains Mono) |
+| Micro-label | 11px | 500 | Label uppercase (tracking 0.12em) |
+| Monospace | 13px | 400 | Angka Rupiah (JetBrains Mono, tabular-nums) |
 
-Font family: **Inter** (atau system font stack)
+Font family: **Inter** (atau system font stack).
+Tracking: display scale pakai `letter-spacing: -0.02em`; uppercase label pakai `+0.12em`.
 
 ### 6.4 Komponen
-- **Card** — border 1px `--color-border`, radius 8px, tanpa shadow
-- **Button primary** — bg `--color-accent`, teks putih, radius 6px. Maksimal 1 tombol aksen per halaman
-- **Button secondary** — border 1px `--color-border`, bg transparan
-- **Badge status** — teks kecil + dot warna (bukan pill penuh): hijau / oranye / merah
-- **Tabel** — tanpa zebra stripe, header `--color-text-secondary` uppercase 11px
-- **Toast** — pojok kanan bawah, hitam-putih + ikon status
-- **Chart** — default abu-abu; warna per produk hanya di chart distribusi (muted/pastel)
+- **Card** — `bg-bg-elevated`, border 1px `--color-border`, **radius 14px**, `shadow-xs`. Hover: `shadow-sm` (transition motion-base).
+- **Hero card** — radius 18px, bisa pakai `shadow-md`. Boleh background gradient muted untuk 1 "insight card" per halaman (§6.4.1 di bawah).
+- **Button primary** — `bg-accent`, teks putih, radius 10px, `shadow-xs`. Hover `bg-accent-hover`. Max 1 tombol aksen per view.
+- **Button secondary / outline** — border 1px, bg transparan, radius 10px.
+- **Icon button** — square 32/36px, `rounded-pill`, hover `bg-bg-hover`.
+- **Nav pill** — rounded-pill, aktif = bg hitam + teks putih (mirip Zentra "Home" tab); inaktif = teks secondary.
+- **Input / Select** — radius 10px, border 1px `--color-border`. Focus: ring 2px `--color-accent` alpha 0.2.
+- **Badge status** — dot 6px + teks (bukan pill berwarna penuh). 3 varian semantik: success/warning/danger.
+- **Chip / Tag** — rounded-pill, bg `--color-bg-secondary`, teks secondary, padding 4px 10px.
+- **Tabel** — tanpa zebra stripe, header micro-label uppercase `--color-text-secondary`, row hover `bg-bg-hover/40`.
+- **Toast** — pojok kanan bawah, radius 12px, `shadow-md`.
+- **Chart** — stacked/multi-series boleh pakai `--chart-*` palette. Single series pakai `--chart-primary` atau neutral. Line chart tipis (2px stroke), bar chart dengan rounded top (4px).
+
+#### 6.4.1 Insight Card (opsional)
+Boleh ada **maksimal 1 per halaman** — bg gradient soft (biru→pink→orange) dengan radius-xl, untuk surface "Insight / Recommendation" atau headline metric. Contoh use case: ringkasan AI recommendation, daily production alert utama.
 
 ### 6.5 Layout & Navigasi
-- **Desktop** — sidebar kiri 240px, collapsible ke 60px. Max-width konten 960px, padding 24px
-- **Mobile** — bottom tab bar 4–5 tab sesuai role. Padding 16px
-- **Quick-sale grid** — 2 kolom mobile, 3 kolom tablet, form samping desktop
-- **Mobile-first** — desain mulai 360px, diperluas ke 768px dan 1024px+
-- Semua interaksi thumb-friendly (satu tangan)
+- **Desktop** — sidebar kiri 240px (collapsible 60px), bg `--color-bg-secondary`, border kanan halus. Max-width konten 1040px, padding 24px.
+- **Mobile** — bottom tab bar 4–5 tab sesuai role, padding 16px.
+- **Quick-sale grid** — 2 kolom mobile, 3 kolom tablet, form samping desktop.
+- **Spacing scale** — gap antar section: 24px mobile / 32px desktop. Padding card: 16–20px (density Zentra).
+- **Mobile-first** — desain mulai 360px, diperluas ke 768px dan 1024px+. Thumb-friendly.
 
 ### 6.6 Dark Mode
-- Tidak diimplementasikan di Phase 1, tapi struktur CSS variables sudah siap
-- Nanti cukup override variables di `@media (prefers-color-scheme: dark)`
+Aktif via class `.dark` di `<html>` (next-themes). Semua token punya pasangan dark (lihat `globals.css`). Prinsip parity:
+- `--color-bg` lebih gelap dari `--color-bg-elevated` (layering tetap terasa)
+- Shadow alpha lebih tinggi (0.3–0.6) supaya elevation tetap terbaca
+- Aksen sedikit lebih cerah (kontras WCAG AA minimum 4.5:1)
+- Chart palette sedikit di-brighten
 
 ---
 

@@ -4,6 +4,85 @@ Semua perubahan penting pada proyek ini didokumentasikan di file ini.
 
 ---
 
+## [v0.18.0] — 2026-04-19
+
+### Diubah — Redesign Fase 1C: Design Direction Revision ("Crafted Minimalism")
+
+**Pemicu:** feedback Rico — tampilan Fase 1B terlalu "wireframe/flat".
+Revisi arah desain ke premium SaaS (referensi Zentra dashboard).
+
+**Spec & dokumen:**
+- `CLAUDE.md` §6 di-rewrite — filosofi baru "Crafted Minimalism":
+  layering 3-tingkat (bg/secondary/elevated), radius besar (card 14px,
+  hero 18px, chip pill), shadow soft (xs/sm/md/lg), display-scale
+  typography (28→48px), motion tokens (fast/base + ease-out), chart
+  palette muted-accent, insight card opsional (max 1/halaman).
+- `Document/PRD-Parissa.md` §7 di-rewrite — sinkron dengan CLAUDE.md §6.
+  **PRD bump v2.1 → v2.2** (perubahan spec, bukan sekadar polish).
+- `Document/Task-Parissa-Redesign.md` (v0.1 → v0.2) — tambah Fase 1C,
+  update referensi utama (Zentra menggantikan Notion).
+
+**Tokens (`src/app/globals.css` v0.2 → v0.3):**
+- Base: `--color-bg` jadi soft off-white (`#EFEEEC`),
+  tambah `--color-bg-elevated` (`#FFFFFF`) & `--color-border-strong`.
+- Radius: `--radius-sm/md/lg/xl/pill` (8/10/14/18/9999).
+- Shadow: `--shadow-xs/sm/md/lg` (+ dark parity alpha 0.3–0.6).
+- Motion: `--motion-fast/base/slow`, `--ease-out`, `--ease-in-out`.
+- Chart palette: `--chart-primary/secondary/tertiary/accent-pink/
+  accent-teal/neutral` (biru/pink/teal muted).
+- Typography utility: `.text-display-sm/md/lg` (28/36/48px).
+- Shadcn tokens (`--background`, `--card`, `--popover`, `--chart-1..5`)
+  di-sinkron ke legacy tokens — sumber kebenaran tunggal.
+- Dark mode override diperbarui (palet parity Zentra dark).
+
+**Shared primitives:**
+- `src/components/shared/PageHeader.tsx` (v0.1 → v0.2)
+  - H1 responsif: 28px mobile → 36px desktop (display-scale), tracking
+    `-0.02em`.
+  - Kicker uppercase tracking `0.14em`, subtitle boleh ikut naik ke base
+    di desktop.
+  - Actions slot mendukung wrap untuk filter panjang.
+- `src/components/shared/StatCard.tsx` (v0.1 → v0.2)
+  - Radius 14px, `shadow-xs` default + hover `shadow-sm` (motion-base).
+  - Prop baru `size: "md" | "lg"` — `lg` = display 36px untuk hero metric.
+  - Label uppercase tracking `0.12em`.
+
+**Tidak berubah di rilis ini** (akan disapu di Fase 2):
+- KpiCards / SalesCharts / TransactionLists (sudah token-driven, akan
+  menyerap tokens baru otomatis; tuning density menyusul per halaman).
+- Halaman POS / Stok / Produk / dll.
+
+---
+
+## [v0.17.1] — 2026-04-18
+
+### Diubah — Redesign Fase 2 #1: Polish Halaman Dashboard
+
+- `src/app/[locale]/(app)/page.tsx` (v0.8 → v0.9)
+  - Header manual ("IKHTISAR / Performance Hub") diganti komponen
+    shared `<PageHeader>` — hilangkan kicker biru (`text-blue-700`)
+    yang melanggar §6 (aksen biru hanya untuk aksi/link).
+  - `text-gray-800` / `text-zinc-600` → `text-foreground` /
+    `text-muted-foreground` (adaptif dark mode).
+  - Filter bar: `bg-zinc-100` + `outline-zinc-400/20` → `bg-card` +
+    `border border-border` (rounded-lg, konsisten §6.4).
+  - Label filter: `text-zinc-600` bold uppercase → `text-muted-foreground`
+    medium uppercase tracking-wider (seragam dengan StatCard).
+  - Native `<select>` di-token-kan: `bg-white` + outline zinc →
+    `bg-background border border-input text-foreground` + focus-ring
+    token (`ring-ring`). Native select dipertahankan untuk UX mobile
+    (picker OS, thumb-friendly §6.5).
+  - Tombol reset filter: `<button>` ad-hoc → shadcn
+    `<Button variant="outline" size="sm">` (konsisten app-wide).
+  - Hapus `font-['Inter']` inline di `<main>` (redundant — sudah
+    di-set global via `globals.css`).
+  - Tambah `htmlFor`/`id` di label & select (a11y).
+
+**Tidak berubah:** `KpiCards`, `SalesCharts`, `TransactionLists`,
+`ExpiryAlerts`, `DailyProductionPlanner` (sudah di-polish di v0.17.0).
+
+---
+
 ## [v0.17.0] — 2026-04-18
 
 ### Ditambahkan / Diubah — Redesign Fase 1B: Design System Cleanup

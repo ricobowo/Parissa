@@ -2,7 +2,7 @@
 
 // ============================================================
 // File: src/app/[locale]/(app)/page.tsx
-// Versi: v0.8.0
+// Versi: v0.9.0
 // Deskripsi: Halaman Dashboard utama Parissa POS.
 //            6 KPI cards (FR-006), filter status bayar + produk (FR-010),
 //            bar chart distribusi penjualan (FR-007),
@@ -10,6 +10,9 @@
 //            stacked bar revenue harian (FR-009),
 //            tabel transaksi paid/unpaid (FR-011).
 //            Responsif: scroll vertikal mobile, grid desktop (FR-012).
+//            v0.9.0 — Redesign Fase 2 #1: pakai <PageHeader>, hapus
+//            kicker biru/slate literal, filter row token-driven + shadcn
+//            Button, select native ber-token (bg-background/border-input).
 // ============================================================
 
 import { useState, useEffect, useCallback, useMemo } from 'react'
@@ -30,6 +33,14 @@ import {
 import { TransactionLists } from '@/components/dashboard/TransactionLists'
 import { ExpiryAlerts } from '@/components/dashboard/ExpiryAlerts'
 import { DailyProductionPlanner } from '@/components/dashboard/DailyProductionPlanner'
+import { PageHeader } from '@/components/shared/PageHeader'
+import { Button } from '@/components/ui/button'
+
+// Class token-driven untuk <select> native — adaptif light/dark, konsisten shadcn input
+const SELECT_CLASS =
+  'h-9 px-3 rounded-md bg-background border border-input text-foreground text-sm ' +
+  'focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:border-ring ' +
+  'transition-colors'
 
 // Tipe sale yang sudah join ke product
 interface SaleWithProduct extends Sale {
@@ -189,36 +200,34 @@ export default function DashboardPage() {
   if (loading) return <PageSkeleton />
 
   return (
-    <main className="flex-1 p-4 md:p-8 max-w-[1040px] mx-auto w-full font-['Inter']">
+    <main className="flex-1 p-4 md:p-8 max-w-[1040px] mx-auto w-full">
       {/* ================================================================ */}
-      {/* Header Dashboard */}
+      {/* Header Dashboard — PageHeader primitive (monokrom, adaptif dark) */}
       {/* ================================================================ */}
-      <div className="mb-6">
-        <p className="text-blue-700 text-xs font-semibold uppercase leading-4 tracking-wide">
-          {t('overview')}
-        </p>
-        <h1 className="text-gray-800 text-2xl md:text-3xl font-bold leading-8 mt-0.5">
-          {t('performanceHub')}
-        </h1>
-        <p className="text-zinc-600 text-sm font-normal leading-5 mt-1">
-          {t('subtitle')}
-        </p>
-      </div>
+      <PageHeader
+        kicker={t('overview')}
+        title={t('performanceHub')}
+        subtitle={t('subtitle')}
+      />
 
       {/* ================================================================ */}
-      {/* Filter Bar (FR-010) */}
+      {/* Filter Bar (FR-010) — token-driven, adaptif dark mode            */}
       {/* ================================================================ */}
-      <div className="p-4 md:p-6 bg-zinc-100 rounded-lg flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-6">
+      <div className="p-4 md:p-5 bg-card border border-border rounded-lg flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-6">
         <div className="flex flex-col sm:flex-row gap-4">
           {/* Filter: Status Bayar */}
-          <div className="flex flex-col gap-1">
-            <label className="text-zinc-600 text-[10px] font-bold uppercase leading-4 tracking-wide">
+          <div className="flex flex-col gap-1.5">
+            <label
+              htmlFor="filter-payment"
+              className="text-muted-foreground text-[10px] font-medium uppercase tracking-wider"
+            >
               {t('paymentStatusFilter')}
             </label>
             <select
+              id="filter-payment"
               value={filterPayment}
               onChange={(e) => setFilterPayment(e.target.value)}
-              className="min-w-40 px-4 py-2 bg-white rounded-sm outline outline-1 outline-offset-[-1px] outline-zinc-400/20 text-gray-800 text-sm font-normal"
+              className={`min-w-40 ${SELECT_CLASS}`}
             >
               <option value="all">{t('allStatuses')}</option>
               <option value="Sudah">{t('paidFilter')}</option>
@@ -227,14 +236,18 @@ export default function DashboardPage() {
           </div>
 
           {/* Filter: Produk */}
-          <div className="flex flex-col gap-1">
-            <label className="text-zinc-600 text-[10px] font-bold uppercase leading-4 tracking-wide">
+          <div className="flex flex-col gap-1.5">
+            <label
+              htmlFor="filter-product"
+              className="text-muted-foreground text-[10px] font-medium uppercase tracking-wider"
+            >
               {t('productFilter')}
             </label>
             <select
+              id="filter-product"
               value={filterProduct}
               onChange={(e) => setFilterProduct(e.target.value)}
-              className="min-w-48 px-4 py-2 bg-white rounded-sm outline outline-1 outline-offset-[-1px] outline-zinc-400/20 text-gray-800 text-sm font-normal"
+              className={`min-w-48 ${SELECT_CLASS}`}
             >
               <option value="all">{t('allProducts')}</option>
               {products.map((p) => (
@@ -246,18 +259,19 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* Tombol reset filter */}
+        {/* Tombol reset filter — pakai shadcn Button (variant outline) */}
         {(filterPayment !== 'all' || filterProduct !== 'all') && (
-          <button
+          <Button
             type="button"
+            variant="outline"
+            size="sm"
             onClick={() => {
               setFilterPayment('all')
               setFilterProduct('all')
             }}
-            className="px-6 py-2 bg-white rounded-sm outline outline-1 outline-offset-[-1px] outline-zinc-400/20 text-gray-800 text-sm font-medium hover:bg-zinc-50 transition-colors"
           >
             {t('resetFilter')}
-          </button>
+          </Button>
         )}
       </div>
 

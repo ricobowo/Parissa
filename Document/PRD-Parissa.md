@@ -2,8 +2,8 @@
 
 | Field | Value |
 |-------|-------|
-| **PRD Version** | v2.1 |
-| **Last Updated** | 10 April 2026 |
+| **PRD Version** | v2.2 |
+| **Last Updated** | 19 April 2026 |
 | **Author** | Rico (Owner) + Claude (AI Assistant) |
 | **Status** | Draft — Awaiting Final Review |
 | **Repository** | https://github.com/ricobowo/Parissa.git |
@@ -18,6 +18,7 @@
 | v1.0 | 9 Apr 2026 | Initial PRD — 10 sections, 53 functional requirements |
 | v2.0 | 9 Apr 2026 | Major update: flexible roles, verified formulas, diagrams (User Flow, C4, Sequence, ERD), bilingual support, working rules, timeline per phase, semua fitur tambahan masuk Phase 1, WhatsApp notification deprioritized, design reference dari Airtable screenshots |
 | v2.1 | 10 Apr 2026 | Minor update: Design Considerations disesuaikan mengikuti Notion |
+| v2.2 | 19 Apr 2026 | Design direction revision — §7 di-rewrite dari "Notion flat monokrom" ke **"Crafted Minimalism"** (referensi Zentra/Linear/Stripe Dashboard): layering 3-tingkat, radius besar (card 14px), shadow soft, display-scale typography, chart palette muted-accent, motion tokens. Sinkron dengan CLAUDE.md §6. |
 
 ---
 
@@ -309,93 +310,140 @@ min_selling_price = cost_per_unit / (1 - target_margin/100)
 
 ---
 
-#7. Design Considerations
-7.1 Filosofi Desain
-Minimalis seperti Notion — tampilan bersih, hitam putih, tipografi sebagai elemen utama. Tidak ada warna berlebihan, tidak ada dekorasi yang tidak perlu. Warna hanya digunakan untuk fungsi (status, alert, aksi), bukan untuk estetika.
-Prinsip utama:
+## 7. Design Considerations — "Crafted Minimalism"
 
-Content-first — konten adalah raja, UI hanya wadah. Tidak ada elemen visual yang bersaing dengan data.
-Monokrom sebagai default — seluruh UI menggunakan skala hitam-putih-abu. Warna hanya muncul di tempat yang memiliki makna fungsional (badge status, alert stok, tombol aksi utama).
-Whitespace yang cukup — biarkan elemen bernapas. Padding dan margin yang generous.
-Tipografi hierarkis — ukuran dan ketebalan font yang jelas membedakan heading, body, dan caption tanpa perlu warna.
-Kode fleksibel — semua warna didefinisikan sebagai CSS variables / design tokens di satu file. Mengubah seluruh tampilan cukup edit satu file konfigurasi, tanpa menyentuh komponen.
+### 7.1 Filosofi Desain
 
-7.2 Sistem Warna (Design Tokens)
-Semua warna didefinisikan sebagai CSS variables di satu file (globals.css atau theme.ts). Komponen tidak boleh hardcode warna — hanya referensi ke token.
-css:root {
-  /* --- Base (monokrom) --- */
-  --color-bg:          #FFFFFF;
-  --color-bg-secondary:#F7F7F5;    /* abu sangat muda, untuk card/surface */
-  --color-bg-hover:    #F0F0EE;
-  --color-border:      #E5E5E3;
-  --color-text:        #1A1A1A;
-  --color-text-secondary: #6B6B6B;
-  --color-text-tertiary:  #9B9B9B;
+Referensi visual: **Zentra dashboard**, **Linear**, **Stripe Dashboard** — premium SaaS modern. Monokrom sebagai basis + aksen fungsional + **subtle depth**. Bukan "flat Notion" polos — melainkan "kerajinan minimalis" dengan layering, shadow halus, radius besar, dan display-scale typography.
 
-  /* --- Aksen fungsional (hanya untuk status/aksi) --- */
-  --color-accent:      #2383E2;    /* tombol utama, link */
-  --color-success:     #0F7B0F;    /* status "Sudah", stok "Aman" */
-  --color-warning:     #D9730D;    /* stok "Menipis", overdue */
-  --color-danger:      #E03E3E;    /* stok "Habis", error */
+**Prinsip:**
+- **Content-first** — data tetap raja; dekorasi tidak boleh bersaing dengan konten.
+- **Layering 3-tingkat** — `bg` (app) → `bg-secondary` (panel) → `bg-elevated` (card). Card terangkat via shadow ringan.
+- **Friendly radius** — card 14px, container besar 18px, chip/icon button full pill. Tidak kaku.
+- **Display-scale hero** — angka metric utama tampil 28–48px (bukan 20px), memberi presence pada data penting.
+- **Purposeful color** — aksen biru/pink/teal boleh muncul di chart & progress bar. Untuk status/aksi tetap semantic (success/warning/danger).
+- **Micro-motion** — semua interaktif punya transisi 120–180ms dengan `ease-out`. Hover state explicit (bukan hanya warna, tapi juga shadow lift).
+- **Token-only** — komponen dilarang hardcode warna/radius/shadow. Semua via CSS variables di `globals.css`.
+- **Mobile-first** — desain 360px dulu, lalu tablet & desktop. Interaksi thumb-friendly.
 
-  /* --- Dark mode (opsional, nanti) --- */
-  /* Cukup override variabel di atas dalam media query */
-}
-Aturan penggunaan warna:
+### 7.2 Sistem Warna (Design Tokens)
 
-Latar belakang halaman: --color-bg
-Latar belakang card/panel: --color-bg-secondary
-Teks utama: --color-text
-Teks pendukung: --color-text-secondary
-Border dan garis pemisah: --color-border
-Warna aksen hanya untuk: tombol utama, badge status bayar, indikator stok, link
-Tidak ada warna untuk header, sidebar, atau navigasi — semua hitam/putih/abu
+Semua warna, radius, shadow, dan motion didefinisikan sebagai CSS variables di `src/app/globals.css`. Lihat juga `CLAUDE.md §6.2` untuk daftar lengkap.
 
-7.3 Tipografi
-Satu font family saja. Hierarki dibuat dari ukuran dan ketebalan, bukan warna.
-Font family : Inter (atau system font stack)
-Heading 1   : 24px, semibold (600)    → judul halaman
-Heading 2   : 18px, semibold (600)    → judul section
-Heading 3   : 14px, medium (500)      → label grup
-Body         : 14px, regular (400)     → teks umum, tabel
-Caption      : 12px, regular (400)     → keterangan, timestamp
-Monospace    : 13px, JetBrains Mono    → angka Rupiah, kode
-7.4 Komponen UI
-Semua komponen menggunakan shadcn/ui (sudah minimalis by default) dengan kustomisasi minimal:
+**Base (layering):**
+```css
+--color-bg:           #EFEEEC;   /* app bg, soft off-white */
+--color-bg-secondary: #F5F4F2;   /* panel */
+--color-bg-elevated:  #FFFFFF;   /* card terangkat */
+--color-bg-hover:     #EDECE9;
+--color-border:       #E5E4E1;
+--color-text:         #161615;
+--color-text-secondary: #6A6A68;
+```
 
-Card — border 1px --color-border, radius 8px, tanpa shadow. Latar --color-bg atau --color-bg-secondary.
-Button primary — background --color-accent, teks putih, radius 6px. Hanya 1 tombol aksen per halaman.
-Button secondary — border 1px --color-border, background transparan, teks --color-text.
-Input/Select — border 1px --color-border, radius 6px, tanpa shadow. Focus: border --color-accent.
-Badge status — hanya 3 varian fungsional: hijau (sukses), oranye (warning), merah (danger). Bentuk: teks kecil + dot warna, bukan pill berwarna penuh.
-Tabel — tanpa zebra stripe. Pemisah baris: border-bottom 1px --color-border. Header: teks --color-text-secondary, uppercase 11px.
-Toast/notification — minimalis, pojok kanan bawah, hitam putih + ikon status.
-Chart — skala abu-abu sebagai default. Warna produk hanya digunakan di chart distribusi (dan tetap muted/pastel, bukan vivid).
+**Aksen fungsional:**
+```css
+--color-accent:  #2F6FEB;   /* biru — tombol/link */
+--color-success: #0E8345;   /* hijau — "Sudah", "Aman" */
+--color-warning: #D9730D;   /* oranye — "Menipis", overdue */
+--color-danger:  #DC3545;   /* merah — "Habis", error */
+```
 
-7.5 Layout & Navigasi
+**Chart palette (muted accent, data visualization):**
+```css
+--chart-primary:     #3B82F6;
+--chart-secondary:   #93C5FD;
+--chart-tertiary:    #BEDBFF;
+--chart-accent-pink: #EC4899;
+--chart-accent-teal: #14B8A6;
+--chart-neutral:     #9CA3AF;
+```
 
-Desktop — sidebar kiri, lebar 240px, collapsible ke icon-only (60px). Warna sidebar: --color-bg-secondary dengan border kanan. Teks menu: --color-text-secondary, aktif: --color-text + font-weight medium + subtle bg highlight.
-Mobile — bottom tab bar, 4-5 tab sesuai role. Warna: putih dengan border atas, icon abu, aktif: hitam.
-Konten — max-width 960px di desktop, centered. Padding horizontal 24px desktop, 16px mobile.
+**Dark mode:** semua token di atas punya override `.dark` (lihat `globals.css`). Kontras ≥ WCAG AA 4.5:1.
 
-7.6 Referensi dari Airtable (untuk konten, bukan gaya)
-Screenshot Airtable sebelumnya digunakan sebagai referensi konten dan data layout, bukan referensi gaya visual:
+### 7.3 Radius, Shadow, Motion
 
-Form "Pembelian" → menjadi referensi field apa saja yang perlu ada di POS form, tapi tampilan di-redesign minimalis.
-Dashboard "Sales Performance" → menjadi referensi metrik apa saja yang ditampilkan (6 kartu, bar chart, donut chart), tapi gaya visual diganti monokrom.
-"Sales Revenue Over Time" → menjadi referensi tipe chart dan data breakdown, tapi warna chart di-mute.
+```css
+/* Radius — Zentra-scale */
+--radius-sm: 8px;     /* badge */
+--radius-md: 10px;    /* input, button */
+--radius-lg: 14px;    /* card standar */
+--radius-xl: 18px;    /* hero container */
+--radius-pill: 9999px;
 
-7.7 Prinsip Mobile-First
+/* Shadow — soft, untuk elevation */
+--shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.04);
+--shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.06), 0 1px 2px -1px rgb(0 0 0 / 0.04);
+--shadow-md: 0 4px 12px -2px rgb(0 0 0 / 0.08);
 
-Desain dimulai dari layar 360px, lalu diperluas ke tablet (768px) dan desktop (1024px+).
-Quick-sale grid di POS: 2 kolom di mobile, 3 kolom di tablet, form samping di desktop.
-Semua interaksi harus bisa dilakukan dengan satu tangan (thumb-friendly).
+/* Motion */
+--motion-fast: 120ms;
+--motion-base: 180ms;
+--ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+```
 
-7.8 Bilingual (ID/EN)
+### 7.4 Tipografi
 
-Toggle bahasa di sidebar/header, simpan ke profil user.
-Default: Bahasa Indonesia.
-Implementasi via next-intl dengan file JSON terpisah per bahasa.
+Satu font family (**Inter** + system fallback). Hierarki dibuat dari ukuran, ketebalan, dan **letter-spacing**.
+
+| Style | Size (mobile → desktop) | Weight | Letter-spacing | Penggunaan |
+|---|---|---|---|---|
+| Display LG | — / 48px | 600 | -0.03em | Hero metric (Gross Volume dll) |
+| Display MD | 28px / 36px | 600 | -0.025em | H1 halaman (PageHeader title) |
+| Display SM | — / 28px | 600 | -0.02em | Hero number di KPI |
+| Heading 2 | 18px | 600 | -0.005em | Judul section/card |
+| Heading 3 | 14px | 500 | normal | Label grup |
+| Body | 14px | 400 | normal | Teks umum, tabel |
+| Caption | 12px | 400 | normal | Timestamp, keterangan |
+| Micro-label | 11px | 500 | +0.12em | Uppercase label (kicker, KPI label) |
+| Monospace | 13px | 400 | normal | Angka Rupiah (JetBrains Mono, tabular-nums) |
+
+### 7.5 Komponen UI
+
+Semua komponen pakai **shadcn/ui** + kustomisasi via token. Tidak boleh bikin komponen dari scratch.
+
+- **Card** — `bg-bg-elevated`, border 1px, radius **14px**, `shadow-xs`. Hover: `shadow-sm` (transition motion-base).
+- **Hero card** — radius 18px, `shadow-md`. Boleh gradient muted untuk 1 "insight card" per halaman.
+- **Button primary** — `bg-accent`, teks putih, radius 10px, `shadow-xs`. Hover: `bg-accent-hover`. Max 1 tombol aksen per view.
+- **Button secondary** — border 1px, bg transparan, radius 10px.
+- **Icon button** — square 32/36px, `rounded-pill`, hover `bg-bg-hover`.
+- **Nav pill** — `rounded-pill`; aktif = bg hitam + teks putih; inaktif = teks secondary.
+- **Input / Select** — radius 10px. Focus ring 2px `--color-accent` alpha 0.2.
+- **Badge status** — dot 6px + teks. 3 varian semantik (success/warning/danger).
+- **Chip/Tag** — `rounded-pill`, bg `--color-bg-secondary`, padding 4px 10px.
+- **Tabel** — tanpa zebra, header micro-label uppercase, row hover `bg-bg-hover/40`.
+- **Toast** — pojok kanan bawah, radius 12px, `shadow-md`.
+- **Chart** — multi-series pakai `--chart-*` palette. Single series `--chart-primary` atau neutral. Line 2px stroke, bar rounded-top 4px.
+
+### 7.6 Insight Card (Opsional)
+
+**Maksimal 1 per halaman.** Surface premium dengan background gradient soft (biru→pink→orange) dan radius-xl. Untuk headline metric, AI recommendation, atau daily alert utama. Contoh: panel "Authorization rate increased by 4%" di referensi Zentra.
+
+### 7.7 Layout & Navigasi
+
+- **Desktop** — sidebar kiri 240px (collapsible 60px), bg `--color-bg-secondary`, border kanan halus. Max-width konten 1040px, padding 24px.
+- **Mobile** — bottom tab bar 4–5 tab, padding 16px. Warna: `bg-bg-elevated` dengan border atas.
+- **Spacing scale** — gap antar section 24px mobile / 32px desktop. Card padding 16–20px.
+- **Quick-sale grid** — 2 kolom mobile, 3 kolom tablet, form samping desktop.
+
+### 7.8 Referensi Visual
+
+- **Zentra dashboard** — referensi utama (2026-04-19): hero metric besar, card dengan shadow soft, nav pill, insight card gradient, chart palette muted.
+- **Linear / Stripe Dashboard** — referensi sekunder untuk density & hover state.
+- **Airtable screenshots** — referensi **konten** saja (field apa yang perlu ada, metric apa yang ditampilkan), bukan gaya visual.
+
+### 7.9 Prinsip Mobile-First
+
+- Desain mulai 360px, lalu 768px & 1024px+.
+- Quick-sale POS: 2 kol mobile → 3 kol tablet → form samping desktop.
+- Semua interaksi thumb-friendly.
+- Display-scale typography di desktop boleh turun ke 28px di mobile (jangan dipaksa 48px di layar sempit).
+
+### 7.10 Bilingual (ID/EN)
+
+- Toggle bahasa di header, simpan ke profil user.
+- Default: Bahasa Indonesia.
+- Implementasi via **next-intl** + file JSON terpisah per bahasa.
 
 7.9 Dark Mode (Opsional — Nanti)
 

@@ -1,9 +1,11 @@
 # Task-Parissa-Redesign.md
 
-> **Tujuan:** Redesign UI Parissa POS dari tampilan "wireframe" menjadi polished, minimalis, Notion-style, dengan dukungan **dark mode & light mode fleksibel**.
-> **Versi awal dokumen:** v0.1.0 — 2026-04-18
-> **Referensi acuan:** CLAUDE.md §6 (Design System) + screenshot Notion (gambar-2 Rico, 2026-04-18)
-> **Prinsip:** tidak menyalin referensi 1:1 — ambil filosofinya (minimalis, monokrom, whitespace generous, aksen hanya fungsional).
+> **Tujuan:** Redesign UI Parissa POS dari tampilan "wireframe" menjadi polished premium SaaS, dengan dukungan **dark mode & light mode fleksibel**.
+> **Versi dokumen:** v0.2.0 — 2026-04-19 (revisi design direction)
+> **Referensi acuan:**
+>   - CLAUDE.md §6 + PRD-Parissa §7 (v2.2) — **"Crafted Minimalism"**
+>   - Screenshot Zentra dashboard (Rico 2026-04-19) — referensi utama visual premium SaaS
+> **Prinsip:** ambil filosofi, bukan salin 1:1. Monokrom basis + subtle depth + aksen fungsional + display-scale typography.
 
 ---
 
@@ -54,6 +56,29 @@ tanpa hierarchy uppercase, banyak `bg-white` hardcoded di komponen dashboard
 **Sisa (untuk Fase 2 per-halaman):**
 - `bg-white` / hardcoded color di: POS, Products, Recipes, Reports, Preorders, Stock, Settings, dan page roots (`(app)/*/page.tsx`).
 - Kicker "IKHTISAR" biru di dashboard page masih hardcode — akan diganti `<PageHeader>` saat polish Dashboard.
+
+## Fase 1C — Design Direction Revision ✅ SELESAI 2026-04-19
+
+**Pemicu:** Screenshot dashboard Fase 1B terasa terlalu "wireframe/flat". Rico request revisi ke style premium SaaS (referensi Zentra).
+
+- [x] Revisi `CLAUDE.md` §6 — filosofi baru **"Crafted Minimalism"** (layering 3-tingkat, radius besar, shadow soft, display-scale typography, motion tokens, chart palette muted-accent, insight card opsional)
+- [x] Revisi `Document/PRD-Parissa.md` §7 — sinkron dengan CLAUDE.md §6; PRD bump **v2.1 → v2.2**
+- [x] Update `src/app/globals.css` (v0.2 → v0.3) — tambah tokens:
+  - Layering: `--color-bg-elevated`, `--color-border-strong`
+  - Radius scale: sm/md/lg/xl + pill
+  - Shadow tokens: xs/sm/md/lg (+ dark parity)
+  - Motion tokens: fast/base/slow + ease-out
+  - Chart palette: primary/secondary/tertiary/pink/teal/neutral
+  - Typography utility: `text-display-sm/md/lg`
+  - Sinkron shadcn tokens (background/card/popover) ke legacy tokens
+- [x] Update shared primitives:
+  - `PageHeader.tsx` (v0.1 → v0.2) — H1 responsif 28→36px, tracking tight, actions wrap
+  - `StatCard.tsx` (v0.1 → v0.2) — radius 14px, shadow-xs, hover shadow-sm, prop `size="md"|"lg"`
+- [x] Verifikasi dashboard light + dark — token propagate otomatis via KpiCards/SalesCharts/TransactionLists existing
+- [x] Bump VERSION + CHANGELOG → **v0.18.0**
+
+**Referensi visual baru:** Zentra dashboard (rounded cards, display-scale hero number, soft shadow, muted chart palette).
+**Catatan:** PRD dibump dari v2.1 → v2.2 karena ini perubahan spec (design direction), bukan sekadar polish implementasi.
 
 ## Fase 2 — Polish Per-Halaman
 

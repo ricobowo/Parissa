@@ -1,8 +1,14 @@
 /* ============================================================
    File: src/app/globals.css
-   Versi: v0.2.0
-   Deskripsi: Design tokens dan tema global — Notion-style monokrom
-              + dukungan dark mode (class-based `.dark`)
+   Versi: v0.3.0
+   Deskripsi: Design tokens & tema global — "Crafted Minimalism"
+              ala Zentra (PRD v2.2 / CLAUDE.md §6):
+              - Layering (bg → surface → elevated) + soft shadow
+              - Radius besar (card 16px, pill chip full)
+              - Display-scale typography untuk hero metric
+              - Chart palette muted accent (biru/pink/teal)
+              - Motion tokens untuk micro-interaction
+              - Dark mode parity (class-based `.dark`)
    ============================================================ */
 
 @import "tailwindcss";
@@ -12,33 +18,59 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  /* --- Base (monokrom) --- */
-  --color-bg:             #FFFFFF;
-  --color-bg-secondary:   #F7F7F5;
-  --color-bg-hover:       #F0F0EE;
-  --color-border:         #E5E5E3;
-  --color-text:           #1A1A1A;
-  --color-text-secondary: #6B6B6B;
-  --color-text-tertiary:  #9B9B9B;
+  /* --- Base: layering 3-tingkat (bg → surface → elevated) --- */
+  --color-bg:             #EFEEEC;   /* app bg, sedikit off-white (soft) */
+  --color-bg-secondary:   #F5F4F2;   /* panel/sub-surface */
+  --color-bg-elevated:    #FFFFFF;   /* card (terangkat + shadow) */
+  --color-bg-hover:       #EDECE9;   /* hover state */
+  --color-border:         #E5E4E1;
+  --color-border-strong:  #D8D7D3;   /* border tegas untuk separator */
+  --color-text:           #161615;
+  --color-text-secondary: #6A6A68;
+  --color-text-tertiary:  #9A9A97;
 
-  /* --- Aksen fungsional (hanya untuk status/aksi) --- */
-  --color-accent:         #2383E2;
-  --color-success:        #0F7B0F;
-  --color-warning:        #D9730D;
-  --color-danger:         #E03E3E;
+  /* --- Aksen fungsional --- */
+  --color-accent:         #2F6FEB;   /* biru utama, tombol/link */
+  --color-accent-hover:   #2558C9;
+  --color-success:        #0E8345;   /* hijau (Sudah, Aman) */
+  --color-warning:        #D9730D;   /* oranye (Menipis, Overdue) */
+  --color-danger:         #DC3545;   /* merah (Habis, Error) */
 
-  /* --- Radius & spacing --- */
-  --radius-sm:            6px;
-  --radius-md:            8px;
-  --radius-lg:            12px;
+  /* --- Chart palette (muted accent, bukan vivid) --- */
+  --chart-primary:        #3B82F6;   /* biru terang */
+  --chart-secondary:      #93C5FD;   /* biru muda */
+  --chart-tertiary:       #BEDBFF;   /* biru sangat muda */
+  --chart-accent-pink:    #EC4899;   /* retention / feature line */
+  --chart-accent-teal:    #14B8A6;
+  --chart-neutral:        #9CA3AF;   /* abu "lainnya" */
+
+  /* --- Radius — Zentra-scale (card lebih bulat & friendly) --- */
+  --radius-sm:            8px;       /* badge kecil */
+  --radius-md:            10px;      /* input, button */
+  --radius-lg:            14px;      /* card standar */
+  --radius-xl:            18px;      /* hero card / container besar */
+  --radius-pill:          9999px;    /* chip, icon button, nav pill */
+
+  /* --- Elevation / shadow — soft, bukan dramatis --- */
+  --shadow-xs:            0 1px 2px 0 rgb(0 0 0 / 0.04);
+  --shadow-sm:            0 1px 3px 0 rgb(0 0 0 / 0.06), 0 1px 2px -1px rgb(0 0 0 / 0.04);
+  --shadow-md:            0 4px 12px -2px rgb(0 0 0 / 0.08), 0 2px 4px -2px rgb(0 0 0 / 0.04);
+  --shadow-lg:            0 12px 28px -4px rgb(0 0 0 / 0.10), 0 4px 8px -4px rgb(0 0 0 / 0.04);
+
+  /* --- Motion (micro-interaction) --- */
+  --motion-fast:          120ms;
+  --motion-base:          180ms;
+  --motion-slow:          280ms;
+  --ease-out:             cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out:          cubic-bezier(0.45, 0, 0.15, 1);
 
   /* --- Latar & teks utama (alias Tailwind) --- */
 
-  --background:             oklch(1 0 0);
+  --background:             var(--color-bg);
 
-  --foreground:             oklch(0.145 0 0);
+  --foreground:             var(--color-text);
 
-  --card:             oklch(1 0 0);
+  --card:             var(--color-bg-elevated);
 
   --card-foreground:             oklch(0.145 0 0);
 
@@ -70,17 +102,17 @@
 
   --ring:             oklch(0.708 0 0);
 
-  --chart-1:             oklch(0.87 0 0);
+  --chart-1:             var(--chart-primary);
 
-  --chart-2:             oklch(0.556 0 0);
+  --chart-2:             var(--chart-secondary);
 
-  --chart-3:             oklch(0.439 0 0);
+  --chart-3:             var(--chart-tertiary);
 
-  --chart-4:             oklch(0.371 0 0);
+  --chart-4:             var(--chart-accent-pink);
 
-  --chart-5:             oklch(0.269 0 0);
+  --chart-5:             var(--chart-accent-teal);
 
-  --radius:             0.625rem;
+  --radius:             0.875rem;   /* 14px — basis card */
 
   --sidebar:             oklch(0.985 0 0);
 
@@ -104,8 +136,10 @@
   --color-foreground: var(--foreground);
   --color-bg: var(--color-bg);
   --color-bg-secondary: var(--color-bg-secondary);
+  --color-bg-elevated: var(--color-bg-elevated);
   --color-bg-hover: var(--color-bg-hover);
   --color-border: var(--color-border);
+  --color-border-strong: var(--color-border-strong);
   --color-text: var(--color-text);
   --color-text-secondary: var(--color-text-secondary);
   --color-text-tertiary: var(--color-text-tertiary);
@@ -171,10 +205,15 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* --- Tipografi hierarkis --- */
-h1 { font-size: 24px; font-weight: 600; }
-h2 { font-size: 18px; font-weight: 600; }
+/* --- Tipografi hierarkis (skala Zentra) --- */
+h1 { font-size: 24px; font-weight: 600; letter-spacing: -0.01em; }
+h2 { font-size: 18px; font-weight: 600; letter-spacing: -0.005em; }
 h3 { font-size: 14px; font-weight: 500; }
+
+/* Utility display-scale — untuk hero metric & page title desktop */
+.text-display-sm { font-size: 28px; font-weight: 600; letter-spacing: -0.02em; line-height: 1.15; }
+.text-display-md { font-size: 36px; font-weight: 600; letter-spacing: -0.025em; line-height: 1.1; }
+.text-display-lg { font-size: 48px; font-weight: 600; letter-spacing: -0.03em; line-height: 1.05; }
 
 /* --- Utilitas monochrome --- */
 .text-secondary { color: var(--color-text-secondary); }
@@ -218,18 +257,44 @@ h3 { font-size: 14px; font-weight: 500; }
   --color-text-tertiary:  #6B6B6B;
 
   /* Aksen fungsional — sedikit lebih cerah agar kontras ≥4.5:1 di bg gelap */
+  /* --- Dark mode override (palet Zentra dark-parity) --- */
+  --color-bg:             #0B0B0B;
+  --color-bg-secondary:   #141414;
+  --color-bg-elevated:    #1A1A1A;
+  --color-bg-hover:       #242424;
+  --color-border:         #2A2A2A;
+  --color-border-strong:  #3A3A3A;
+  --color-text:           #E9E9E8;
+  --color-text-secondary: #A1A1A0;
+  --color-text-tertiary:  #6B6B6A;
+
   --color-accent:         #4D9FE8;
+  --color-accent-hover:   #6CB1EE;
   --color-success:        #4CAF50;
   --color-warning:        #E89B3C;
   --color-danger:         #F26464;
 
-  /* --- Shadcn tokens (alias Tailwind) --- */
-  --background:             oklch(0.145 0 0);
-  --foreground:             oklch(0.985 0 0);
-  --card:             oklch(0.205 0 0);
-  --card-foreground:             oklch(0.985 0 0);
-  --popover:             oklch(0.205 0 0);
-  --popover-foreground:             oklch(0.985 0 0);
+  /* Chart palette — sedikit lebih cerah untuk kontras di bg gelap */
+  --chart-primary:        #60A5FA;
+  --chart-secondary:      #3B82F6;
+  --chart-tertiary:       #1E40AF;
+  --chart-accent-pink:    #F472B6;
+  --chart-accent-teal:    #2DD4BF;
+  --chart-neutral:        #6B7280;
+
+  /* Shadow dark — alpha lebih tinggi supaya tetap terlihat */
+  --shadow-xs:            0 1px 2px 0 rgb(0 0 0 / 0.3);
+  --shadow-sm:            0 1px 3px 0 rgb(0 0 0 / 0.4), 0 1px 2px -1px rgb(0 0 0 / 0.3);
+  --shadow-md:            0 4px 12px -2px rgb(0 0 0 / 0.5), 0 2px 4px -2px rgb(0 0 0 / 0.3);
+  --shadow-lg:            0 12px 28px -4px rgb(0 0 0 / 0.6), 0 4px 8px -4px rgb(0 0 0 / 0.3);
+
+  /* --- Shadcn tokens (alias Tailwind) — sinkron dengan legacy tokens --- */
+  --background:             var(--color-bg);
+  --foreground:             var(--color-text);
+  --card:                   var(--color-bg-elevated);
+  --card-foreground:        var(--color-text);
+  --popover:                var(--color-bg-elevated);
+  --popover-foreground:     var(--color-text);
   --primary:             oklch(0.922 0 0);
   --primary-foreground:             oklch(0.205 0 0);
   --secondary:             oklch(0.269 0 0);
@@ -242,11 +307,11 @@ h3 { font-size: 14px; font-weight: 500; }
   --border:             oklch(1 0 0 / 10%);
   --input:             oklch(1 0 0 / 15%);
   --ring:             oklch(0.556 0 0);
-  --chart-1:             oklch(0.87 0 0);
-  --chart-2:             oklch(0.556 0 0);
-  --chart-3:             oklch(0.439 0 0);
-  --chart-4:             oklch(0.371 0 0);
-  --chart-5:             oklch(0.269 0 0);
+  --chart-1:             var(--chart-primary);
+  --chart-2:             var(--chart-secondary);
+  --chart-3:             var(--chart-tertiary);
+  --chart-4:             var(--chart-accent-pink);
+  --chart-5:             var(--chart-accent-teal);
   --sidebar:             oklch(0.205 0 0);
   --sidebar-foreground:             oklch(0.985 0 0);
   --sidebar-primary:             oklch(0.488 0.243 264.376);
