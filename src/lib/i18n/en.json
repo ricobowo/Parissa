@@ -86,11 +86,21 @@
     "dailyRevenueTitle": "Daily Revenue",
     "dailyRevenueSubtitle": "Daily revenue by product",
     "noDataYet": "No data yet",
-    "transactions": "transactions"
+    "transactions": "transactions",
+    "todaySummaryKicker": "TODAY",
+    "todaySummaryTitle": "Today's Summary",
+    "todayRevenueLabel": "Today's Revenue",
+    "todayTxnCount": "{count} transactions today",
+    "todayInsightEmpty": "No transactions recorded yet today",
+    "todayInsightActive": "{count} transactions — average {avg} per transaction"
   },
   "pos": {
     "title": "Sales Input",
     "quickSale": "Quick Sale",
+    "kicker": "POS",
+    "subtitle": "Fast sales entry — target under 30 seconds per transaction",
+    "noProductsAvailable": "No active products yet",
+    "noProductsHint": "Activate products in the Products menu to start selling",
     "customerName": "Customer Name",
     "customerNamePlaceholder": "Enter customer name...",
     "customerNameRequired": "Customer name is required",

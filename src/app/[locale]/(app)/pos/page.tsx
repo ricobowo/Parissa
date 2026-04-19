@@ -2,13 +2,15 @@
 
 // ============================================================
 // File: src/app/[locale]/(app)/pos/page.tsx
-// Versi: v0.7.0
+// Versi: v0.8.0
 // Deskripsi: Halaman POS — Input Penjualan cepat (Quick Sale).
 //            Fetch produk aktif dari Supabase, render SaleForm,
 //            submit multi-produk ke tabel sales.
 //            DB triggers otomatis: profit calc (5.4), stock deduction,
 //            customer upsert.
 //            Target: < 30 detik per transaksi (US-011).
+//            v0.8.0 — Redesign Fase 2 #2 (Zentra): pakai <PageHeader>,
+//            chip-pill count, buang ikon SVG biru legacy.
 // ============================================================
 
 import { useState, useEffect, useCallback } from 'react'
@@ -19,6 +21,7 @@ import { calcSalePrice, formatRupiah } from '@/lib/formulas'
 import { PageSkeleton } from '@/components/ui/loading-skeleton'
 import { useToast } from '@/lib/hooks/use-toast'
 import { SaleForm, SaleSubmitData } from '@/components/pos/SaleForm'
+import { PageHeader } from '@/components/shared/PageHeader'
 
 export default function PosPage() {
   const t = useTranslations('pos')
@@ -154,26 +157,20 @@ export default function PosPage() {
   if (loading) return <PageSkeleton />
 
   return (
-    <main className="flex-1 p-4 md:p-8 max-w-[1040px] mx-auto w-full font-['Inter']">
-      {/* Header halaman — sesuai HTML reference: Quick Sale */}
-      <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center gap-4">
-          {/* Ikon POS */}
-          <svg width="16" height="14" viewBox="0 0 16 14" fill="none" className="flex-shrink-0">
-            <rect width="16" height="14" rx="2" fill="#2563eb" />
-            <rect x="3" y="3" width="10" height="2" rx="1" fill="white" />
-            <rect x="3" y="7" width="6" height="2" rx="1" fill="white" />
-          </svg>
-          <div>
-            <h1 className="text-slate-900 text-lg md:text-2xl font-bold leading-7">
-              {t('quickSale')}
-            </h1>
-          </div>
+    <main className="flex-1 p-4 md:p-8 max-w-[1040px] mx-auto w-full">
+      {/* Header — PageHeader shared (monokrom, adaptif dark) + chip-pill count */}
+      <div className="flex items-start justify-between gap-3 mb-2">
+        <div className="flex-1 min-w-0">
+          <PageHeader
+            kicker={t('kicker')}
+            title={t('quickSale')}
+            subtitle={t('subtitle')}
+          />
         </div>
 
-        {/* Info jumlah produk tersedia */}
-        <div className="px-3 py-1.5 bg-zinc-100 rounded-md flex items-center gap-2">
-          <span className="text-zinc-600 text-xs font-semibold uppercase tracking-wide">
+        {/* Info jumlah produk — chip-pill */}
+        <div className="mt-1 shrink-0 px-3 py-1.5 bg-[color:var(--color-bg-secondary)] border border-border rounded-full flex items-center">
+          <span className="text-muted-foreground text-[11px] font-medium uppercase tracking-[0.12em]">
             {t('productCount', { count: products.length })}
           </span>
         </div>

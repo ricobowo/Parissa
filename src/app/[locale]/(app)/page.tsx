@@ -2,7 +2,7 @@
 
 // ============================================================
 // File: src/app/[locale]/(app)/page.tsx
-// Versi: v0.9.0
+// Versi: v0.10.0
 // Deskripsi: Halaman Dashboard utama Parissa POS.
 //            6 KPI cards (FR-006), filter status bayar + produk (FR-010),
 //            bar chart distribusi penjualan (FR-007),
@@ -10,14 +10,17 @@
 //            stacked bar revenue harian (FR-009),
 //            tabel transaksi paid/unpaid (FR-011).
 //            Responsif: scroll vertikal mobile, grid desktop (FR-012).
-//            v0.9.0 — Redesign Fase 2 #1: pakai <PageHeader>, hapus
-//            kicker biru/slate literal, filter row token-driven + shadcn
-//            Button, select native ber-token (bg-background/border-input).
+//            v0.10.0 — Redesign Fase 2 #1 round 2 (Zentra): Insight
+//            card "Ringkasan Hari Ini" (gradient soft, radius-xl,
+//            hero 48px), filter bar chip-pill inline (rounded-pill),
+//            KpiCards/SalesCharts/TransactionLists diupgrade ke
+//            card radius 14px + shadow soft.
 // ============================================================
 
 import { useState, useEffect, useCallback, useMemo } from 'react'
 import { useTranslations } from 'next-intl'
 import { createClient } from '@/lib/supabase/client'
+import { formatRupiah } from '@/lib/formulas'
 import { Product, Sale } from '@/types'
 import { PageSkeleton } from '@/components/ui/loading-skeleton'
 import { useToast } from '@/lib/hooks/use-toast'
@@ -36,11 +39,14 @@ import { DailyProductionPlanner } from '@/components/dashboard/DailyProductionPl
 import { PageHeader } from '@/components/shared/PageHeader'
 import { Button } from '@/components/ui/button'
 
-// Class token-driven untuk <select> native — adaptif light/dark, konsisten shadcn input
-const SELECT_CLASS =
-  'h-9 px-3 rounded-md bg-background border border-input text-foreground text-sm ' +
+// Class token-driven untuk <select> native — style chip-pill (Zentra nav pill)
+// Rounded full, bg-secondary, border halus, focus ring aksen.
+const SELECT_CHIP_CLASS =
+  'h-9 pl-4 pr-8 rounded-full bg-[color:var(--color-bg-secondary)] ' +
+  'border border-border text-foreground text-sm ' +
   'focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:border-ring ' +
-  'transition-colors'
+  'transition-colors duration-[var(--motion-base)] ease-[var(--ease-out)] ' +
+  'hover:bg-[color:var(--color-bg-hover)] cursor-pointer appearance-none'
 
 // Tipe sale yang sudah join ke product
 interface SaleWithProduct extends Sale {
@@ -211,60 +217,51 @@ export default function DashboardPage() {
       />
 
       {/* ================================================================ */}
-      {/* Filter Bar (FR-010) — token-driven, adaptif dark mode            */}
+      {/* Insight Card — Ringkasan Hari Ini (§6.4.1: max 1 per halaman)    */}
+      {/* Gradient soft biru→pink→teal, radius-xl, hero number 48px.      */}
       {/* ================================================================ */}
-      <div className="p-4 md:p-5 bg-card border border-border rounded-lg flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-6">
-        <div className="flex flex-col sm:flex-row gap-4">
-          {/* Filter: Status Bayar */}
-          <div className="flex flex-col gap-1.5">
-            <label
-              htmlFor="filter-payment"
-              className="text-muted-foreground text-[10px] font-medium uppercase tracking-wider"
-            >
-              {t('paymentStatusFilter')}
-            </label>
-            <select
-              id="filter-payment"
-              value={filterPayment}
-              onChange={(e) => setFilterPayment(e.target.value)}
-              className={`min-w-40 ${SELECT_CLASS}`}
-            >
-              <option value="all">{t('allStatuses')}</option>
-              <option value="Sudah">{t('paidFilter')}</option>
-              <option value="Belum">{t('unpaidFilter')}</option>
-            </select>
-          </div>
+      <TodaySummaryInsight transactions={transactions} />
 
-          {/* Filter: Produk */}
-          <div className="flex flex-col gap-1.5">
-            <label
-              htmlFor="filter-product"
-              className="text-muted-foreground text-[10px] font-medium uppercase tracking-wider"
-            >
-              {t('productFilter')}
-            </label>
-            <select
-              id="filter-product"
-              value={filterProduct}
-              onChange={(e) => setFilterProduct(e.target.value)}
-              className={`min-w-48 ${SELECT_CLASS}`}
-            >
-              <option value="all">{t('allProducts')}</option>
-              {products.map((p) => (
-                <option key={p.id} value={p.id}>
-                  {p.name}
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
+      {/* ================================================================ */}
+      {/* Filter Bar (FR-010) — chip-pill inline, token-driven             */}
+      {/* ================================================================ */}
+      <div className="flex flex-wrap items-center gap-2 mb-6 mt-6">
+        {/* Filter: Status Bayar — pill */}
+        <select
+          id="filter-payment"
+          aria-label={t('paymentStatusFilter')}
+          value={filterPayment}
+          onChange={(e) => setFilterPayment(e.target.value)}
+          className={SELECT_CHIP_CLASS}
+        >
+          <option value="all">{t('allStatuses')}</option>
+          <option value="Sudah">{t('paidFilter')}</option>
+          <option value="Belum">{t('unpaidFilter')}</option>
+        </select>
 
-        {/* Tombol reset filter — pakai shadcn Button (variant outline) */}
+        {/* Filter: Produk — pill */}
+        <select
+          id="filter-product"
+          aria-label={t('productFilter')}
+          value={filterProduct}
+          onChange={(e) => setFilterProduct(e.target.value)}
+          className={SELECT_CHIP_CLASS}
+        >
+          <option value="all">{t('allProducts')}</option>
+          {products.map((p) => (
+            <option key={p.id} value={p.id}>
+              {p.name}
+            </option>
+          ))}
+        </select>
+
+        {/* Tombol reset filter — rounded-full */}
         {(filterPayment !== 'all' || filterProduct !== 'all') && (
           <Button
             type="button"
             variant="outline"
             size="sm"
+            className="rounded-full"
             onClick={() => {
               setFilterPayment('all')
               setFilterProduct('all')
@@ -325,5 +322,91 @@ export default function DashboardPage() {
         <TransactionLists transactions={filteredTransactions} />
       </div>
     </main>
+  )
+}
+
+// ===================================================================
+// Komponen internal — Insight Card "Ringkasan Hari Ini"
+// Gradient soft biru→pink→teal, radius-xl, hero 48px.
+// Max 1 per halaman sesuai §6.4.1 CLAUDE.md.
+// Dihitung dari `transactions` state (no extra fetch) — hanya menghitung
+// transaksi dengan payment_status "Sudah" pada tanggal hari ini.
+// ===================================================================
+function TodaySummaryInsight({ transactions }: { transactions: SaleWithProduct[] }) {
+  const t = useTranslations('dashboard')
+
+  // Batas awal & akhir hari ini (local time) — bandingkan dg t.date
+  const todayStart = useMemo(() => {
+    const d = new Date()
+    d.setHours(0, 0, 0, 0)
+    return d.getTime()
+  }, [])
+  const todayEnd = todayStart + 24 * 60 * 60 * 1000
+
+  const { revenueToday, countToday, avgToday } = useMemo(() => {
+    let revenue = 0
+    let count = 0
+    for (const txn of transactions) {
+      const ts = new Date(txn.date).getTime()
+      if (ts >= todayStart && ts < todayEnd && txn.payment_status === 'Sudah') {
+        revenue += Number(txn.sale_price) || 0
+        count += 1
+      }
+    }
+    const avg = count > 0 ? Math.round(revenue / count) : 0
+    return { revenueToday: revenue, countToday: count, avgToday: avg }
+  }, [transactions, todayStart, todayEnd])
+
+  const insightText =
+    countToday > 0
+      ? t('todayInsightActive', {
+          count: countToday,
+          avg: formatRupiah(avgToday),
+        })
+      : t('todayInsightEmpty')
+
+  return (
+    <div
+      className="
+        relative overflow-hidden rounded-[18px]
+        bg-gradient-to-br from-[color:var(--chart-primary)]/10 via-[color:var(--chart-accent-pink)]/8 to-[color:var(--chart-accent-teal)]/10
+        border border-border
+        shadow-[var(--shadow-md)]
+        p-6 md:p-8
+      "
+    >
+      {/* Kicker uppercase */}
+      <p className="text-muted-foreground text-[11px] font-medium uppercase tracking-[0.12em] leading-4">
+        {t('todaySummaryKicker')}
+      </p>
+
+      {/* Title */}
+      <h2 className="text-foreground text-lg md:text-xl font-semibold leading-7 mt-1">
+        {t('todaySummaryTitle')}
+      </h2>
+
+      {/* Hero metric — display-scale 48px */}
+      <div className="mt-5 flex flex-col md:flex-row md:items-end md:justify-between gap-3">
+        <div>
+          <p className="text-muted-foreground text-[11px] font-medium uppercase tracking-[0.12em] leading-4">
+            {t('todayRevenueLabel')}
+          </p>
+          <p
+            className="
+              text-foreground
+              text-[36px] md:text-[48px] font-semibold leading-[1.1]
+              tracking-[-0.02em] font-mono tabular-nums mt-1
+            "
+          >
+            {formatRupiah(revenueToday)}
+          </p>
+        </div>
+
+        {/* Insight text */}
+        <p className="text-foreground/80 text-sm leading-5 md:text-right md:max-w-xs">
+          {insightText}
+        </p>
+      </div>
+    </div>
   )
 }

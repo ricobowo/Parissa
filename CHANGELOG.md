@@ -4,6 +4,142 @@ Semua perubahan penting pada proyek ini didokumentasikan di file ini.
 
 ---
 
+## [v0.18.2] — 2026-04-19
+
+### Diubah — Redesign Fase 2 #2: Halaman POS di-upgrade ke style Zentra
+
+**Konteks:** setelah Dashboard disapu (v0.18.1), halaman POS
+(`/pos`) masih penuh warna hardcoded (`bg-blue-700`, `text-slate-900`,
+`text-zinc-600`, `outline-zinc-400/20`, shadow biru literal) dan
+`font-['Inter']` redundan. Sweep ini menyelaraskan semuanya ke
+token "Crafted Minimalism".
+
+**Halaman POS (`src/app/[locale]/(app)/pos/page.tsx` v0.7 → v0.8):**
+- Ikon POS SVG biru hardcoded di header dibuang.
+- Header kustom diganti ke shared `<PageHeader kicker="POS"
+  title="Penjualan Cepat" subtitle="…">`.
+- Badge "X produk" diubah ke chip-pill `rounded-full` + micro-label
+  uppercase tracking 0.12em, bg-secondary.
+- Hapus `font-['Inter']` literal.
+
+**QuickSaleGrid (`src/components/pos/QuickSaleGrid.tsx`
+v0.7 → v0.8):**
+- ProductCard refactor: `bg-card border border-border rounded-[14px]`
+  + `shadow-xs` → hover `shadow-sm`. Selected state: border
+  `--color-accent` + ring alpha + `shadow-sm`.
+- Placeholder gambar: bg token `--color-bg-secondary`, radius 10px,
+  inisial 2 huruf dipertahankan.
+- Harga bundling pakai `--color-accent` (accent fungsional), bukan
+  `text-blue-700` literal. Monospace tabular-nums.
+- Tombol +/- icon-button pill (`rounded-full`, size 32px). Plus
+  button bg-accent + shadow-xs, hover brightness-110.
+- Grid 2 kolom mobile / **3 kolom tablet+** (sebelumnya flat 2).
+- **Empty state baru (RULE 9):** "Belum ada produk aktif" dengan
+  hint arahkan user ke menu Produk.
+- Semua SVG pakai `fill="currentColor"` (adaptif dark).
+
+**SaleForm (`src/components/pos/SaleForm.tsx` v0.7 → v0.8):**
+- Full sweep — semua warna hardcoded → CSS variables.
+- Input/textarea/date: `rounded-[10px] bg-bg-elevated border-border
+  focus-visible:ring-2 ring-ring`. Error state border danger token.
+- **SegmentedControl** diekstrak jadi komponen internal: bg-secondary
+  + border, tombol aktif `bg-bg-elevated text-accent shadow-xs`,
+  inactive `text-muted-foreground`.
+- **ToggleSwitch** diekstrak: on-state `--color-accent`, off-state
+  `--color-border-strong`. Thumb bulat + shadow-xs.
+- Card bundling promo: rounded-[14px] + border, teks token.
+- Error bar cart: `bg-danger/10 border-danger/30 rounded-[10px]`.
+- Ringkasan keranjang: card rounded-[14px] + shadow-xs, header
+  micro-label uppercase, divider token.
+- Accordion "Detail Tambahan": card rounded-[14px] hover shadow-sm
+  dengan motion-base transition.
+- **Sticky footer**: `bg-bg-elevated/90 backdrop-blur-md` + border-t
+  token. Total pakai display-scale 28px monospace tabular-nums.
+  Button simpan: `bg-accent text-white rounded-[10px] shadow-sm`
+  hover `shadow-md brightness-110`.
+- Hapus `font-['Inter']` literal.
+
+**i18n — keys baru:**
+- `pos.kicker`, `pos.subtitle`
+- `pos.noProductsAvailable`, `pos.noProductsHint`
+
+**Catatan:**
+- Murni visual — logika fetching/submit Supabase, Formula 5.1
+  (`calcSalePrice`), validation, dan `SaleSubmitData` interface
+  tidak disentuh.
+- Tri-state UI utuh: loading (PageSkeleton) + error (toast) + empty
+  (di QuickSaleGrid, baru).
+- Version bump: patch (v0.18.1 → v0.18.2) — konsisten dengan
+  preseden sweep per-halaman Fase 2.
+
+**Selanjutnya:** Fase 2 #3 — halaman Produk (`/produk`) atau Resep/BOM.
+
+---
+
+## [v0.18.1] — 2026-04-19
+
+### Diubah — Redesign Fase 2 #1 round 2: Dashboard di-upgrade ke style Zentra
+
+**Konteks:** setelah Fase 1C menetapkan arah "Crafted Minimalism"
+(v0.18.0), komponen konsumen di halaman Dashboard — KpiCards,
+SalesCharts, TransactionLists — masih memakai style lama (radius
+kecil, tanpa shadow, angka 20–24px). Sweep per-halaman ini
+menyelaraskan semuanya ke token & primitif baru.
+
+**Komponen Dashboard:**
+- `src/components/dashboard/KpiCards.tsx` (v0.9 → v0.10)
+  - Refactor penuh ke shared `<StatCard>`.
+  - Total Revenue pakai `size="lg"` (display 36px) sebagai hero,
+    5 kartu lain `size="md"` (24px).
+  - Grid 1 kol mobile / 2 kol tablet / 3 kol desktop (gap 16px),
+    menggantikan grid 6-kolom hairline lama.
+  - Accent: Profit success/danger, Unpaid warning/default.
+- `src/components/dashboard/SalesCharts.tsx` (v0.9 → v0.10)
+  - Wrapper card konsisten: `rounded-[14px]` + `shadow-xs` →
+    hover `shadow-sm`, padding 20px, transisi motion-base.
+  - `DailyRevenueChart` pindah dari `bg-secondary` tanpa border
+    → card elevated (konsisten dengan 2 chart lain).
+  - Chart palette diubah dari monokrom ke muted-accent:
+    `--chart-primary/secondary/tertiary/accent-pink/accent-teal/
+    neutral`. Donut pakai `--chart-primary` + `--chart-neutral`.
+  - Header: micro-label uppercase tracking 0.12em + heading 18px.
+  - Donut center number display-scale 28px.
+  - Tooltip: radius 10px, bg elevated, shadow-md.
+  - Legend `DailyRevenueChart` → chip-pill `bg-bg-secondary`.
+- `src/components/dashboard/TransactionLists.tsx` (v0.9 → v0.10)
+  - Card wrapper radius 14px + shadow-xs + hover shadow-sm.
+  - Header: micro-label uppercase tracking 0.12em + BadgeDot
+    (success/warning) — ganti heading besar lama.
+  - Row hover `bg-bg-hover/40` dengan transisi motion-base.
+  - "More" footer pakai bg-secondary/50 supaya terbaca sbg section.
+
+**Halaman Dashboard (`src/app/[locale]/(app)/page.tsx`
+v0.9 → v0.10):**
+- **Insight Card baru** — "Ringkasan Hari Ini" (§6.4.1, max 1
+  per halaman). Gradient soft biru→pink→teal, radius-xl 18px,
+  shadow-md, hero number 36px mobile / 48px desktop. Menghitung
+  revenue + jumlah transaksi hari ini (status "Sudah") dari
+  state `transactions` yang sudah ada — tanpa extra fetch.
+- **Filter bar → chip-pill inline.** Card besar lama diganti
+  row pill-group (`rounded-full` select + outline button reset).
+  Lebih ringan, ritmenya konsisten dengan nav pill Zentra.
+
+**i18n — keys baru di `id.json` + `en.json`:**
+- `todaySummaryKicker`, `todaySummaryTitle`, `todayRevenueLabel`
+- `todayTxnCount`, `todayInsightEmpty`, `todayInsightActive`
+
+**Catatan:**
+- Murni visual — logika data fetching & bisnis tidak disentuh.
+- Tri-state UI (loading/error/empty) tetap utuh (RULE 9).
+- Version bump: patch (v0.18.0 → v0.18.1) — sweep per-halaman
+  dalam rangkaian Fase 2 yang masih berjalan. Preseden: round 1
+  dulu pakai v0.17.1 patch.
+
+**Selanjutnya:** Fase 2 #2 — halaman POS (`/pos`) di-sweep
+ke style yang sama.
+
+---
+
 ## [v0.18.0] — 2026-04-19
 
 ### Diubah — Redesign Fase 1C: Design Direction Revision ("Crafted Minimalism")

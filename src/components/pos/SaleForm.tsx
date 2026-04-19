@@ -2,14 +2,18 @@
 
 // ============================================================
 // File: src/components/pos/SaleForm.tsx
-// Versi: v0.7.0
+// Versi: v0.8.0
 // Deskripsi: Form penjualan lengkap untuk POS Parissa.
 //            Required fields: nama pembeli, tanggal, produk (via grid),
 //            jumlah, bundling toggle, status bayar.
 //            Optional fields: menu detail, topping, tipe penjualan,
 //            tanggal pre-order, catatan.
 //            Auto-calculate harga real-time (Formula 5.1).
-//            Desain diselaraskan dengan HTML reference (Mobile.html).
+//            v0.8.0 — Redesign Fase 2 #2 (Zentra): semua warna hardcoded
+//            diganti ke CSS variables (adaptif dark mode). Input radius
+//            10px, card radius 14px, shadow soft, segmented control
+//            token-driven, toggle switch pakai --color-accent, sticky
+//            footer pakai display-scale 28px + backdrop-blur bg-card/90.
 // ============================================================
 
 import { useState, useMemo } from 'react'
@@ -17,6 +21,22 @@ import { useTranslations } from 'next-intl'
 import { Product } from '@/types'
 import { calcSalePrice, formatRupiah } from '@/lib/formulas'
 import { QuickSaleGrid, CartItems } from './QuickSaleGrid'
+
+// ---- Shared class tokens ----
+// Input/textarea/date — radius 10px, bg card, border, focus ring accent
+const INPUT_BASE_CLASS =
+  'w-full px-4 py-3 bg-[color:var(--color-bg-elevated)] ' +
+  'border rounded-[10px] text-sm font-normal text-foreground ' +
+  'placeholder:text-muted-foreground ' +
+  'focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:border-ring ' +
+  'transition-colors duration-[var(--motion-base)] ease-[var(--ease-out)]'
+
+const INPUT_NORMAL_CLASS = 'border-border'
+const INPUT_ERROR_CLASS = 'border-[color:var(--color-danger)]'
+
+// Micro-label uppercase konsisten
+const LABEL_CLASS =
+  'text-muted-foreground text-[11px] font-medium uppercase tracking-[0.12em] leading-4'
 
 // Data yang dikirim ke parent saat submit
 export interface SaleSubmitData {
@@ -168,38 +188,16 @@ export function SaleForm({ products, submitting, onSubmit }: SaleFormProps) {
     })
   }
 
-  // Reset form setelah berhasil submit (dipanggil dari parent)
-  function resetForm() {
-    setCustomerName('')
-    setDate(new Date().toISOString().split('T')[0])
-    setPaymentStatus('Sudah')
-    setIsBundling(false)
-    setCart({})
-    setMenuDetail('')
-    setTopping('')
-    setSaleType('Direct')
-    setPreOrderDate('')
-    setNotes('')
-    setShowOptional(false)
-    setErrors({})
-  }
-
-  // Expose resetForm via ref pattern — gunakan key reset di parent
-  // Parent bisa panggil reset dengan mengubah key komponen
-
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="flex flex-col gap-6 pb-44 font-['Inter']"
-    >
+    <form onSubmit={handleSubmit} className="flex flex-col gap-6 pb-44">
       {/* ================================================================ */}
       {/* SECTION 1: Required Fields — Nama Pembeli, Tanggal, Status Bayar */}
       {/* ================================================================ */}
       <div className="flex flex-col gap-4">
         {/* Field: Nama Pembeli */}
-        <div className="flex flex-col gap-1">
-          <label className="text-zinc-600 text-[10px] font-medium uppercase leading-4 tracking-wide">
-            {t('customerName')} <span className="text-red-500">*</span>
+        <div className="flex flex-col gap-1.5">
+          <label className={LABEL_CLASS}>
+            {t('customerName')} <span className="text-[color:var(--color-danger)]">*</span>
           </label>
           <input
             type="text"
@@ -211,93 +209,75 @@ export function SaleForm({ products, submitting, onSubmit }: SaleFormProps) {
               }
             }}
             placeholder={t('customerNamePlaceholder')}
-            className={`w-full px-4 py-3.5 bg-white rounded-sm outline outline-1 outline-offset-[-1px] text-base font-normal text-gray-800 placeholder:text-gray-500 focus:outline-blue-700/40 transition-colors ${
-              errors.customerName ? 'outline-red-400' : 'outline-zinc-400/20'
+            className={`${INPUT_BASE_CLASS} ${
+              errors.customerName ? INPUT_ERROR_CLASS : INPUT_NORMAL_CLASS
             }`}
           />
           {errors.customerName && (
-            <p className="text-xs text-red-500">{errors.customerName}</p>
+            <p className="text-xs text-[color:var(--color-danger)] mt-0.5">
+              {errors.customerName}
+            </p>
           )}
         </div>
 
         {/* Row: Tanggal + Status Bayar */}
         <div className="flex flex-col gap-4 sm:flex-row sm:gap-4">
           {/* Field: Tanggal */}
-          <div className="flex-1 flex flex-col gap-1">
-            <label className="text-zinc-600 text-[10px] font-medium uppercase leading-4 tracking-wide">
-              {t('date')} <span className="text-red-500">*</span>
+          <div className="flex-1 flex flex-col gap-1.5">
+            <label className={LABEL_CLASS}>
+              {t('date')} <span className="text-[color:var(--color-danger)]">*</span>
             </label>
             <input
               type="date"
               value={date}
               onChange={(e) => setDate(e.target.value)}
-              className={`w-full px-4 py-3 bg-white rounded-sm outline outline-1 outline-offset-[-1px] text-base font-normal text-gray-800 focus:outline-blue-700/40 transition-colors ${
-                errors.date ? 'outline-red-400' : 'outline-zinc-400/20'
+              className={`${INPUT_BASE_CLASS} ${
+                errors.date ? INPUT_ERROR_CLASS : INPUT_NORMAL_CLASS
               }`}
             />
             {errors.date && (
-              <p className="text-xs text-red-500">{errors.date}</p>
+              <p className="text-xs text-[color:var(--color-danger)] mt-0.5">
+                {errors.date}
+              </p>
             )}
           </div>
 
-          {/* Field: Status Bayar — segmented control sesuai HTML ref */}
-          <div className="flex-1 flex flex-col gap-1 pb-2">
-            <label className="text-zinc-600 text-[10px] font-medium uppercase leading-4 tracking-wide">
-              {t('paymentStatus')} <span className="text-red-500">*</span>
+          {/* Field: Status Bayar — segmented control token-driven */}
+          <div className="flex-1 flex flex-col gap-1.5">
+            <label className={LABEL_CLASS}>
+              {t('paymentStatus')} <span className="text-[color:var(--color-danger)]">*</span>
             </label>
-            <div className="p-1 bg-zinc-100 rounded-sm outline outline-1 outline-offset-[-1px] outline-zinc-400/10 flex">
-              <button
-                type="button"
-                onClick={() => setPaymentStatus('Sudah')}
-                className={`flex-1 py-2 rounded-xs text-center text-xs font-bold leading-4 transition-all ${
-                  paymentStatus === 'Sudah'
-                    ? 'bg-white shadow-[0px_1px_2px_0px_rgba(0,0,0,0.05)] text-blue-700'
-                    : 'text-zinc-600 hover:text-gray-800'
-                }`}
-              >
-                {t('paid')}
-              </button>
-              <button
-                type="button"
-                onClick={() => setPaymentStatus('Belum')}
-                className={`flex-1 py-2 rounded-xs text-center text-xs font-bold leading-4 transition-all ${
-                  paymentStatus === 'Belum'
-                    ? 'bg-white shadow-[0px_1px_2px_0px_rgba(0,0,0,0.05)] text-blue-700'
-                    : 'text-zinc-600 hover:text-gray-800'
-                }`}
-              >
-                {t('unpaid')}
-              </button>
-            </div>
+            <SegmentedControl
+              value={paymentStatus}
+              options={[
+                { value: 'Sudah', label: t('paid') },
+                { value: 'Belum', label: t('unpaid') },
+              ]}
+              onChange={(v) => setPaymentStatus(v as 'Sudah' | 'Belum')}
+            />
           </div>
         </div>
 
-        {/* Toggle: Bundling Promo — sesuai HTML reference */}
-        <div className="p-4 bg-zinc-100 rounded-lg outline outline-1 outline-offset-[-1px] outline-zinc-400/10 flex items-center justify-between">
-          <div>
-            <p className="text-gray-800 text-sm font-bold leading-5">
+        {/* Toggle: Bundling Promo — card token-driven */}
+        <div
+          className="
+            p-4 bg-[color:var(--color-bg-secondary)] border border-border
+            rounded-[14px] flex items-center justify-between
+          "
+        >
+          <div className="min-w-0 pr-3">
+            <p className="text-foreground text-sm font-semibold leading-5">
               {t('bundlingPromo')}
             </p>
-            <p className="text-zinc-600 text-xs font-normal leading-4">
+            <p className="text-muted-foreground text-xs font-normal leading-4 mt-0.5">
               {t('bundlingDescription')}
             </p>
           </div>
-          <button
-            type="button"
-            onClick={() => setIsBundling(!isBundling)}
-            className="relative flex-shrink-0"
-            aria-checked={isBundling}
-            role="switch"
-            aria-label="Toggle bundling"
-          >
-            <div
-              className={`w-12 h-6 p-1 rounded-xl flex items-center transition-colors ${
-                isBundling ? 'bg-blue-700 justify-end' : 'bg-zinc-400/30 justify-start'
-              }`}
-            >
-              <div className="size-4 bg-white rounded-xl transition-all" />
-            </div>
-          </button>
+          <ToggleSwitch
+            checked={isBundling}
+            onChange={setIsBundling}
+            ariaLabel="Toggle bundling"
+          />
         </div>
       </div>
 
@@ -305,8 +285,16 @@ export function SaleForm({ products, submitting, onSubmit }: SaleFormProps) {
       {/* SECTION 2: Product Grid (Quick Sale) */}
       {/* ================================================================ */}
       {errors.cart && (
-        <div className="px-4 py-3 bg-red-50 rounded-lg border border-red-200">
-          <p className="text-xs font-semibold text-red-600">{errors.cart}</p>
+        <div
+          className="
+            px-4 py-3 rounded-[10px]
+            bg-[color:var(--color-danger)]/10
+            border border-[color:var(--color-danger)]/30
+          "
+        >
+          <p className="text-xs font-semibold text-[color:var(--color-danger)]">
+            {errors.cart}
+          </p>
         </div>
       )}
 
@@ -321,23 +309,28 @@ export function SaleForm({ products, submitting, onSubmit }: SaleFormProps) {
       {/* SECTION 3: Ringkasan Keranjang (tampil jika ada item) */}
       {/* ================================================================ */}
       {cartSummary.length > 0 && (
-        <div className="bg-white rounded-lg outline outline-1 outline-offset-[-1px] outline-zinc-400/20 overflow-hidden">
-          <div className="px-4 py-3 bg-neutral-50 border-b border-zinc-100">
-            <p className="text-zinc-600 text-[10px] font-bold uppercase tracking-wide">
+        <div
+          className="
+            bg-card border border-border rounded-[14px] overflow-hidden
+            shadow-[var(--shadow-xs)]
+          "
+        >
+          <div className="px-5 py-3 bg-[color:var(--color-bg-secondary)] border-b border-border">
+            <p className={LABEL_CLASS}>
               {t('orderSummary')} — {totalItems} {t('items')}
             </p>
           </div>
-          <div className="divide-y divide-zinc-100">
+          <div className="divide-y divide-border">
             {cartSummary.map(({ product, qty, price }) => (
               <div
                 key={product.id}
-                className="px-4 py-3 flex items-center justify-between"
+                className="px-5 py-3 flex items-center justify-between"
               >
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-semibold text-gray-800 truncate">
+                  <p className="text-sm font-semibold text-foreground truncate">
                     {product.name}
                   </p>
-                  <p className="text-xs text-zinc-500">
+                  <p className="text-xs text-muted-foreground mt-0.5 font-mono tabular-nums">
                     {qty} × {formatRupiah(
                       isBundling && product.bundling_price
                         ? product.bundling_price
@@ -345,7 +338,7 @@ export function SaleForm({ products, submitting, onSubmit }: SaleFormProps) {
                     )}
                   </p>
                 </div>
-                <p className="text-sm font-bold text-blue-700 ml-3">
+                <p className="text-sm font-semibold text-[color:var(--color-accent)] ml-3 font-mono tabular-nums">
                   {formatRupiah(price)}
                 </p>
               </div>
@@ -358,14 +351,19 @@ export function SaleForm({ products, submitting, onSubmit }: SaleFormProps) {
       {/* SECTION 4: Optional Fields (Collapsible) */}
       {/* ================================================================ */}
       <div className="flex flex-col gap-3">
-        {/* Accordion toggles — sesuai HTML reference */}
+        {/* Accordion trigger — card radius 14, hover shadow-sm */}
         <button
           type="button"
           onClick={() => setShowOptional(!showOptional)}
-          className="w-full bg-white rounded-lg outline outline-1 outline-offset-[-1px] outline-zinc-400/20 overflow-hidden"
+          className="
+            w-full bg-card border border-border rounded-[14px] overflow-hidden
+            shadow-[var(--shadow-xs)]
+            transition-shadow duration-[var(--motion-base)] ease-[var(--ease-out)]
+            hover:shadow-[var(--shadow-sm)]
+          "
         >
           <div className="p-4 flex items-center justify-between">
-            <span className="text-gray-800 text-sm font-bold leading-5">
+            <span className="text-foreground text-sm font-semibold leading-5">
               {t('additionalDetails')}
             </span>
             <svg
@@ -373,9 +371,18 @@ export function SaleForm({ products, submitting, onSubmit }: SaleFormProps) {
               height="8"
               viewBox="0 0 12 8"
               fill="none"
-              className={`transition-transform ${showOptional ? 'rotate-180' : ''}`}
+              className={`transition-transform duration-[var(--motion-base)] ease-[var(--ease-out)] ${
+                showOptional ? 'rotate-180' : ''
+              }`}
+              aria-hidden="true"
             >
-              <path d="M1 1L6 6L11 1" stroke="#52525b" strokeWidth="1.5" strokeLinecap="round" />
+              <path
+                d="M1 1L6 6L11 1"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                className="text-muted-foreground"
+              />
             </svg>
           </div>
         </button>
@@ -384,72 +391,50 @@ export function SaleForm({ products, submitting, onSubmit }: SaleFormProps) {
         {showOptional && (
           <div className="flex flex-col gap-4 px-1">
             {/* Field: Menu Detail */}
-            <div className="flex flex-col gap-1">
-              <label className="text-zinc-600 text-[10px] font-medium uppercase leading-4 tracking-wide">
-                {t('menuDetail')}
-              </label>
+            <div className="flex flex-col gap-1.5">
+              <label className={LABEL_CLASS}>{t('menuDetail')}</label>
               <textarea
                 value={menuDetail}
                 onChange={(e) => setMenuDetail(e.target.value)}
                 placeholder={t('menuDetailPlaceholder')}
                 rows={2}
-                className="w-full px-4 py-3 bg-white rounded-sm outline outline-1 outline-offset-[-1px] outline-zinc-400/20 text-sm font-normal text-gray-800 placeholder:text-gray-500 focus:outline-blue-700/40 transition-colors resize-none"
+                className={`${INPUT_BASE_CLASS} ${INPUT_NORMAL_CLASS} resize-none`}
               />
             </div>
 
             {/* Field: Topping */}
-            <div className="flex flex-col gap-1">
-              <label className="text-zinc-600 text-[10px] font-medium uppercase leading-4 tracking-wide">
-                {t('topping')}
-              </label>
+            <div className="flex flex-col gap-1.5">
+              <label className={LABEL_CLASS}>{t('topping')}</label>
               <textarea
                 value={topping}
                 onChange={(e) => setTopping(e.target.value)}
                 placeholder={t('toppingPlaceholder')}
                 rows={2}
-                className="w-full px-4 py-3 bg-white rounded-sm outline outline-1 outline-offset-[-1px] outline-zinc-400/20 text-sm font-normal text-gray-800 placeholder:text-gray-500 focus:outline-blue-700/40 transition-colors resize-none"
+                className={`${INPUT_BASE_CLASS} ${INPUT_NORMAL_CLASS} resize-none`}
               />
             </div>
 
             {/* Field: Tipe Penjualan — Direct / Pre-order */}
-            <div className="flex flex-col gap-1">
-              <label className="text-zinc-600 text-[10px] font-medium uppercase leading-4 tracking-wide">
-                {t('saleType')}
-              </label>
-              <div className="p-1 bg-zinc-100 rounded-sm outline outline-1 outline-offset-[-1px] outline-zinc-400/10 flex">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setSaleType('Direct')
-                    setPreOrderDate('')
-                  }}
-                  className={`flex-1 py-2 rounded-xs text-center text-xs font-bold leading-4 transition-all ${
-                    saleType === 'Direct'
-                      ? 'bg-white shadow-[0px_1px_2px_0px_rgba(0,0,0,0.05)] text-blue-700'
-                      : 'text-zinc-600 hover:text-gray-800'
-                  }`}
-                >
-                  {t('direct')}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setSaleType('Pre-order')}
-                  className={`flex-1 py-2 rounded-xs text-center text-xs font-bold leading-4 transition-all ${
-                    saleType === 'Pre-order'
-                      ? 'bg-white shadow-[0px_1px_2px_0px_rgba(0,0,0,0.05)] text-blue-700'
-                      : 'text-zinc-600 hover:text-gray-800'
-                  }`}
-                >
-                  {t('preorder')}
-                </button>
-              </div>
+            <div className="flex flex-col gap-1.5">
+              <label className={LABEL_CLASS}>{t('saleType')}</label>
+              <SegmentedControl
+                value={saleType}
+                options={[
+                  { value: 'Direct', label: t('direct') },
+                  { value: 'Pre-order', label: t('preorder') },
+                ]}
+                onChange={(v) => {
+                  setSaleType(v as 'Direct' | 'Pre-order')
+                  if (v === 'Direct') setPreOrderDate('')
+                }}
+              />
             </div>
 
             {/* Field: Tanggal Pre-order — tampil hanya jika tipe = Pre-order */}
             {saleType === 'Pre-order' && (
-              <div className="flex flex-col gap-1">
-                <label className="text-zinc-600 text-[10px] font-medium uppercase leading-4 tracking-wide">
-                  {t('preorderDate')} <span className="text-red-500">*</span>
+              <div className="flex flex-col gap-1.5">
+                <label className={LABEL_CLASS}>
+                  {t('preorderDate')} <span className="text-[color:var(--color-danger)]">*</span>
                 </label>
                 <input
                   type="date"
@@ -460,27 +445,27 @@ export function SaleForm({ products, submitting, onSubmit }: SaleFormProps) {
                       setErrors((p) => { const n = { ...p }; delete n.preOrderDate; return n })
                     }
                   }}
-                  className={`w-full px-4 py-3 bg-white rounded-sm outline outline-1 outline-offset-[-1px] text-sm font-normal text-gray-800 focus:outline-blue-700/40 transition-colors ${
-                    errors.preOrderDate ? 'outline-red-400' : 'outline-zinc-400/20'
+                  className={`${INPUT_BASE_CLASS} ${
+                    errors.preOrderDate ? INPUT_ERROR_CLASS : INPUT_NORMAL_CLASS
                   }`}
                 />
                 {errors.preOrderDate && (
-                  <p className="text-xs text-red-500">{errors.preOrderDate}</p>
+                  <p className="text-xs text-[color:var(--color-danger)] mt-0.5">
+                    {errors.preOrderDate}
+                  </p>
                 )}
               </div>
             )}
 
             {/* Field: Catatan */}
-            <div className="flex flex-col gap-1">
-              <label className="text-zinc-600 text-[10px] font-medium uppercase leading-4 tracking-wide">
-                {t('notes')}
-              </label>
+            <div className="flex flex-col gap-1.5">
+              <label className={LABEL_CLASS}>{t('notes')}</label>
               <textarea
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
                 placeholder={t('notesPlaceholder')}
                 rows={2}
-                className="w-full px-4 py-3 bg-white rounded-sm outline outline-1 outline-offset-[-1px] outline-zinc-400/20 text-sm font-normal text-gray-800 placeholder:text-gray-500 focus:outline-blue-700/40 transition-colors resize-none"
+                className={`${INPUT_BASE_CLASS} ${INPUT_NORMAL_CLASS} resize-none`}
               />
             </div>
           </div>
@@ -488,43 +473,77 @@ export function SaleForm({ products, submitting, onSubmit }: SaleFormProps) {
       </div>
 
       {/* ================================================================ */}
-      {/* SECTION 5: Sticky Footer — Total + Tombol Submit */}
+      {/* SECTION 5: Sticky Footer — Total + Tombol Submit                 */}
+      {/* Token-driven: bg-card/90 + backdrop-blur, border-t border-border */}
       {/* ================================================================ */}
-      <div className="fixed bottom-0 left-0 right-0 z-40 p-4 bg-slate-50/90 border-t border-slate-200/20 backdrop-blur-md md:sticky md:bottom-auto md:left-auto md:right-auto md:mt-4 md:p-0 md:bg-transparent md:border-0 md:backdrop-blur-none">
+      <div
+        className="
+          fixed bottom-0 left-0 right-0 z-40 p-4
+          bg-[color:var(--color-bg-elevated)]/90 backdrop-blur-md
+          border-t border-border
+          md:sticky md:bottom-auto md:left-auto md:right-auto
+          md:mt-4 md:p-0 md:bg-transparent md:border-0 md:backdrop-blur-none
+        "
+      >
         <div className="flex flex-col gap-4 max-w-[1040px] mx-auto">
           {/* Baris total pembayaran */}
           <div className="flex items-end justify-between">
             <div>
-              <p className="text-zinc-600 text-[10px] font-medium uppercase leading-4 tracking-wide">
-                {t('totalPayment')}
-              </p>
-              <p className="text-slate-900 text-2xl font-extrabold leading-8">
+              <p className={LABEL_CLASS}>{t('totalPayment')}</p>
+              <p
+                className="
+                  text-foreground font-semibold
+                  text-[28px] leading-[1.1] tracking-[-0.02em]
+                  font-mono tabular-nums mt-1
+                "
+              >
                 {formatRupiah(totalPrice)}
               </p>
             </div>
             {totalItems > 0 && (
-              <p className="text-zinc-600 text-[10px] font-medium uppercase leading-4 tracking-wide text-right">
+              <p className={`${LABEL_CLASS} text-right`}>
                 {totalItems} {t('items')}
               </p>
             )}
           </div>
 
-          {/* Tombol simpan transaksi */}
+          {/* Tombol simpan transaksi — primary accent button */}
           <button
             type="submit"
             disabled={submitting || totalItems === 0}
-            className="w-full py-4 bg-blue-700 rounded-lg flex justify-center items-center gap-2 shadow-[0px_4px_6px_-4px_rgba(0,83,219,0.20),0px_10px_15px_-3px_rgba(0,83,219,0.20)] hover:bg-blue-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="
+              w-full py-4 rounded-[10px]
+              bg-[color:var(--color-accent)] text-white
+              flex justify-center items-center gap-2
+              shadow-[var(--shadow-sm)]
+              transition-all duration-[var(--motion-base)] ease-[var(--ease-out)]
+              hover:brightness-110 hover:shadow-[var(--shadow-md)]
+              focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring
+              disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-[var(--shadow-sm)]
+            "
           >
             {submitting ? (
-              <span className="text-white text-base font-bold leading-6">
+              <span className="text-white text-base font-semibold leading-6">
                 {t('saving')}
               </span>
             ) : (
               <>
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                  <path d="M13.3 2.7L6 10L2.7 6.7" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 16 16"
+                  fill="none"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M13.3 2.7L6 10L2.7 6.7"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
                 </svg>
-                <span className="text-white text-base font-bold leading-6 uppercase">
+                <span className="text-white text-sm font-semibold leading-6 uppercase tracking-[0.08em]">
                   {t('saveTransaction')}
                 </span>
               </>
@@ -533,5 +552,87 @@ export function SaleForm({ products, submitting, onSubmit }: SaleFormProps) {
         </div>
       </div>
     </form>
+  )
+}
+
+// ===================================================================
+// Komponen internal — Segmented Control (2 opsi) token-driven
+// ===================================================================
+function SegmentedControl<T extends string>({
+  value,
+  options,
+  onChange,
+}: {
+  value: T
+  options: { value: T; label: string }[]
+  onChange: (value: T) => void
+}) {
+  return (
+    <div
+      className="
+        p-1 bg-[color:var(--color-bg-secondary)] border border-border
+        rounded-[10px] flex
+      "
+    >
+      {options.map((opt) => {
+        const active = opt.value === value
+        return (
+          <button
+            key={opt.value}
+            type="button"
+            onClick={() => onChange(opt.value)}
+            className={`
+              flex-1 py-2 rounded-[8px] text-center text-xs font-semibold leading-4
+              transition-all duration-[var(--motion-base)] ease-[var(--ease-out)]
+              ${
+                active
+                  ? 'bg-[color:var(--color-bg-elevated)] text-[color:var(--color-accent)] shadow-[var(--shadow-xs)]'
+                  : 'text-muted-foreground hover:text-foreground'
+              }
+            `}
+          >
+            {opt.label}
+          </button>
+        )
+      })}
+    </div>
+  )
+}
+
+// ===================================================================
+// Komponen internal — Toggle Switch token-driven
+// ===================================================================
+function ToggleSwitch({
+  checked,
+  onChange,
+  ariaLabel,
+}: {
+  checked: boolean
+  onChange: (v: boolean) => void
+  ariaLabel: string
+}) {
+  return (
+    <button
+      type="button"
+      onClick={() => onChange(!checked)}
+      className="relative flex-shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-full"
+      aria-checked={checked}
+      role="switch"
+      aria-label={ariaLabel}
+    >
+      <div
+        className={`
+          w-12 h-6 p-1 rounded-full flex items-center
+          transition-colors duration-[var(--motion-base)] ease-[var(--ease-out)]
+          ${
+            checked
+              ? 'bg-[color:var(--color-accent)] justify-end'
+              : 'bg-[color:var(--color-border-strong)] justify-start'
+          }
+        `}
+      >
+        <div className="size-4 bg-white rounded-full shadow-[var(--shadow-xs)] transition-all duration-[var(--motion-base)] ease-[var(--ease-out)]" />
+      </div>
+    </button>
   )
 }

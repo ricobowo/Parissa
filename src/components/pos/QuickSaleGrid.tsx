@@ -2,11 +2,13 @@
 
 // ============================================================
 // File: src/components/pos/QuickSaleGrid.tsx
-// Versi: v0.7.0
-// Deskripsi: Grid produk 2 kolom untuk quick-sale mobile.
+// Versi: v0.8.0
+// Deskripsi: Grid produk quick-sale.
 //            Tap untuk tambah, tombol +/- untuk atur jumlah.
 //            Harga otomatis switch ke bundling saat mode bundling aktif.
-//            Desain diselaraskan dengan HTML reference (Mobile.html).
+//            Style "Crafted Minimalism" (Zentra): card radius 14px,
+//            shadow-xs + hover shadow-sm, selected state ring accent.
+//            Tombol +/- icon-button pill (rounded-full). Adaptif dark.
 // ============================================================
 
 import { useTranslations } from 'next-intl'
@@ -35,20 +37,40 @@ export function QuickSaleGrid({
 }: QuickSaleGridProps) {
   const t = useTranslations('pos')
 
+  // Empty state — belum ada produk aktif (RULE 9 tri-state)
+  if (products.length === 0) {
+    return (
+      <div
+        className="
+          bg-card border border-border rounded-[14px]
+          shadow-[var(--shadow-xs)]
+          px-5 py-12 text-center
+        "
+      >
+        <p className="text-foreground text-sm font-medium">
+          {t('noProductsAvailable')}
+        </p>
+        <p className="text-muted-foreground text-xs mt-1">
+          {t('noProductsHint')}
+        </p>
+      </div>
+    )
+  }
+
   return (
     <div className="flex flex-col gap-4">
-      {/* Header section: label + refresh */}
+      {/* Header section: label micro-uppercase + count */}
       <div className="flex items-center justify-between">
-        <p className="text-zinc-600 text-[10px] font-medium font-['Inter'] uppercase leading-4 tracking-wide">
+        <p className="text-muted-foreground text-[11px] font-medium uppercase tracking-[0.12em] leading-4">
           {t('productMenu')}
         </p>
-        <span className="text-blue-700 text-[10px] font-bold font-['Inter'] leading-4">
+        <span className="text-muted-foreground text-[11px] font-medium tabular-nums">
           {t('productCount', { count: products.length })}
         </span>
       </div>
 
-      {/* Grid produk 2 kolom — sesuai HTML reference */}
-      <div className="grid grid-cols-2 gap-3">
+      {/* Grid produk — 2 kolom mobile, 3 kolom tablet+ */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
         {products.map((product) => {
           const qty = cart[product.id] || 0
           const isSelected = qty > 0
@@ -81,7 +103,7 @@ export function QuickSaleGrid({
 }
 
 // -------------------------------------------------------------------
-// Kartu produk individual — sesuai desain HTML reference
+// Kartu produk individual — style Zentra, token-driven
 // -------------------------------------------------------------------
 function ProductCard({
   product,
@@ -101,27 +123,35 @@ function ProductCard({
   onDecrement: () => void
 }) {
   const t = useTranslations('pos')
-  // Kelas outline berbeda untuk kartu yang dipilih vs tidak
-  const outlineClass = isSelected
-    ? 'outline-blue-700/30 shadow-[0px_0px_0px_1px_rgba(0,83,219,0.10)]'
-    : 'outline-zinc-400/20'
+
+  // Selected: border accent + ring halus; default: border + shadow-xs
+  const stateClass = isSelected
+    ? 'border-[color:var(--color-accent)] ring-1 ring-[color:var(--color-accent)]/20 shadow-[var(--shadow-sm)]'
+    : 'border-border shadow-[var(--shadow-xs)] hover:shadow-[var(--shadow-sm)]'
 
   return (
     <div
-      className={`min-h-36 p-3 bg-white rounded-lg outline outline-1 outline-offset-[-1px] ${outlineClass} flex flex-col justify-between font-['Inter'] transition-all`}
+      className={`
+        min-h-36 p-3 bg-card border rounded-[14px]
+        flex flex-col justify-between
+        transition-all duration-[var(--motion-base)] ease-[var(--ease-out)]
+        ${stateClass}
+      `}
     >
-      {/* Bagian atas: gambar + info produk */}
+      {/* Bagian atas: placeholder gambar + info produk */}
       <div className="flex flex-col gap-1">
-        {/* Placeholder gambar produk */}
-        <div className="w-full h-20 bg-gray-200 rounded-sm flex items-center justify-center overflow-hidden">
+        {/* Placeholder gambar produk — bg-secondary (token), radius pill-ish */}
+        <div className="w-full h-20 bg-[color:var(--color-bg-secondary)] rounded-[10px] flex items-center justify-center overflow-hidden">
           {product.image_url ? (
+            // eslint-disable-next-line @next/next/no-img-element
             <img
               src={product.image_url}
               alt={product.name}
               className="w-full h-full object-cover"
             />
           ) : (
-            <span className="text-zinc-400 text-xs font-medium uppercase tracking-wide">
+            // Inisial 2 huruf sebagai placeholder (dipertahankan utk ID cepat)
+            <span className="text-muted-foreground text-xs font-semibold uppercase tracking-[0.12em]">
               {product.name.substring(0, 2)}
             </span>
           )}
@@ -129,29 +159,29 @@ function ProductCard({
 
         {/* Nama produk */}
         <div className="pt-1">
-          <p className="text-gray-800 text-sm font-bold leading-4 line-clamp-2">
+          <p className="text-foreground text-sm font-semibold leading-tight line-clamp-2">
             {product.name}
           </p>
         </div>
 
-        {/* Harga — biru bold jika bundling, abu-abu biasa jika reguler */}
+        {/* Harga — accent color jika bundling aktif */}
         <p
-          className={`text-xs leading-4 ${
+          className={`text-xs leading-4 font-mono tabular-nums ${
             showBundlingPrice
-              ? 'text-blue-700 font-bold'
-              : 'text-zinc-600 font-normal'
+              ? 'text-[color:var(--color-accent)] font-semibold'
+              : 'text-muted-foreground font-normal'
           }`}
         >
           {formatRupiah(displayPrice)}
           {showBundlingPrice && (
-            <span className="ml-1 text-[9px] font-bold text-blue-700/60 uppercase">
+            <span className="ml-1 text-[9px] font-semibold text-[color:var(--color-accent)]/70 uppercase tracking-[0.1em]">
               {t('bundling')}
             </span>
           )}
         </p>
       </div>
 
-      {/* Bagian bawah: kontrol qty (+/-) */}
+      {/* Bagian bawah: kontrol qty (+/-) — icon-button pill */}
       <div className="pt-3">
         <div className="flex items-center justify-between">
           {/* Tombol kurang */}
@@ -159,18 +189,24 @@ function ProductCard({
             type="button"
             onClick={onDecrement}
             disabled={qty === 0}
-            className="size-8 rounded-sm outline outline-1 outline-offset-[-1px] outline-zinc-400/30 flex justify-center items-center hover:bg-zinc-50 transition-colors disabled:opacity-30"
+            className="
+              size-8 rounded-full border border-border bg-card text-foreground
+              flex justify-center items-center
+              transition-colors duration-[var(--motion-base)] ease-[var(--ease-out)]
+              hover:bg-[color:var(--color-bg-hover)]
+              disabled:opacity-30 disabled:cursor-not-allowed
+            "
             aria-label={`Kurangi ${product.name}`}
           >
-            <svg width="8" height="2" viewBox="0 0 8 2" fill="none">
-              <rect width="8" height="1.5" rx="0.5" fill="#1f2937" />
+            <svg width="8" height="2" viewBox="0 0 8 2" fill="none" aria-hidden="true">
+              <rect width="8" height="1.5" rx="0.5" fill="currentColor" />
             </svg>
           </button>
 
           {/* Jumlah */}
           <span
-            className={`text-sm font-bold leading-5 min-w-[20px] text-center ${
-              isSelected ? 'text-blue-700' : 'text-gray-800'
+            className={`text-sm font-semibold leading-5 min-w-[20px] text-center font-mono tabular-nums ${
+              isSelected ? 'text-[color:var(--color-accent)]' : 'text-foreground'
             }`}
           >
             {qty}
@@ -180,12 +216,19 @@ function ProductCard({
           <button
             type="button"
             onClick={onIncrement}
-            className="size-8 bg-blue-700 rounded-sm flex justify-center items-center hover:bg-blue-800 transition-colors"
+            className="
+              size-8 rounded-full bg-[color:var(--color-accent)] text-white
+              flex justify-center items-center
+              shadow-[var(--shadow-xs)]
+              transition-all duration-[var(--motion-base)] ease-[var(--ease-out)]
+              hover:brightness-110 hover:shadow-[var(--shadow-sm)]
+              focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring
+            "
             aria-label={`Tambah ${product.name}`}
           >
-            <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
-              <rect x="4" y="0" width="2" height="10" rx="0.5" fill="white" />
-              <rect x="0" y="4" width="10" height="2" rx="0.5" fill="white" />
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true">
+              <rect x="4" y="0" width="2" height="10" rx="0.5" fill="currentColor" />
+              <rect x="0" y="4" width="10" height="2" rx="0.5" fill="currentColor" />
             </svg>
           </button>
         </div>

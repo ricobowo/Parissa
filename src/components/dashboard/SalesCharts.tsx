@@ -2,12 +2,14 @@
 
 // ============================================================
 // File: src/components/dashboard/SalesCharts.tsx
-// Versi: v0.9.0
+// Versi: v0.10.0
 // Deskripsi: 3 chart dashboard menggunakan Recharts:
 //            1. Bar chart — Distribusi penjualan per produk (FR-007)
 //            2. Donut chart — Bundling vs Non-Bundling (FR-008)
 //            3. Stacked bar — Revenue harian per produk (FR-009)
-//            Palette adaptif dark mode via CSS variables.
+//            Style Zentra ("Crafted Minimalism"): wrapper card
+//            radius 14px, shadow-xs, hover shadow-sm, padding 20px.
+//            Palette muted-accent (--chart-*), bar rounded-top 4px.
 // ============================================================
 
 import { useTranslations } from 'next-intl'
@@ -45,27 +47,34 @@ export interface DailySalesData {
   [productName: string]: string | number
 }
 
-// Warna produk — pakai CSS var agar adaptif tema.
-// Recharts menerima `var(--x)` langsung di prop fill/stroke.
+// Palette chart muted-accent — sesuai §6.2 CLAUDE.md
 const PRODUCT_COLORS = [
-  'var(--color-accent)',
-  'var(--color-text-secondary)',
-  'var(--color-text-tertiary)',
-  'var(--color-border)',
-  'var(--color-text-secondary)',
-  'var(--color-border)',
+  'var(--chart-primary)',
+  'var(--chart-secondary)',
+  'var(--chart-tertiary)',
+  'var(--chart-accent-pink)',
+  'var(--chart-accent-teal)',
+  'var(--chart-neutral)',
 ]
 
-// Donut: aksen vs muted
-const DONUT_COLORS = ['var(--color-accent)', 'var(--color-border)']
+// Donut: aksen utama vs muted
+const DONUT_COLORS = ['var(--chart-primary)', 'var(--chart-neutral)']
+
+// Class wrapper card — dipakai ulang di semua chart & empty state
+const CHART_CARD_CLASS =
+  'bg-card border border-border rounded-[14px] p-5 ' +
+  'shadow-[var(--shadow-xs)] ' +
+  'transition-shadow duration-[var(--motion-base)] ease-[var(--ease-out)] ' +
+  'hover:shadow-[var(--shadow-sm)]'
 
 // Tooltip bersama — muncul di atas bg card (adaptif)
 const tooltipContentStyle = {
-  borderRadius: 8,
+  borderRadius: 10,
   border: '1px solid var(--color-border)',
-  background: 'var(--color-bg)',
+  background: 'var(--color-bg-elevated)',
   color: 'var(--color-text)',
   fontSize: 12,
+  boxShadow: 'var(--shadow-md)',
 }
 
 // -------------------------------------------------------------------
@@ -81,13 +90,13 @@ export function SalesDistributionChart({
   if (data.length === 0) return <ChartEmpty label={t('salesPerProduct')} />
 
   return (
-    <div className="bg-card border border-border rounded-2xl p-6 md:p-8">
-      {/* Header */}
-      <div className="mb-6">
-        <p className="text-muted-foreground text-[10px] font-semibold uppercase leading-4 tracking-wide">
+    <div className={CHART_CARD_CLASS}>
+      {/* Header — micro-label uppercase + heading 18px */}
+      <div className="mb-5">
+        <p className="text-muted-foreground text-[11px] font-medium uppercase leading-4 tracking-[0.12em]">
           {t('productPerformance')}
         </p>
-        <h3 className="text-foreground text-lg md:text-xl font-semibold leading-7 mt-0.5">
+        <h3 className="text-foreground text-lg font-semibold leading-7 mt-1">
           {t('salesPerProduct')}
         </h3>
       </div>
@@ -111,7 +120,7 @@ export function SalesDistributionChart({
             <YAxis
               type="category"
               dataKey="productName"
-              tick={{ fontSize: 10, fill: 'var(--color-text-secondary)', fontWeight: 500 }}
+              tick={{ fontSize: 11, fill: 'var(--color-text-secondary)', fontWeight: 500 }}
               axisLine={false}
               tickLine={false}
               width={120}
@@ -124,8 +133,7 @@ export function SalesDistributionChart({
             <Bar
               dataKey="totalRevenue"
               name={t('revenue')}
-              fill="var(--color-accent)"
-              fillOpacity={0.85}
+              fill="var(--chart-primary)"
               radius={[0, 4, 4, 0]}
               barSize={20}
             />
@@ -154,13 +162,13 @@ export function BundlingRatioChart({
     : 0
 
   return (
-    <div className="bg-card border border-border rounded-2xl p-6 md:p-8">
+    <div className={CHART_CARD_CLASS}>
       {/* Header */}
       <div className="mb-4">
-        <p className="text-muted-foreground text-[10px] font-semibold uppercase leading-4 tracking-wider">
+        <p className="text-muted-foreground text-[11px] font-medium uppercase leading-4 tracking-[0.12em]">
           {t('purchaseRatio')}
         </p>
-        <h3 className="text-foreground text-sm md:text-base font-medium leading-5 mt-0.5">
+        <h3 className="text-foreground text-lg font-semibold leading-7 mt-1">
           {t('bundlingRatio')}
         </h3>
       </div>
@@ -195,12 +203,12 @@ export function BundlingRatioChart({
             />
           </PieChart>
         </ResponsiveContainer>
-        {/* Label tengah donut */}
+        {/* Label tengah donut — hero number */}
         <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-          <span className="text-foreground text-2xl font-semibold leading-8 font-mono tabular-nums">
+          <span className="text-foreground text-[28px] font-semibold leading-8 font-mono tabular-nums tracking-[-0.02em]">
             {bundlingPct}%
           </span>
-          <span className="text-muted-foreground text-[10px] font-semibold uppercase tracking-wider">
+          <span className="text-muted-foreground text-[11px] font-medium uppercase tracking-[0.12em] mt-1">
             BUNDLING
           </span>
         </div>
@@ -244,29 +252,29 @@ export function DailyRevenueChart({
   if (data.length === 0) return <ChartEmpty label={t('dailyRevenueTitle')} />
 
   return (
-    <div className="bg-secondary rounded-2xl p-6 md:p-8 overflow-hidden">
-      {/* Header */}
-      <div className="flex items-start justify-between mb-6">
+    <div className={CHART_CARD_CLASS}>
+      {/* Header — heading 18px + subtitle + legend chip-pill */}
+      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-5">
         <div>
-          <h3 className="text-foreground text-lg md:text-xl font-semibold leading-7">
+          <h3 className="text-foreground text-lg font-semibold leading-7">
             {t('dailyRevenueTitle')}
           </h3>
-          <p className="text-muted-foreground text-sm font-normal leading-5">
+          <p className="text-muted-foreground text-xs font-normal leading-5 mt-0.5">
             {t('dailyRevenueSubtitle')}
           </p>
         </div>
-        {/* Legend mini */}
+        {/* Legend chip-pill */}
         <div className="flex flex-wrap gap-2">
           {productNames.slice(0, 3).map((name, i) => (
             <div
               key={name}
-              className="px-3 py-1 bg-card border border-border rounded-xl flex items-center gap-1.5"
+              className="px-3 py-1 bg-[color:var(--color-bg-secondary)] rounded-full flex items-center gap-1.5"
             >
               <span
                 className="size-1.5 rounded-full"
                 style={{ backgroundColor: PRODUCT_COLORS[i] }}
               />
-              <span className="text-muted-foreground text-[10px] font-semibold leading-4 truncate max-w-[60px]">
+              <span className="text-muted-foreground text-[11px] font-medium leading-4 truncate max-w-[80px]">
                 {name.split(' ').slice(0, 2).join(' ')}
               </span>
             </div>
@@ -332,13 +340,13 @@ export function DailyRevenueChart({
 }
 
 // -------------------------------------------------------------------
-// Empty state untuk chart
+// Empty state untuk chart — tetap pakai card style yang sama
 // -------------------------------------------------------------------
 function ChartEmpty({ label }: { label: string }) {
   const t = useTranslations('dashboard')
 
   return (
-    <div className="bg-card border border-border rounded-2xl p-8 flex flex-col items-center justify-center h-64">
+    <div className={`${CHART_CARD_CLASS} flex flex-col items-center justify-center h-64`}>
       <p className="text-muted-foreground text-sm">{label}</p>
       <p className="text-muted-foreground/60 text-xs mt-1">{t('noDataYet')}</p>
     </div>

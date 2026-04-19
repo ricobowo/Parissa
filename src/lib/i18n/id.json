@@ -86,11 +86,21 @@
     "dailyRevenueTitle": "Revenue Harian",
     "dailyRevenueSubtitle": "Revenue harian per produk",
     "noDataYet": "Belum ada data",
-    "transactions": "transaksi"
+    "transactions": "transaksi",
+    "todaySummaryKicker": "HARI INI",
+    "todaySummaryTitle": "Ringkasan Hari Ini",
+    "todayRevenueLabel": "Revenue Hari Ini",
+    "todayTxnCount": "{count} transaksi hari ini",
+    "todayInsightEmpty": "Belum ada transaksi tercatat hari ini",
+    "todayInsightActive": "{count} transaksi — rata-rata {avg} per transaksi"
   },
   "pos": {
     "title": "Input Penjualan",
     "quickSale": "Penjualan Cepat",
+    "kicker": "POS",
+    "subtitle": "Input penjualan cepat — target di bawah 30 detik per transaksi",
+    "noProductsAvailable": "Belum ada produk aktif",
+    "noProductsHint": "Aktifkan produk di menu Produk untuk mulai berjualan",
     "customerName": "Nama Pembeli",
     "customerNamePlaceholder": "Masukkan nama pelanggan...",
     "customerNameRequired": "Nama pembeli wajib diisi",
